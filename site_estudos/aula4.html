@@ -1,0 +1,2605 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AprovaIFES 2026 — Apresentação Interativa: Aula 4</title>
+  <!-- Google Fonts: Outfit e Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome para Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- MathJax para fórmulas matemáticas -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath:[['\\(','\\)']], displayMath:[['\\[','\\]']] },
+      options: { skipHtmlTags:['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+  <style>
+    /* --- CONFIGURAÇÃO GLOBAL --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1B5E20;
+      --primary-light: #2E7D32;
+      --primary-pale: #E8F5E9;
+      --accent: #C62828;
+      --accent-light: #FFCDD2;
+      --warning: #E65100;
+      --warning-light: #FFE0B2;
+      --info: #0D47A1;
+      --info-light: #E3F2FD;
+      --dark: #1A1A1A;
+      --gray-light: #F5F5F5;
+      --gray-medium: #E0E0E0;
+      --text: #333333;
+      --text-light: #666666;
+      --white: #ffffff;
+      --transition-speed: 0.4s;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f2010;
+      background: radial-gradient(circle at center, #1b381e 0%, #080f08 100%);
+      color: var(--white);
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    h1, h2, h3, .slide-title, .capa-title {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* --- LAYOUT DO APRESENTADOR --- */
+    .presentation-container {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* --- BARRA DE PROGRESSO --- */
+    .progress-bar-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 100;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary-light), var(--warning));
+      transition: width 0.3s ease;
+    }
+
+    /* --- SLIDES CONTÊINER --- */
+    .slides-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      height: 82vh;
+      min-height: 580px;
+      background: rgba(255, 255, 255, 0.98);
+      color: var(--dark);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- HEADER DO SLIDE --- */
+    .slide-header {
+      background: var(--primary-pale);
+      border-bottom: 2px solid var(--gray-medium);
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .slide-header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .slide-badge {
+      background: var(--primary);
+      color: var(--white);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .slide-title {
+      font-size: 20px;
+      color: var(--primary);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .slide-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--primary-light);
+    }
+
+    .slide-header-logo {
+      height: 35px;
+    }
+
+    /* --- CONTEÚDO DO SLIDE --- */
+    .slide-body {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .slide-pane {
+      display: none;
+      height: 100%;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .slide-pane.active {
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* --- FOOTER DO SLIDE --- */
+    .slide-footer {
+      background: var(--primary);
+      color: var(--white);
+      padding: 12px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .slide-number {
+      background: rgba(255,255,255,0.15);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    /* --- CONTROLES DE NAVEGAÇÃO --- */
+    .navigation-controls {
+      position: absolute;
+      bottom: 25px;
+      right: 45px;
+      display: flex;
+      gap: 12px;
+      z-index: 50;
+    }
+
+    .btn-nav {
+      background: var(--white);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav:hover {
+      background: var(--primary);
+      color: var(--white);
+      transform: scale(1.08);
+    }
+
+    .btn-nav:active {
+      transform: scale(0.95);
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: var(--gray-medium);
+      color: var(--text-light);
+    }
+
+    /* --- CONTROLES AUXILIARES --- */
+    .btn-auxiliary {
+      position: absolute;
+      bottom: 25px;
+      left: 45px;
+      display: flex;
+      gap: 12px;
+      z-index: 50;
+    }
+
+    .btn-aux {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid var(--gray-medium);
+      color: var(--dark);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: all 0.2s;
+    }
+
+    .btn-aux:hover {
+      background: var(--white);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    /* --- MENU LATERAL --- */
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 320px;
+      height: 100vh;
+      background: rgba(15, 32, 16, 0.95);
+      backdrop-filter: blur(10px);
+      border-right: 2px solid var(--primary-light);
+      z-index: 200;
+      padding: 30px 20px;
+      transition: left 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      color: var(--white);
+    }
+
+    .sidebar-menu.open {
+      left: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 15px;
+    }
+
+    .sidebar-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary-light);
+    }
+
+    .btn-close-sidebar {
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .menu-item-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .menu-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-item.active {
+      background: var(--primary-light);
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .menu-item-num {
+      width: 20px;
+      height: 20px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .menu-item.active .menu-item-num {
+      background: var(--white);
+      color: var(--primary-light);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 150;
+      display: none;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    /* --- SLIDE 1: CAPA --- */
+    .slide-capa {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 100%;
+      position: relative;
+    }
+
+    .capa-left {
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 30px;
+    }
+
+    .capa-right {
+      flex: 0.8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .capa-badge-ano {
+      background: var(--primary-light);
+      color: var(--white);
+      font-weight: 800;
+      font-size: 12px;
+      padding: 6px 16px;
+      border-radius: 30px;
+      display: inline-block;
+      align-self: flex-start;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    .capa-title-main {
+      font-size: 54px;
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .capa-title-sub {
+      font-size: 72px;
+      font-weight: 900;
+      line-height: 0.9;
+      color: var(--accent);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .capa-description {
+      font-size: 18px;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: 25px;
+      border-left: 4px solid var(--accent);
+      padding-left: 15px;
+    }
+
+    .capa-prof-info {
+      font-size: 14px;
+      color: var(--text-light);
+      font-weight: 500;
+      margin-top: 10px;
+    }
+
+    .capa-prof-info strong {
+      color: var(--primary);
+    }
+
+    .btn-start {
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      padding: 16px 36px;
+      border-radius: 30px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      align-self: flex-start;
+      margin-top: 10px;
+      box-shadow: 0 8px 20px rgba(27,94,32,0.3);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s;
+    }
+
+    .btn-start:hover {
+      background: var(--primary-light);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(27,94,32,0.4);
+    }
+
+    .capa-shapes-svg {
+      width: 100%;
+      max-width: 320px;
+      animation: floatShapes 8s ease-in-out infinite;
+    }
+
+    @keyframes floatShapes {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(4deg); }
+    }
+
+    /* --- LAYOUTS COMUNS DE SLIDE --- */
+    .slide-layout-split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 30px;
+      height: 100%;
+      align-items: center;
+    }
+
+    .slide-layout-full {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      height: 100%;
+    }
+
+    .panel-controls {
+      background: var(--gray-light);
+      border: 1px solid var(--gray-medium);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .panel-visual {
+      background: var(--white);
+      border: 2px dashed var(--gray-medium);
+      border-radius: 12px;
+      height: 100%;
+      min-height: 290px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
+    }
+
+    .slide-intro-txt {
+      font-size: 14.5px;
+      line-height: 1.65;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .slide-intro-txt strong {
+      color: var(--primary);
+    }
+
+    /* --- SIMULADORES E CONTROLES --- */
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .control-label span {
+      color: var(--accent);
+    }
+
+    .input-slider {
+      width: 100%;
+      height: 6px;
+      background: var(--gray-medium);
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .input-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .input-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .btn-toggle-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-toggle {
+      flex: 1;
+      background: var(--white);
+      border: 1.5px solid var(--gray-medium);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-toggle.active {
+      border-color: var(--primary);
+      background: var(--primary-pale);
+      color: var(--primary);
+    }
+
+    /* --- CAIXAS DE FÓRMULAS & RESOLUÇÕES --- */
+    .calculation-box {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 15px;
+      border-left: 4px solid var(--primary);
+      margin-top: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
+
+    .calc-step {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14.5px;
+      margin-bottom: 6px;
+      color: var(--text-light);
+    }
+
+    .calc-step strong {
+      color: var(--primary);
+    }
+
+    .calc-step.highlighted {
+      color: var(--accent);
+      font-size: 16.5px;
+      font-weight: 800;
+      border-top: 1px dashed var(--gray-medium);
+      padding-top: 6px;
+      margin-top: 6px;
+    }
+
+    .alert-box {
+      background: var(--accent-light);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #801010;
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .alert-box i {
+      font-size: 16px;
+      margin-top: 2px;
+    }
+
+    .dica-box {
+      background: var(--warning-light);
+      border-left: 4px solid var(--warning);
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #7f5000;
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .dica-box i {
+      font-size: 16px;
+      margin-top: 2px;
+      color: var(--warning);
+    }
+
+    .info-box {
+      background: var(--info-light);
+      border-left: 4px solid var(--info);
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #0b3c85;
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .info-box i {
+      font-size: 16px;
+      margin-top: 2px;
+      color: var(--info);
+    }
+
+    /* --- QUIZ INTERATIVO --- */
+    .quiz-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 1.5px solid var(--gray-medium);
+      padding-bottom: 10px;
+    }
+
+    .quiz-tab {
+      background: var(--white);
+      border: 1px solid var(--gray-medium);
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-tab.active {
+      background: var(--primary);
+      color: var(--white);
+      border-color: var(--primary);
+    }
+
+    .quiz-question-container {
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .quiz-question-container.active {
+      display: flex;
+    }
+
+    .quiz-text {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.6;
+      color: var(--dark);
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--white);
+      border: 1.5px solid var(--gray-medium);
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: all 0.2s;
+      color: var(--dark);
+    }
+
+    .quiz-option:hover:not(.checked) {
+      background: var(--primary-pale);
+      border-color: var(--primary-light);
+    }
+
+    .quiz-option-letter {
+      width: 24px;
+      height: 24px;
+      background: var(--primary-pale);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 11px;
+    }
+
+    .quiz-option.correct {
+      background: #C8E6C9 !important;
+      border-color: var(--primary-light) !important;
+      color: #1B5E20 !important;
+      font-weight: 700;
+    }
+
+    .quiz-option.correct .quiz-option-letter {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .quiz-option.wrong {
+      background: #FFCDD2 !important;
+      border-color: var(--accent) !important;
+      color: #C62828 !important;
+    }
+
+    .quiz-option.wrong .quiz-option-letter {
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    .quiz-explanation-drawer {
+      background: #F9F9F9;
+      border: 1.5px dashed var(--primary-light);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 15px;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .quiz-explanation-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-explanation-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    /* CONFETTI CANVAS */
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* --- BOTOES DE REVELACAO DE RESPOSTAS --- */
+    .btn-reveal-calc {
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-reveal-calc:hover {
+      background: #8e1010;
+      transform: scale(1.03);
+    }
+
+    /* --- ELEMENTOS DE GRID DE CARD --- */
+    .theory-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .theory-card {
+      background: var(--gray-light);
+      border: 1px solid var(--gray-medium);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .theory-card h3 {
+      font-size: 16px;
+      color: var(--primary);
+      margin-bottom: 8px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theory-card p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .theory-card .formula-box {
+      background: var(--primary-pale);
+      border: 1px solid var(--primary-light);
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin: 10px 0;
+      text-align: center;
+      font-family: 'Outfit';
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* --- ESTILO DOS EXERCÍCIOS --- */
+    .ex-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 5px;
+    }
+
+    .ex-item {
+      background: var(--gray-light);
+      border-left: 4px solid var(--primary-light);
+      border-radius: 8px;
+      padding: 12px 15px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .ex-num {
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 3px;
+    }
+
+    /* --- PROGRESSÃO ARITMÉTICA ELEMENTOS --- */
+    .pa-bar {
+      transition: height 0.4s ease, y 0.4s ease;
+    }
+
+    /* --- BANNERS DE ANÚNCIO (MONETIZAÇÃO) --- */
+    .ad-banner-bottom {
+      width: 100%;
+      height: 95px;
+      background: rgba(8, 15, 8, 0.95);
+      border-top: 1px solid rgba(0, 230, 118, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .ad-banner-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.3);
+      font-weight: 700;
+    }
+
+    .ad-banner-placeholder {
+      width: 100%;
+      max-width: 728px;
+      height: 60px;
+      background: rgba(27, 56, 30, 0.2);
+      border: 1px dashed rgba(0, 230, 118, 0.25);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #b0bec5;
+      font-size: 12px;
+      transition: all 0.3s;
+    }
+
+    .ad-banner-placeholder:hover {
+      border-color: #00E676;
+      background: rgba(27, 56, 30, 0.3);
+    }
+
+    .ad-banner-placeholder i {
+      font-size: 18px;
+      color: #00E676;
+    }
+
+    /* Ocultar anúncio em telas pequenas/curtas para não prejudicar layout dos slides */
+    @media (max-height: 680px) {
+      .ad-banner-bottom {
+        display: none !important;
+      }
+    }
+
+    /* Ocultar anúncio ao entrar no modo tela cheia de apresentação */
+    :fullscreen ~ .ad-banner-bottom,
+    :-webkit-full-screen ~ .ad-banner-bottom,
+    :-moz-full-screen ~ .ad-banner-bottom,
+    .presentation-container:fullscreen ~ .ad-banner-bottom {
+      display: none !important;
+    }
+
+    /* Caso algum elemento interno fique fullscreen */
+    *:fullscreen .ad-banner-bottom {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE PROGRESSO -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="top-progress-bar"></div>
+  </div>
+
+  <!-- CONTAINER PRINCIPAL -->
+  <div class="presentation-container">
+    
+    <div class="slides-wrapper">
+      
+      <!-- HEADER DO SLIDE -->
+      <div class="slide-header" id="header-bar">
+        <div class="slide-header-left">
+          <span class="slide-badge" id="slide-badge-label">AULA 4</span>
+          <span class="slide-title" id="slide-header-title">EQUAÇÃO DO 2º GRAU E SEQUÊNCIAS</span>
+        </div>
+        <div class="slide-header-right">
+          <span>PRÉ-IFES 2026</span>
+          <svg class="slide-header-logo" viewBox="0 0 48 65" width="22" height="30">
+            <circle cx="7" cy="7" r="7" fill="#C62828"/>
+            <rect x="17" y="0" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="34" y="0" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="0" y="17" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="17" y="17" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="0" y="34" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="17" y="34" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="34" y="34" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="0" y="51" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="17" y="51" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- CORPO DO SLIDE -->
+      <div class="slide-body">
+        
+        <!-- CANVAS PARA CONFETES -->
+        <canvas id="confetti-canvas"></canvas>
+
+        <!-- ==================== SLIDE 1: CAPA ==================== -->
+        <div class="slide-pane active" id="slide-1">
+          <div class="slide-capa">
+            <div class="capa-left">
+              <span class="capa-badge-ano">🏆 9º ANO • ENSINO FUNDAMENTAL</span>
+              <h1 class="capa-title-main">AprovaIFES</h1>
+              <h2 class="capa-title-sub">2026</h2>
+              <div class="capa-description">
+                Apresentação Interativa de Matemática<br>
+                <strong>Aula 4 — Equação do 2º Grau e Sequências</strong>
+              </div>
+              <button class="btn-start" onclick="nextSlide()">
+                Começar Aula <i class="fas fa-play"></i>
+              </button>
+              <div class="capa-prof-info">
+                Professora responsável: <strong>Betânia Almeida</strong>
+              </div>
+            </div>
+            <div class="capa-right">
+              <!-- Desenho dinâmico de parábola e palitos flutuando -->
+              <svg class="capa-shapes-svg" viewBox="0 0 100 100">
+                <!-- Parábola e eixos -->
+                <g transform="translate(10, 20)">
+                  <line x1="0" y1="40" x2="45" y2="40" stroke="#333" stroke-width="1.5"/>
+                  <line x1="22" y1="0" x2="22" y2="45" stroke="#333" stroke-width="1.5"/>
+                  <path d="M5,42 Q22.5,5 40,42" fill="none" stroke="var(--primary)" stroke-width="2.5"/>
+                </g>
+                <!-- Padrão de Quadrados de Palitos -->
+                <g transform="translate(60, 25)">
+                  <!-- 2 quadrados contíguos -->
+                  <rect x="0" y="10" width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="2.2"/>
+                  <rect x="16" y="10" width="16" height="16" fill="none" stroke="var(--accent)" stroke-width="2.2"/>
+                </g>
+                <!-- Fórmulas flutuando -->
+                <text x="50" y="76" font-family="'Outfit'" font-size="9" fill="var(--warning)" font-weight="900" text-anchor="middle">a_n = a_1 + (n-1)r</text>
+                <text x="50" y="94" font-family="'Outfit'" font-size="11" fill="var(--info)" font-weight="900" text-anchor="middle">Δ = b² - 4ac</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 2: INTRODUÇÃO ÀS EQUAÇÕES DO 2º GRAU ==================== -->
+        <div class="slide-pane" id="slide-2">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Uma <strong>Equação do 2º Grau</strong> (ou equação quadrática) é uma sentença matemática expressa sob a forma:
+                <span style="display:block; text-align:center; margin:10px 0; font-size:18px; color:var(--primary); font-weight:800;">\( ax^2 + bx + c = 0 \)</span>
+                onde os coeficientes \(a\), \(b\) e \(c\) são números reais e <strong>\(a \neq 0\)</strong>.
+              </p>
+              <div style="font-size:13px; line-height:1.6; color:var(--text); margin-bottom:12px;">
+                O termo de maior expoente determina o grau da equação. Se \(a\) fosse zero, a equação passaria a ser do 1º grau. 
+                As equações do 2º grau modelam diversos fenômenos reais. Na Física, representam o movimento de projéteis (trajetórias parabólicas). Na Economia, modelam as curvas de lucro e receita máxima, nas quais a receita varia de forma não linear com o preço de venda de um item.
+              </div>
+              <div class="info-box" style="margin-top:5px;">
+                <i class="fa-solid fa-circle-info"></i>
+                <div>
+                  <strong>Os Coeficientes:</strong><br>
+                  - <strong>\(a\)</strong>: coeficiente do termo quadrático (\(x^2\)). Indica a concavidade da parábola.<br>
+                  - <strong>\(b\)</strong>: coeficiente do termo linear (\(x\)).<br>
+                  - <strong>\(c\)</strong>: termo independente (constante). É o ponto onde a curva corta o eixo Y.
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div class="theory-card">
+                <h3><i class="fa-solid fa-shapes"></i> Forma Completa</h3>
+                <p>Possui todos os três coeficientes reais diferentes de zero.</p>
+                <div class="formula-box">\( x^2 - 5x + 6 = 0 \)<br><span style="font-size:11px;color:var(--text-light);">(a = 1, b = -5, c = 6)</span></div>
+              </div>
+              <div class="theory-card">
+                <h3><i class="fa-solid fa-shapes"></i> Formas Incompletas</h3>
+                <p>Ocorrem quando \(b = 0\) ou \(c = 0\) (ou ambos).</p>
+                <div class="formula-box" style="margin-bottom:5px;">\( x^2 - 9 = 0 \ \ \text{(b = 0)} \)</div>
+                <div class="formula-box" style="margin-top:0;">\( x^2 + 6x = 0 \ \ \text{(c = 0)} \)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 3: BHASKARA & DISCRIMINANTE ==================== -->
+        <div class="slide-pane" id="slide-3">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                O método analítico padrão para solucionar qualquer equação do 2º grau é a <strong>Fórmula de Bhaskara</strong>. O processo inicia-se pelo cálculo do discriminante <strong>\(\Delta\) (Delta)</strong>:
+              </p>
+              <div class="theory-card" style="background:#fff; margin-bottom:12px;">
+                <h3><i class="fa-solid fa-calculator"></i> Fórmulas de Resolução</h3>
+                <div class="formula-box">\( \Delta = b^2 - 4ac \)</div>
+                <div class="formula-box">\( x = \dfrac{-b \pm \sqrt{\Delta}}{2a} \)</div>
+              </div>
+              <div class="dica-box" style="margin-top:5px;">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <div>
+                  <strong>Fatoração Rápida:</strong> Se a equação for incompleta com \(b=0\) (ex: \(x^2-9=0\)), isole o \(x\) diretamente: \(x^2 = 9 \implies x = \pm 3\). Se for incompleta com \(c=0\) (ex: \(x^2+6x=0\)), coloque o \(x\) em evidência: \(x(x+6) = 0 \implies x=0\) ou \(x=-6\).
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <h4 style="font-size:13px; font-weight:800; color:var(--primary); margin-bottom:-5px;">A Análise do Discriminante \(\Delta\)</h4>
+              <div class="theory-card" style="border-left:4px solid var(--primary-light);">
+                <strong>\(\Delta > 0\) (Delta Positivo)</strong>
+                <p style="font-size:12px; margin-top:3px;">A equação terá exatamente <strong>duas raízes reais distintas</strong> (\(x_1 \neq x_2\)). A parábola interceptará o eixo X em dois pontos distintos.</p>
+              </div>
+              <div class="theory-card" style="border-left:4px solid var(--warning);">
+                <strong>\(\Delta = 0\) (Delta Nulo)</strong>
+                <p style="font-size:12px; margin-top:3px;">A equação terá <strong>uma única raiz real dupla</strong> (\(x_1 = x_2\)). A parábola apenas toca (tangencia) o eixo X em um único ponto.</p>
+              </div>
+              <div class="theory-card" style="border-left:4px solid var(--accent);">
+                <strong>\(\Delta < 0\) (Delta Negativo)</strong>
+                <p style="font-size:12px; margin-top:3px;">A equação <strong>não possuirá nenhuma raiz real</strong> no conjunto \(\mathbb{R}\). Graficamente, a parábola não tocará o eixo X em nenhum ponto.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 4: SIMULADOR DE EQUAÇÕES DO 2º GRAU ==================== -->
+        <div class="slide-pane" id="slide-4">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Altere os coeficientes \(a\), \(b\) e \(c\) nos sliders abaixo para observar a re-renderização da parábola e o recálculo das raízes e do vértice em tempo real:
+              </p>
+              
+              <div class="panel-controls">
+                <div class="control-group">
+                  <div class="control-label">Coeficiente a (termo quadrático): <span id="s4-a-val">1</span></div>
+                  <input type="range" class="input-slider" id="s4-slider-a" min="-5" max="5" step="1" value="1" oninput="updateSlide4()">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Coeficiente b (termo linear): <span id="s4-b-val">-5</span></div>
+                  <input type="range" class="input-slider" id="s4-slider-b" min="-10" max="10" step="1" value="-5" oninput="updateSlide4()">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Coeficiente c (termo independente): <span id="s4-c-val">6</span></div>
+                  <input type="range" class="input-slider" id="s4-slider-c" min="-10" max="10" step="1" value="6" oninput="updateSlide4()">
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:10px; height:100%;">
+              <div class="panel-visual" style="flex:1;">
+                <svg id="s4-svg" width="300" height="230" viewBox="0 0 300 230">
+                  <!-- Gerado via JS -->
+                </svg>
+              </div>
+              <div class="calculation-box" style="margin-top:0; padding:10px 15px; font-size:12px;">
+                <div class="calc-step" id="s4-calc-delta">\( \Delta = (-5)^2 - 4(1)(6) = 1 \)</div>
+                <div class="calc-step" id="s4-calc-roots">\( x = \dfrac{5 \pm 1}{2} \implies x_1 = 3, \ x_2 = 2 \)</div>
+                <div class="calc-step highlighted" style="font-size:13px;" id="s4-calc-vertex">Vértice \( V = (2.5, -0.25) \)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 5: O VÉRTICE DA PARÁBOLA ==================== -->
+        <div class="slide-pane" id="slide-5">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                O <strong>Vértice da Parábola</strong> (\(V\)) é o ponto extremo da curva. Ele representa o ponto mais baixo ou o ponto mais alto da função quadrática, dependendo do sinal do coeficiente \(a\).
+              </p>
+              <div class="theory-card" style="background:#fff; margin-bottom:12px;">
+                <h3><i class="fa-solid fa-arrows-up-down"></i> Máximos e Mínimos</h3>
+                <p>
+                  - Se <strong>\(a > 0\)</strong> (parábola feliz, voltada para cima): o vértice representa um ponto de <strong>mínimo absoluto</strong>.<br>
+                  - Se <strong>\(a < 0\)</strong> (parábola triste, voltada para baixo): o vértice representa um ponto de <strong>máximo absoluto</strong>.
+                </p>
+              </div>
+              <div class="theory-card" style="background:#fff;">
+                <h3><i class="fa-solid fa-square-root-variable"></i> Fórmulas do Vértice</h3>
+                <div class="formula-box">\( x_v = \dfrac{-b}{2a} \ \ \text{(abscissa do vértice)} \)</div>
+                <div class="formula-box">\( y_v = \dfrac{-\Delta}{4a} \ \ \text{(ordenada do vértice)} \)</div>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div class="calculation-box" style="margin-top:0;">
+                <div class="calc-step"><strong>Aplicação Prática (Física):</strong></div>
+                <div class="calc-step" style="margin-bottom: 12px;">Um brinquedo é lançado verticalmente e sua altura (em metros) é dada por \( h(t) = -5t^2 + 20t \). Em quanto tempo ele atinge a altura máxima? E qual é essa altura?</div>
+                
+                <button class="btn-reveal-calc" style="width:100%; justify-content:center; margin-top:5px; margin-bottom:5px;" onclick="toggleRevealCalc(this)">
+                  <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+                </button>
+                
+                <div class="quiz-explanation-drawer" style="margin-top:10px;">
+                  <div class="calc-step">\( a = -5, b = 20, c = 0 \). Portanto, \(\Delta = 20^2 - 4(-5)(0) = 400\).</div>
+                  <div class="calc-step highlighted" style="color:var(--primary-light);">Tempo de subida: \( t_v = x_v = \dfrac{-20}{2(-5)} = 2\text{ segundos} \)</div>
+                  <div class="calc-step highlighted" style="color:var(--accent); border-top:none; margin-top:0; padding-top:0;">Altura máxima: \( h_{max} = y_v = \dfrac{-400}{4(-5)} = 20\text{ metros} \)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 6: PROGRESSÃO ARITMÉTICA (PA) ==================== -->
+        <div class="slide-pane" id="slide-6">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Uma <strong>Progressão Aritmética (PA)</strong> é uma sequência numérica ordenada na qual a diferença entre cada termo e o termo anterior é uma constante chamada de <strong>razão (\(r\))</strong>.
+              </p>
+              <div style="font-size:13px; line-height:1.6; color:var(--text); margin-bottom:12px;">
+                Para obtermos o termo seguinte de uma PA, basta somar a razão ao termo atual. As progressões são muito cobradas no IFES, pois servem para modelar padrões geométricos crescentes e padrões numéricos que progridem linearmente.
+              </div>
+              <div class="theory-card" style="background:#fff; margin-bottom:15px;">
+                <h3><i class="fa-solid fa-plus"></i> Definição da Razão</h3>
+                <p>Para qualquer termo a partir do segundo:</p>
+                <div class="formula-box">\( r = a_n - a_{n-1} \)</div>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <h4 style="font-size:13px; font-weight:800; color:var(--primary); margin-bottom:-5px;">Classificações da PA</h4>
+              <div class="theory-card" style="border-left:4px solid var(--primary-light);">
+                <strong>Crescente (\(r > 0\))</strong>
+                <p style="font-size:12px; margin-top:3px;">Os termos aumentam progressivamente. Exemplo: {2, 5, 8, 11, 14, ...} com razão \(r = 3\).</p>
+              </div>
+              <div class="theory-card" style="border-left:4px solid var(--warning);">
+                <strong>Constante (\(r = 0\))</strong>
+                <p style="font-size:12px; margin-top:3px;">Todos os termos são idênticos. Exemplo: {5, 5, 5, 5, 5, ...} com razão \(r = 0\).</p>
+              </div>
+              <div class="theory-card" style="border-left:4px solid var(--accent);">
+                <strong>Decrescente (\(r < 0\))</strong>
+                <p style="font-size:12px; margin-top:3px;">Os termos diminuem progressivamente. Exemplo: {20, 18, 16, 14, 12, ...} com razão \(r = -2\).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 7: TERMO GERAL DA PA ==================== -->
+        <div class="slide-pane" id="slide-7">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Para calcularmos um termo em qualquer posição \(n\) de uma PA sem precisar escrever toda a sequência, empregamos a <strong>Fórmula do Termo Geral</strong>:
+              </p>
+              <div class="theory-card" style="background:#fff; margin-bottom:15px; padding:15px 20px;">
+                <h3><i class="fa-solid fa-list-ol"></i> Fórmula do Termo Geral</h3>
+                <div class="formula-box">\( a_n = a_1 + (n - 1) \cdot r \)</div>
+                <p style="font-size:12px; color:var(--text-light); text-align:center; margin-top:8px;">
+                  onde \(a_n\) é o termo procurado, \(a_1\) é o primeiro termo, \(n\) é a posição do termo e \(r\) é a razão.
+                </p>
+              </div>
+              <div class="info-box" style="margin-top:5px;">
+                <i class="fa-solid fa-circle-info"></i>
+                <div>
+                  <strong>Explicação Lógica:</strong> Para ir do 1º termo ao \(n\)-ésimo termo, você dá exatamente \(n-1\) "saltos" de tamanho \(r\) na reta numérica.
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div class="calculation-box" style="margin-top:0;">
+                <div class="calc-step"><strong>Exemplo Resolvido:</strong></div>
+                <div class="calc-step" style="margin-bottom: 12px;">Qual é o 15º termo da progressão aritmética {3, 8, 13, 18, ...}?</div>
+                
+                <button class="btn-reveal-calc" style="width:100%; justify-content:center; margin-top:5px; margin-bottom:5px;" onclick="toggleRevealCalc(this)">
+                  <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+                </button>
+                
+                <div class="quiz-explanation-drawer" style="margin-top:10px;">
+                  <div class="calc-step">1. Identificamos: \(a_1 = 3\), razão \(r = 8 - 3 = 5\), posição \(n = 15\).</div>
+                  <div class="calc-step">2. Aplicando a fórmula do termo geral:</div>
+                  <div class="calc-step highlighted" style="color:var(--primary-light);">\( a_{15} = 3 + (15 - 1) \cdot 5 \)</div>
+                  <div class="calc-step highlighted" style="color:var(--accent); border-top:none; margin-top:0; padding-top:0;">\( a_{15} = 3 + 14 \cdot 5 = 3 + 70 = 73 \)</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 8: SIMULADOR DE PROGRESSÃO ARITMÉTICA ==================== -->
+        <div class="slide-pane" id="slide-8">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Altere o primeiro termo (\(a_1\)) e a razão (\(r\)) para gerar graficamente os termos da PA. Escolha uma posição \(n\) para ver o cálculo do termo geral se adaptando:
+              </p>
+              
+              <div class="panel-controls">
+                <div class="control-group">
+                  <div class="control-label">Primeiro Termo (a₁): <span id="s8-a1-val">3</span></div>
+                  <input type="range" class="input-slider" id="s8-slider-a1" min="1" max="10" step="1" value="3" oninput="updateSlide8()">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Razão da PA (r): <span id="s8-r-val">4</span></div>
+                  <input type="range" class="input-slider" id="s8-slider-r" min="-4" max="6" step="1" value="4" oninput="updateSlide8()">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Posição para calcular (n): <span id="s8-n-val">10</span></div>
+                  <input type="range" class="input-slider" id="s8-slider-n" min="1" max="20" step="1" value="10" oninput="updateSlide8()">
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:12px; height:100%;">
+              <div class="panel-visual" style="flex:1;">
+                <svg id="s8-svg" width="280" height="180" viewBox="0 0 280 180">
+                  <!-- Gerado dinamicamente via JS -->
+                </svg>
+              </div>
+              <div class="calculation-box" style="margin-top:0; font-size:12.5px; padding:10px 15px;">
+                <div class="calc-step" id="s8-calc-formula">\( a_{10} = 3 + (10 - 1) \cdot 4 \)</div>
+                <div class="calc-step highlighted" style="font-size:14.5px; margin-top:4px;" id="s8-calc-result">\( a_{10} = 39 \)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 9: PADRÕES DE PALITOS (SEQUÊNCIAS) ==================== -->
+        <div class="slide-pane" id="slide-9">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                O IFES frequentemente cobra problemas envolvendo <strong>padrões de figuras</strong> com palitos de fósforo formando figuras contíguas. 
+              </p>
+              <div style="font-size:13px; line-height:1.6; color:var(--text); margin-bottom:12px;">
+                Observe o clássico exemplo de quadrados enfileirados:
+                - 1 quadrado (\(n=1\)): usa exatamente <strong>4 palitos</strong>.<br>
+                - 2 quadrados (\(n=2\)): usa exatamente <strong>7 palitos</strong> (o quadrado da direita compartilha a parede vertical com o primeiro, economizando 1 palito).<br>
+                - 3 quadrados (\(n=3\)): usa exatamente <strong>10 palitos</strong> (compartilham-se 2 paredes verticais).
+              </div>
+              <div class="alert-box" style="margin-top:5px;">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <div>
+                  <strong>Modelando a PA:</strong> Essa sequência {4, 7, 10, 13, ...} forma uma PA de primeiro termo \(a_1 = 4\) e razão \(r = 3\). A cada novo quadrado, somamos 3 palitos.
+                </div>
+              </div>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div class="theory-card">
+                <h3><i class="fa-solid fa-shapes"></i> Fórmula de Palitos</h3>
+                <p>Aplicando o termo geral da PA para \(n\) quadrados:</p>
+                <div class="formula-box">\( P(n) = a_1 + (n - 1) \cdot r \)</div>
+                <div class="formula-box">\( P(n) = 4 + (n - 1) \cdot 3 = 3n + 1 \)</div>
+              </div>
+              <div class="calculation-box" style="margin-top:0;">
+                <div class="calc-step"><strong>Exemplo de cálculo (n = 10):</strong></div>
+                <div class="calc-step">Quantos palitos para formar 10 quadrados contíguos?</div>
+                <div class="calc-step highlighted">\( P(10) = 3 \cdot 10 + 1 = 31\text{ palitos} \)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 10: SIMULADOR CONSTRUTOR DE PALITOS ==================== -->
+        <div class="slide-pane" id="slide-10">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Mova o slider para alterar o número de quadrados. Veja os quadrados contíguos desenhados e como a contagem de palitos e a fórmula se comportam:
+              </p>
+              
+              <div class="panel-controls">
+                <div class="control-group">
+                  <div class="control-label">Número de Quadrados (n): <span id="s10-n-val" style="color:var(--accent);">4</span></div>
+                  <input type="range" class="input-slider" id="s10-slider-n" min="1" max="8" step="1" value="4" oninput="updateSlide10()">
+                </div>
+                <button class="btn-toggle" id="btn-toggle-s10-res" style="margin-top:12px; width:100%; background:var(--info); color:var(--white); border-color:var(--info);" onclick="toggleS10Res()">
+                  <i class="fa-solid fa-eye-slash"></i> Ocultar Fórmulas
+                </button>
+              </div>
+              
+              <div class="dica-box" style="margin-top:15px;">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <div>
+                  <strong>Visualização das Paredes:</strong> Os palitos vermelhos são as paredes que não são compartilhadas, e os amarelos são as paredes verticais internas que são compartilhadas entre dois quadrados vizinhos.
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:10px; height:100%;">
+              <div class="panel-visual" style="flex:1;">
+                <svg id="s10-svg" width="300" height="150" viewBox="0 0 300 150">
+                  <!-- Gerado dinamicamente via JS -->
+                </svg>
+              </div>
+              <div class="calculation-box" id="s10-calc-box" style="margin-top:0; font-size:12.5px; padding:10px 15px;">
+                <div class="calc-step" id="s10-calc-step1">Para 4 quadrados: 13 palitos físicos contados.</div>
+                <div class="calc-step highlighted" style="font-size:14px;" id="s10-calc-step2">Fórmula: \( 3 \cdot 4 + 1 = 13\text{ palitos} \) ✓</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 11: OTIMIZAÇÃO QUADRÁTICA (HAMBÚRGUER BRUTÃO) ==================== -->
+        <div class="slide-pane" id="slide-11">
+          <div class="slide-layout-split" style="grid-template-columns: 1fr 1fr; align-items: start; gap: 20px;">
+            <div>
+              <div class="theory-card" style="background:#fff; border-left:4px solid var(--primary); margin-bottom: 12px;">
+                <h3><i class="fa-solid fa-store"></i> O Enunciado (IFES 2022)</h3>
+                <p style="font-size:12.5px; line-height:1.6; color:var(--text);">
+                  Um vendedor comercializa seu hambúrguer a <strong>R$ 20,00</strong> e vende <strong>200 unidades</strong> por noite. Ele percebe que para cada aumento de <strong>R$ 0,40</strong> no preço, ele perde <strong>2 clientes</strong> por noite. Qual preço de venda maximiza o seu faturamento?
+                </p>
+              </div>
+              <div class="info-box" style="margin-top:0;">
+                <i class="fa-solid fa-lightbulb"></i>
+                <div>
+                  <strong>A Estratégia de Otimização:</strong><br>
+                  O faturamento (Receita) é dado por:
+                  <div style="font-family:'Outfit'; font-weight:700; margin:5px 0; text-anchor:middle; text-align:center; color:var(--info);">
+                    Receita = Preço &times; Quantidade vendida
+                  </div>
+                  Como o preço aumenta e a quantidade diminui, essa multiplicação gerará uma <strong>função quadrática</strong> (com \(a < 0\)). O ponto máximo dessa função estará no seu <strong>Vértice</strong>!
+                </div>
+              </div>
+            </div>
+            
+            <div style="display:flex; flex-direction:column; gap:10px;">
+              <div class="theory-card" style="background:#fff;">
+                <h3><i class="fa-solid fa-code-branch"></i> Estruturando a Lógica</h3>
+                <p style="font-size:12.5px; line-height:1.5; color:var(--text);">
+                  Definimos <strong>\( x \)</strong> como o número de aumentos de R$ 0,40:<br>
+                  - Novo Preço: \( P(x) = 20 + 0{,}40x \)<br>
+                  - Nova Quantidade: \( Q(x) = 200 - 2x \)
+                </p>
+              </div>
+              
+              <button class="btn-reveal-calc" style="width:100%; justify-content:center; margin-top:5px; margin-bottom:5px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Passo a Passo
+              </button>
+              
+              <div class="quiz-explanation-drawer" style="margin-top:5px; padding: 12px;">
+                <div class="quiz-explanation-title" style="font-size:12.5px; color:var(--primary);"><i class="fa-solid fa-calculator"></i> Desenvolvimento Algébrico</div>
+                <div style="font-size:11.5px; line-height:1.6; color:var(--text);">
+                  <strong>1) Multiplicação (Propriedade Distributiva):</strong><br>
+                  \( R(x) = P(x) \cdot Q(x) = (20 + 0{,}40x)(200 - 2x) \)<br>
+                  \( R(x) = 20 \cdot 200 + 20 \cdot (-2x) + 0{,}40x \cdot 200 + 0{,}40x \cdot (-2x) \)<br>
+                  \( R(x) = 4.000 - 40x + 80x - 0{,}8x^2 \)<br>
+                  \( R(x) = -0{,}8x^2 + 40x + 4.000 \)<br><br>
+                  
+                  <strong>2) Quantidade de Aumentos Ótima (\(x_v\)):</strong><br>
+                  Como \( a = -0{,}8 \) e \( b = 40 \):<br>
+                  \( x_v = \dfrac{-b}{2a} = \dfrac{-40}{2(-0{,}8)} = \dfrac{-40}{-1{,}6} = 25\text{ aumentos} \)<br><br>
+                  
+                  <strong>3) Calculando o Preço Final Ótimo:</strong><br>
+                  Substituindo o \( x_v \) na fórmula do preço:<br>
+                  \( P_{ótimo} = 20 + 0{,}40 \cdot 25 = 20 + 10 = \mathbf{R\$\ 30{,}00} \) ✓
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 12: SIMULADOR OTIMIZADOR DO HAMBÚRGUER ==================== -->
+        <div class="slide-pane" id="slide-12">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Mude os parâmetros do hambúrguer e veja o comportamento do gráfico parabólico de faturamento. Descubra o ponto ótimo onde o faturamento é máximo:
+              </p>
+              
+              <div class="panel-controls">
+                <div class="control-group">
+                  <div class="control-label">Preço Base (R$): <span id="s12-pbase-val">20.00</span></div>
+                  <input type="range" class="input-slider" id="s12-slider-pbase" min="10" max="30" step="1" value="20" oninput="updateSlide12()">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Vendas Base (unids): <span id="s12-vbase-val">200</span></div>
+                  <input type="range" class="input-slider" id="s12-slider-vbase" min="50" max="300" step="10" value="200" oninput="updateSlide12()">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Aumento Preço (R$): <span id="s12-step-val">0.40</span></div>
+                  <input type="range" class="input-slider" id="s12-slider-step" min="0.10" max="1.00" step="0.10" value="0.40" oninput="updateSlide12()">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Queda Vendas (unids): <span id="s12-drop-val">2</span></div>
+                  <input type="range" class="input-slider" id="s12-slider-drop" min="1" max="10" step="1" value="2" oninput="updateSlide12()">
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:10px; height:100%;">
+              <div class="panel-visual" style="flex:1;">
+                <svg id="s12-svg" width="300" height="170" viewBox="0 0 300 170">
+                  <!-- Gerado dinamicamente via JS -->
+                </svg>
+              </div>
+              <div class="calculation-box" style="margin-top:0; font-size:11px; padding:8px 12px;">
+                <div class="calc-step" style="font-size:11px; margin-bottom:2px;" id="s12-eq-text">Equação: \( R(x) = -0{,}8x^2 + 40x + 4000 \)</div>
+                <div class="calc-step" style="font-size:11px; margin-bottom:2px;" id="s12-xv-text">Vértice: \( x_v = 25 \) aumentos</div>
+                <div class="calc-step highlighted" style="font-size:12.5px; padding-top:2px; margin-top:2px;" id="s12-opt-text">Preço Ótimo = R$ 30,00 | Faturamento Máx = R$ 4.500,00</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 13: EXERCÍCIOS DE FIXAÇÃO DA APOSTILA ==================== -->
+        <div class="slide-pane" id="slide-13">
+          <div class="slide-layout-full">
+            <p class="slide-intro-txt">
+              Aqui estão os principais <strong>Exercícios de Fixação da Aula 4</strong> presentes no material físico. Ideal para praticar e conferir resoluções na lousa:
+            </p>
+            <div class="ex-list">
+              <div class="ex-item">
+                <div class="ex-num">Exercício 1</div>
+                Resolva a equação incompleta: <strong>\(x^2 - 9 = 0\)</strong>.
+                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 3px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
+                <div class="quiz-explanation-drawer" style="padding: 5px; font-size: 11px;">
+                  \(x^2 = 9 \implies x = \pm\sqrt{9} \implies x = \pm 3\). S = {-3, 3}.
+                </div>
+              </div>
+              <div class="ex-item">
+                <div class="ex-num">Exercício 2</div>
+                Resolva a equação incompleta: <strong>\(x^2 + 6x = 0\)</strong>.
+                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 3px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
+                <div class="quiz-explanation-drawer" style="padding: 5px; font-size: 11px;">
+                  \(x(x + 6) = 0 \implies x = 0\) ou \(x + 6 = 0 \implies x = -6\). S = {-6, 0}.
+                </div>
+              </div>
+              <div class="ex-item">
+                <div class="ex-num">Exercício 3</div>
+                Aplique Bhaskara em: <strong>\(x^2 - 7x + 12 = 0\)</strong>.
+                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 3px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
+                <div class="quiz-explanation-drawer" style="padding: 5px; font-size: 11px;">
+                  \(\Delta = (-7)^2 - 4(1)(12) = 49 - 48 = 1\). <br>
+                  \(x = \dfrac{7 \pm \sqrt{1}}{2} \implies x_1 = 4, \ x_2 = 3\). S = {3, 4}.
+                </div>
+              </div>
+              <div class="ex-item">
+                <div class="ex-num">Exercício 4</div>
+                Encontre o 20º termo da PA: <strong>{5, 9, 13, 17, ...}</strong>.
+                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 3px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
+                <div class="quiz-explanation-drawer" style="padding: 5px; font-size: 11px;">
+                  \(a_1 = 5, r = 4, n = 20\). <br>
+                  \(a_{20} = 5 + (20-1)\cdot 4 = 5 + 19 \cdot 4 = 5 + 76 = 81\).
+                </div>
+              </div>
+              <div class="ex-item">
+                <div class="ex-num">Exercício 5</div>
+                Sequência de palitos: 1º=3, 2º=5, 3º=7. Determine o 50º termo.
+                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 3px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
+                <div class="quiz-explanation-drawer" style="padding: 5px; font-size: 11px;">
+                  PA de \(a_1 = 3\) e razão \(r = 2\). <br>
+                  \(a_{50} = 3 + 49 \cdot 2 = 3 + 98 = 101\text{ palitos}\).
+                </div>
+              </div>
+              <div class="ex-item">
+                <div class="ex-num">Exercício 6</div>
+                O produto de dois números consecutivos é 72. Quais são os números?
+                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 3px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
+                <div class="quiz-explanation-drawer" style="padding: 5px; font-size: 11px;">
+                  Seja \(n\) e \(n+1\): \(n(n+1) = 72 \implies n^2 + n - 72 = 0\). <br>
+                  \(\Delta = 1^2 - 4(1)(-72) = 289 \implies \sqrt{289} = 17\). <br>
+                  \(n = \dfrac{-1 \pm 17}{2} \implies n = 8\). Os números são 8 e 9.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 14: QUIZ DE FIXAÇÃO ==================== -->
+        <div class="slide-pane" id="slide-14">
+          <div>
+            <div class="quiz-tabs">
+              <div class="quiz-tab active" onclick="setQuizQuestion(1)">Questão 1</div>
+              <div class="quiz-tab" onclick="setQuizQuestion(2)">Questão 2</div>
+              <div class="quiz-tab" onclick="setQuizQuestion(3)">Questão 3</div>
+              <div class="quiz-tab" onclick="setQuizQuestion(4)">Questão 4</div>
+            </div>
+
+            <!-- QUESTAO 1 -->
+            <div class="quiz-question-container active" id="quiz-q1">
+              <div class="quiz-text">
+                <strong>Q1)</strong> Quais são as raízes reais da equação quadrática \( x^2 - 5x + 6 = 0 \)?
+              </div>
+              <div class="quiz-options">
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'a')"><span class="quiz-option-letter">A</span> \( S = \{1, 5\} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'b')"><span class="quiz-option-letter">B</span> \( S = \{2, 3\} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'c')"><span class="quiz-option-letter">C</span> \( S = \{0, 6\} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'd')"><span class="quiz-option-letter">D</span> \( S = \{-2, -3\} \)</div>
+              </div>
+              
+              <button class="btn-reveal-calc" id="btn-reveal-q1-q1" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" id="expl-q1" style="margin-top:5px;">
+                <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
+                <div class="quiz-explanation-text">
+                  Usando a fórmula de Bhaskara: <br>
+                  \( \Delta = (-5)^2 - 4 \cdot 1 \cdot 6 = 25 - 24 = 1 \). <br>
+                  As raízes são: \( x = \dfrac{-(-5) \pm \sqrt{1}}{2 \cdot 1} = \dfrac{5 \pm 1}{2} \). <br>
+                  \( x_1 = \dfrac{5 + 1}{2} = 3 \) e \( x_2 = \dfrac{5 - 1}{2} = 2 \). <br>
+                  Logo, a alternativa correta é a <strong>B</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTAO 2 -->
+            <div class="quiz-question-container" id="quiz-q2">
+              <div class="quiz-text">
+                <strong>Q2)</strong> Determine o 10º termo da Progressão Aritmética {2, 7, 12, 17, ...}.
+              </div>
+              <div class="quiz-options">
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'a')"><span class="quiz-option-letter">A</span> 47</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'b')"><span class="quiz-option-letter">B</span> 52</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'c')"><span class="quiz-option-letter">C</span> 45</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'd')"><span class="quiz-option-letter">D</span> 50</div>
+              </div>
+              
+              <button class="btn-reveal-calc" id="btn-reveal-q1-q2" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" id="expl-q2" style="margin-top:5px;">
+                <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
+                <div class="quiz-explanation-text">
+                  Primeiro identificamos os termos da PA: <br>
+                  Primeiro termo \( a_1 = 2 \). <br>
+                  A razão é \( r = 7 - 2 = 5 \). <br>
+                  Queremos o décimo termo (\( n = 10 \)): <br>
+                  \( a_{10} = a_1 + (n - 1) \cdot r \implies a_{10} = 2 + (10 - 1) \cdot 5 = 2 + 9 \cdot 5 = 2 + 45 = 47 \). <br>
+                  A alternativa correta é a <strong>A</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTAO 3 -->
+            <div class="quiz-question-container" id="quiz-q3">
+              <div class="quiz-text">
+                <strong>Q3)</strong> Uma sequência de triângulos contíguos feitos com palitos de fósforo é desenhada. Se o 1º termo usa 3 palitos, o 2º usa 5 palitos e o 3º usa 7 palitos, qual é a fórmula geral para encontrar o número de palitos \( P(n) \) necessários para construir \(n\) triângulos?
+              </div>
+              <div class="quiz-options">
+                <div class="quiz-option" onclick="checkAnswer(this, 3, 'a')"><span class="quiz-option-letter">A</span> \( P(n) = 2n + 1 \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 3, 'b')"><span class="quiz-option-letter">B</span> \( P(n) = 3n \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 3, 'c')"><span class="quiz-option-letter">C</span> \( P(n) = 2n + 2 \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 3, 'd')"><span class="quiz-option-letter">D</span> \( P(n) = 3n - 1 \)</div>
+              </div>
+              
+              <button class="btn-reveal-calc" id="btn-reveal-q1-q3" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" id="expl-q3" style="margin-top:5px;">
+                <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
+                <div class="quiz-explanation-text">
+                  A sequência formada é {3, 5, 7, 9, ...}, que é uma PA de termo inicial \(a_1 = 3\) e razão \(r = 2\). <br>
+                  Substituindo na fórmula do termo geral: <br>
+                  \( P(n) = a_1 + (n - 1)\cdot r \implies P(n) = 3 + (n - 1) \cdot 2 \). <br>
+                  \( P(n) = 3 + 2n - 2 \implies P(n) = 2n + 1 \). <br>
+                  Portanto, a alternativa correta é a <strong>A</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTAO 4 -->
+            <div class="quiz-question-container" id="quiz-q4">
+              <div class="quiz-text">
+                <strong>Q4)</strong> Se uma determinada equação do 2º grau apresenta o discriminante igual a zero (\(\Delta = 0\)), o que podemos afirmar sobre suas raízes reais?
+              </div>
+              <div class="quiz-options">
+                <div class="quiz-option" onclick="checkAnswer(this, 4, 'a')"><span class="quiz-option-letter">A</span> A equação possui duas raízes reais e distintas.</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 4, 'b')"><span class="quiz-option-letter">B</span> A equação não possui nenhuma raiz real.</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 4, 'c')"><span class="quiz-option-letter">C</span> A equação possui uma única raiz real (raiz dupla).</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 4, 'd')"><span class="quiz-option-letter">D</span> A equação possui infinitas raízes no conjunto dos reais.</div>
+              </div>
+              
+              <button class="btn-reveal-calc" id="btn-reveal-q1-q4" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" id="expl-q4" style="margin-top:5px;">
+                <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
+                <div class="quiz-explanation-text">
+                  De acordo com a teoria da análise do discriminante, se \(\Delta = 0\), o termo \(\pm \sqrt{\Delta}\) na fórmula de Bhaskara anula-se, restando apenas o termo \( x = \dfrac{-b}{2a} \). Isso significa que as duas raízes \(x_1\) e \(x_2\) têm o mesmo valor real. Assim, temos uma única raiz real dupla. <br>
+                  Logo, a alternativa correta é a <strong>C</strong>.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 15: SIMULADO ESPECIAL IFES ==================== -->
+        <div class="slide-pane" id="slide-15">
+          <div>
+            <div class="quiz-tabs">
+              <div class="quiz-tab active" onclick="setQuizQuestion2(1)">Questão IFES 1</div>
+              <div class="quiz-tab" onclick="setQuizQuestion2(2)">Questão IFES 2</div>
+              <div class="quiz-tab" onclick="setQuizQuestion2(3)">Questão IFES 3</div>
+            </div>
+
+            <!-- QUESTÃO 1 (IFES 2022) -->
+            <div class="quiz-question-container active" id="quiz-2-q1">
+              <div class="quiz-text" style="font-size:13.5px;">
+                <strong>QUESTÃO 9 (IFES 2022) —</strong> Um vendedor vende hambúrgueres a R$ 20,00 e vende 200 por noite. Para cada R$ 0,40 de aumento no preço unitário, ele perde 2 vendas por noite. A arrecadação máxima que ele pode obter e o preço ideal de venda que a garante são obtidos a partir da função de arrecadação. Qual o preço unitário que maximiza essa arrecadação?
+              </div>
+              <div class="quiz-options" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="quiz-option" onclick="checkAnswer2(this, 1, 'a')"><span class="quiz-option-letter">A</span> R$ 30,00</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 1, 'b')"><span class="quiz-option-letter">B</span> R$ 27,50</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 1, 'c')"><span class="quiz-option-letter">C</span> R$ 25,00</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 1, 'd')"><span class="quiz-option-letter">D</span> R$ 23,50</div>
+              </div>
+              
+              <button class="btn-reveal-calc" id="btn-reveal-q2-q1" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" style="margin-top:5px;">
+                <div class="quiz-explanation-text">
+                  Seja \( x \) o número de aumentos de R$ 0,40. A função receita é dada por:<br>
+                  \( R(x) = (20 + 0{,}40x)(200 - 2x) = 4.000 - 40x + 80x - 0{,}8x^2 \)<br>
+                  \( R(x) = -0{,}8x^2 + 40x + 4.000 \). <br>
+                  O número de aumentos ótimo é a coordenada \( x_v \) do vértice da parábola:<br>
+                  \( x_v = \dfrac{-b}{2a} = \dfrac{-40}{2(-0{,}8)} = \dfrac{-40}{-1{,}6} = 25\text{ aumentos} \). <br>
+                  O preço de venda ideal é: \( P(25) = 20 + 0{,}40 \cdot 25 = 20 + 10 = \text{R\$} 30{,}00 \).<br>
+                  Resposta correta: <strong>A</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTÃO 2 (IFES 2018) -->
+            <div class="quiz-question-container" id="quiz-2-q2">
+              <div class="quiz-text" style="font-size:13.5px;">
+                <strong>QUESTÃO 10 (IFES 2018) —</strong> Numa sequência de figuras feitas de palitos de fósforo lado a lado, a primeira figura (n=1) é formada por 1 quadrado contendo 4 palitos, a segunda (n=2) é formada por 2 quadrados contendo 7 palitos, a terceira (n=3) é formada por 3 quadrados contendo 10 palitos. Mantido o padrão, quantos palitos são necessários para construir uma figura com \(n\) quadrados?
+              </div>
+              <div class="quiz-options" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="quiz-option" onclick="checkAnswer2(this, 2, 'a')"><span class="quiz-option-letter">A</span> \( 4n \) palitos</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 2, 'b')"><span class="quiz-option-letter">B</span> \( 4n + 2 \) palitos</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 2, 'c')"><span class="quiz-option-letter">C</span> \( 3n + 1 \) palitos</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 2, 'd')"><span class="quiz-option-letter">D</span> \( 3n + 2 \) palitos</div>
+              </div>
+
+              <button class="btn-reveal-calc" id="btn-reveal-q2-q2" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" style="margin-top:5px;">
+                <div class="quiz-explanation-text">
+                  Para 1 quadrado temos 4 palitos. Para 2 quadrados temos 7 palitos. Para 3 quadrados temos 10 palitos.<br>
+                  Trata-se de uma PA de primeiro termo \( a_1 = 4 \) e razão \( r = 3 \).<br>
+                  A fórmula geral de palitos é dada por:<br>
+                  \( P(n) = a_1 + (n - 1) \cdot r \implies P(n) = 4 + (n - 1) \cdot 3 \)<br>
+                  \( P(n) = 4 + 3n - 3 \implies P(n) = 3n + 1 \).<br>
+                  Resposta correta: <strong>C</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTÃO 3 (Elaborada) -->
+            <div class="quiz-question-container" id="quiz-2-q3">
+              <div class="quiz-text" style="font-size:13.5px;">
+                <strong>QUESTÃO 11 (Adaptada) —</strong> O lançamento de um projétil é modelado e sua altura em metros em relação ao tempo \( t \) (em segundos) é dada pela função quadrática \( h(t) = -t^2 + 8t \). Qual é a altura máxima, em metros, que este projétil consegue atingir após o seu lançamento?
+              </div>
+              <div class="quiz-options" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="quiz-option" onclick="checkAnswer2(this, 3, 'a')"><span class="quiz-option-letter">A</span> 12 metros</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 3, 'b')"><span class="quiz-option-letter">B</span> 16 metros</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 3, 'c')"><span class="quiz-option-letter">C</span> 20 metros</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 3, 'd')"><span class="quiz-option-letter">D</span> 8 metros</div>
+              </div>
+
+              <button class="btn-reveal-calc" id="btn-reveal-q2-q3" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" style="margin-top:5px;">
+                <div class="quiz-explanation-text">
+                  A altura máxima é dada pela coordenada \( y_v \) (ordenada) do vértice da parábola:<br>
+                  \( a = -1, \ b = 8, \ c = 0 \). <br>
+                  Calculamos o discriminante \(\Delta\):<br>
+                  \( \Delta = b^2 - 4ac = 8^2 - 4(-1)(0) = 64 \).<br>
+                  Usando a fórmula da altura máxima \( y_v \):<br>
+                  \( y_v = \dfrac{-\Delta}{4a} = \dfrac{-64}{4(-1)} = \dfrac{-64}{-4} = 16\text{ metros} \). <br>
+                  (Nota: O projétil atinge o topo no tempo \( t = x_v = \dfrac{-8}{2(-1)} = 4\text{ segundos} \)).<br>
+                  Resposta correta: <strong>B</strong>.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 16: CONCLUSÃO ==================== -->
+        <div class="slide-pane" id="slide-16">
+          <div class="slide-layout-full">
+            <h2 class="slide-title" style="color:var(--primary); font-size:24px; text-align:center;">🏁 Checklist de Revisão - Aula 4</h2>
+            <p class="slide-intro-txt" style="text-align:center;">
+              Excelente! Você concluiu a Aula 4 de Matemática. Não se esqueça destes pontos essenciais nas provas do IFES:
+            </p>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:5px;">
+              <div class="theory-card" style="border-left:4px solid var(--primary-light);">
+                <strong style="color:var(--primary); font-size:14px;"><i class="fa-solid fa-calculator"></i> Equações do 2º Grau</strong>
+                <p style="font-size:12.5px; margin-top:4px;">
+                  - Discriminante \(\Delta = b^2 - 4ac\) determina a existência e quantidade de raízes reais.<br>
+                  - Vértice da parábola (\(x_v, y_v\)) resolve problemas de valores máximos e mínimos absolute.<br>
+                  - Incompletas podem ser fatoradas de forma muito mais rápida sem necessitar de Bhaskara.
+                </p>
+              </div>
+              <div class="theory-card" style="border-left:4px solid var(--accent);">
+                <strong style="color:var(--accent); font-size:14px;"><i class="fa-solid fa-align-left"></i> PA e Padrões de Palitos</strong>
+                <p style="font-size:12.5px; margin-top:4px;">
+                  - PA progride somando-se uma constante (razão \(r\)).<br>
+                  - Fórmula do Termo Geral: \(a_n = a_1 + (n-1)r\).<br>
+                  - Sequências visuais geométricas devem ser convertidas em PA definindo o primeiro termo e o incremento constante.
+                </p>
+              </div>
+            </div>
+            
+            <div style="text-align:center; margin-top:15px; font-weight:800; color:var(--primary); font-size:16px;">
+              💪 "O aprendizado constante constrói a sua ponte rumo à aprovação!"
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER DO SLIDE -->
+      <div class="slide-footer">
+        <span>PRÉ-IFES 2026 — MATEMÁTICA</span>
+        <span class="slide-number" id="slide-num-label">Slide 1 de 16</span>
+      </div>
+
+    </div>
+
+    <!-- CONTROLES DE NAVEGAÇÃO -->
+    <div class="navigation-controls">
+      <button class="btn-nav" id="btn-prev" onclick="prevSlide()" title="Slide Anterior"><i class="fa-solid fa-arrow-left"></i></button>
+      <button class="btn-nav" id="btn-next" onclick="nextSlide()" title="Próximo Slide"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <!-- CONTROLES AUXILIARES -->
+    <div class="btn-auxiliary">
+      <a href="index.html" class="btn-aux" style="text-decoration: none;"><i class="fa-solid fa-home"></i> Voltar ao Portal</a>
+      <button class="btn-aux" onclick="toggleSidebar(true)"><i class="fa-solid fa-list"></i> Menu</button>
+      <button class="btn-aux" onclick="toggleFullscreen()"><i class="fa-solid fa-expand"></i> Tela Cheia</button>
+    </div>
+
+  </div>
+
+  <!-- AD BANNER FIXED BOTTOM -->
+  <div class="ad-banner-bottom">
+    <span class="ad-banner-label">Patrocínio</span>
+    <div class="ad-banner-placeholder">
+      <i class="fa-solid fa-rectangle-ad"></i>
+      <span>Google AdSense (Aula 4) - Recomendado: Banner Horizontal 728x90 / Adaptável</span>
+    </div>
+    <!-- Quando aprovado pelo AdSense, substitua a div.ad-banner-placeholder pelo código abaixo: -->
+    <!--
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+         data-ad-slot="AULA4_SLOT_ID"
+         data-ad-format="horizontal"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    -->
+  </div>
+
+  <!-- MENU LATERAL -->
+  <div class="overlay" id="overlay" onclick="toggleSidebar(false)"></div>
+  <div class="sidebar-menu" id="sidebar-menu">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Conteúdo da Aula 4</span>
+      <button class="btn-close-sidebar" onclick="toggleSidebar(false)"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <ul class="menu-item-list">
+      <li class="menu-item active" onclick="goToSlide(1)"><span class="menu-item-num">1</span> Capa: Aula 4</li>
+      <li class="menu-item" onclick="goToSlide(2)"><span class="menu-item-num">2</span> Introdução</li>
+      <li class="menu-item" onclick="goToSlide(3)"><span class="menu-item-num">3</span> Bhaskara & Δ</li>
+      <li class="menu-item" onclick="goToSlide(4)"><span class="menu-item-num">4</span> Simulador de Parábola</li>
+      <li class="menu-item" onclick="goToSlide(5)"><span class="menu-item-num">5</span> O Vértice da Parábola</li>
+      <li class="menu-item" onclick="goToSlide(6)"><span class="menu-item-num">6</span> Conceito de PA</li>
+      <li class="menu-item" onclick="goToSlide(7)"><span class="menu-item-num">7</span> Termo Geral da PA</li>
+      <li class="menu-item" onclick="goToSlide(8)"><span class="menu-item-num">8</span> Simulador de PA</li>
+      <li class="menu-item" onclick="goToSlide(9)"><span class="menu-item-num">9</span> Padrões de Palitos</li>
+      <li class="menu-item" onclick="goToSlide(10)"><span class="menu-item-num">10</span> Simulador Construtor</li>
+      <li class="menu-item" onclick="goToSlide(11)"><span class="menu-item-num">11</span> Problema do Hambúrguer</li>
+      <li class="menu-item" onclick="goToSlide(12)"><span class="menu-item-num">12</span> Simulador Otimizador</li>
+      <li class="menu-item" onclick="goToSlide(13)"><span class="menu-item-num">13</span> Exercícios de Fixação</li>
+      <li class="menu-item" onclick="goToSlide(14)"><span class="menu-item-num">14</span> Quiz de Fixação</li>
+      <li class="menu-item" onclick="goToSlide(15)"><span class="menu-item-num">15</span> Simulado IFES</li>
+      <li class="menu-item" onclick="goToSlide(16)"><span class="menu-item-num">16</span> Checklist de Revisão</li>
+    </ul>
+  </div>
+
+  <script>
+    // --- GERENCIAMENTO DE SLIDES ---
+    let currentSlide = 1;
+    const totalSlides = 16;
+
+    const titles = {
+      1: "Equações do 2º Grau e Sequências",
+      2: "Introdução às Equações do 2º Grau",
+      3: "Fórmula de Bhaskara e Discriminante Δ",
+      4: "Simulador de Parábola e Bhaskara",
+      5: "O Vértice da Parábola (Máx/Mín)",
+      6: "Progressão Aritmética (PA) e Razão",
+      7: "Termo Geral da PA",
+      8: "Simulador de PA e Escada de Blocos",
+      9: "Padrões de Palitos (Sequências Visuais)",
+      10: "Simulador Construtor de Palitos",
+      11: "Otimização Quadrática: Hambúrguer Brutão",
+      12: "Simulador Otimizador do Hambúrguer",
+      13: "Exercícios de Fixação da Aula 4",
+      14: "Quiz de Fixação Interativo",
+      15: "Simulado Especial IFES",
+      16: " Checklist de Revisão - Aula 4"
+    };
+
+    function updatePresentationState() {
+      document.querySelectorAll('.slide-pane').forEach(pane => pane.classList.remove('active'));
+      document.getElementById(`slide-${currentSlide}`).classList.add('active');
+
+      document.getElementById('slide-header-title').innerText = titles[currentSlide];
+      document.getElementById('slide-badge-label').innerText = currentSlide === 1 ? "INÍCIO" : `SLIDE ${currentSlide}`;
+      document.getElementById('slide-num-label').innerText = `Slide ${currentSlide} de ${totalSlides}`;
+
+      const percent = ((currentSlide - 1) / (totalSlides - 1)) * 100;
+      document.getElementById('top-progress-bar').style.width = `${percent}%`;
+
+      document.getElementById('btn-prev').disabled = currentSlide === 1;
+      document.getElementById('btn-next').disabled = currentSlide === totalSlides;
+
+      document.querySelectorAll('.menu-item').forEach((item, index) => {
+        item.classList.toggle('active', index + 1 === currentSlide);
+      });
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+
+      if (currentSlide === 4) updateSlide4();
+      if (currentSlide === 8) updateSlide8();
+      if (currentSlide === 10) updateSlide10();
+      if (currentSlide === 12) updateSlide12();
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updatePresentationState();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updatePresentationState();
+      }
+    }
+
+    function goToSlide(num) {
+      currentSlide = num;
+      updatePresentationState();
+      toggleSidebar(false);
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+
+    function toggleSidebar(forceState) {
+      const menu = document.getElementById('sidebar-menu');
+      const overlay = document.getElementById('overlay');
+      const isOpen = forceState !== undefined ? forceState : !menu.classList.contains('open');
+      
+      menu.classList.toggle('open', isOpen);
+      overlay.classList.toggle('active', isOpen);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error(`Erro ao ativar Tela Cheia: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // --- SLIDE 4: SIMULADOR DE EQUAÇÕES DO 2º GRAU ---
+    function updateSlide4() {
+      const a = parseInt(document.getElementById('s4-slider-a').value);
+      const b = parseInt(document.getElementById('s4-slider-b').value);
+      const c = parseInt(document.getElementById('s4-slider-c').value);
+
+      document.getElementById('s4-a-val').innerText = a;
+      document.getElementById('s4-b-val').innerText = b;
+      document.getElementById('s4-c-val').innerText = c;
+
+      if (a === 0) {
+        // a não pode ser zero numa eq quadrática
+        return;
+      }
+
+      const delta = b * b - 4 * a * c;
+      const xv = -b / (2 * a);
+      const yv = -delta / (4 * a);
+
+      let deltaText = `\\( \\Delta = (${b})^2 - 4(${a})(${c}) = ${delta} \\)`;
+      let rootsText = '';
+
+      if (delta > 0) {
+        const r1 = (-b + Math.sqrt(delta)) / (2 * a);
+        const r2 = (-b - Math.sqrt(delta)) / (2 * a);
+        rootsText = `\\( x = \\dfrac{${-b} \\pm \\sqrt{${delta}}}{${2*a}} \\implies x_1 = ${r1.toFixed(2)}, \\ x_2 = ${r2.toFixed(2)} \\)`;
+      } else if (delta === 0) {
+        const r = -b / (2 * a);
+        rootsText = `\\( x = \\dfrac{${-b} \\pm 0}{${2*a}} \\implies x_1 = x_2 = ${r.toFixed(2)} \\)`;
+      } else {
+        rootsText = `\\( \\Delta < 0 \\implies \\text{Sem raízes reais em } \\mathbb{R} \\)`;
+      }
+
+      document.getElementById('s4-calc-delta').innerHTML = deltaText;
+      document.getElementById('s4-calc-roots').innerHTML = rootsText;
+      document.getElementById('s4-calc-vertex').innerHTML = `Vértice \\( V = (x_v, y_v) = (${xv.toFixed(2)}, ${yv.toFixed(2)}) \\)`;
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([
+          document.getElementById('s4-calc-delta'),
+          document.getElementById('s4-calc-roots'),
+          document.getElementById('s4-calc-vertex')
+        ]);
+      }
+
+      // Desenhar Parábola no SVG
+      const svg = document.getElementById('s4-svg');
+      svg.innerHTML = '';
+
+      // eixos cartesianos
+      svg.innerHTML += `
+        <!-- Eixos -->
+        <line x1="20" y1="115" x2="280" y2="115" stroke="#bbb" stroke-width="1.5" />
+        <line x1="150" y1="10" x2="150" y2="220" stroke="#bbb" stroke-width="1.5" />
+        <text x="285" y="118" font-size="10" fill="#777" font-weight="700">x</text>
+        <text x="146" y="8" font-size="10" fill="#777" font-weight="700">y</text>
+      `;
+
+      // Gerar caminho da curva
+      let d = '';
+      let first = true;
+      for (let xVal = -10; xVal <= 10; xVal += 0.25) {
+        const yVal = a * xVal * xVal + b * xVal + c;
+        const svgX = 150 + xVal * 13;
+        const svgY = 115 - yVal * 8; // escala Y invertida
+
+        if (svgY >= 5 && svgY <= 225) {
+          if (first) {
+            d += `M ${svgX} ${svgY}`;
+            first = false;
+          } else {
+            d += ` L ${svgX} ${svgY}`;
+          }
+        }
+      }
+
+      if (d) {
+        svg.innerHTML += `<path d="${d}" fill="none" stroke="var(--primary)" stroke-width="3" />`;
+      }
+
+      // Vértice do gráfico
+      const svgXv = 150 + xv * 13;
+      const svgYv = 115 - yv * 8;
+      if (svgYv >= 5 && svgYv <= 225) {
+        svg.innerHTML += `
+          <circle cx="${svgXv}" cy="${svgYv}" r="6" fill="var(--warning)" />
+          <text x="${svgXv + 8}" y="${svgYv - 8}" font-size="9" fill="var(--warning)" font-weight="800">V(${xv.toFixed(1)}, ${yv.toFixed(1)})</text>
+        `;
+      }
+
+      // Raízes reais do gráfico
+      if (delta >= 0) {
+        const r1 = (-b + Math.sqrt(delta)) / (2 * a);
+        const r2 = (-b - Math.sqrt(delta)) / (2 * a);
+
+        const svgXr1 = 150 + r1 * 13;
+        const svgXr2 = 150 + r2 * 13;
+
+        svg.innerHTML += `<circle cx="${svgXr1}" cy="115" r="5.5" fill="var(--accent)" />`;
+        if (delta > 0) {
+          svg.innerHTML += `<circle cx="${svgXr2}" cy="115" r="5.5" fill="var(--accent)" />`;
+        }
+      }
+    }
+
+    // --- SLIDE 8: SIMULADOR DE PROGRESSÃO ARITMÉTICA ---
+    function updateSlide8() {
+      const a1 = parseInt(document.getElementById('s8-slider-a1').value);
+      const r = parseInt(document.getElementById('s8-slider-r').value);
+      const n = parseInt(document.getElementById('s8-slider-n').value);
+
+      document.getElementById('s8-a1-val').innerText = a1;
+      document.getElementById('s8-r-val').innerText = r;
+      document.getElementById('s8-n-val').innerText = n;
+
+      const valN = a1 + (n - 1) * r;
+
+      const formulaDiv = document.getElementById('s8-calc-formula');
+      formulaDiv.innerHTML = `\\( a_{${n}} = ${a1} + (${n} - 1) \\cdot (${r}) \\)`;
+      
+      const resultDiv = document.getElementById('s8-calc-result');
+      resultDiv.innerHTML = `\\( a_{${n}} = ${a1} + ${n-1} \\cdot (${r}) = ${valN} \\)`;
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([formulaDiv, resultDiv]);
+      }
+
+      // Renderizar gráfico dinâmico
+      const svg = document.getElementById('s8-svg');
+      svg.innerHTML = '';
+
+      // desenha eixos
+      svg.innerHTML += `
+        <line x1="25" y1="10" x2="25" y2="150" stroke="#bbb" stroke-width="1.5" />
+        <line x1="25" y1="150" x2="270" y2="150" stroke="#bbb" stroke-width="1.5" />
+        <text x="27" y="18" font-size="9" fill="#777" font-weight="700">Termo (a)</text>
+        <text x="250" y="165" font-size="9" fill="#777" font-weight="700">Posição</text>
+      `;
+
+      // Desenha colunas dos 5 primeiros termos
+      for (let i = 1; i <= 5; i++) {
+        const val = a1 + (i - 1) * r;
+        const colWidth = 32;
+        const spacing = 14;
+        const x = 40 + (i - 1) * (colWidth + spacing);
+        
+        // Mapear valor para altura da barra
+        const maxHeight = 120;
+        let height = val * 8;
+        if (Math.abs(height) > maxHeight) {
+          height = height > 0 ? maxHeight : -maxHeight;
+        }
+
+        let y = 150 - height;
+        let fill = 'var(--primary-light)';
+        if (val < 0) {
+          fill = 'var(--accent)';
+          y = 150;
+          height = Math.abs(height);
+        }
+
+        svg.innerHTML += `
+          <rect x="${x}" y="${y}" width="${colWidth}" height="${height}" fill="${fill}" rx="3" class="pa-bar" />
+          <text x="${x + colWidth/2}" y="${val >= 0 ? y - 6 : 150 + height + 10}" text-anchor="middle" font-size="10.5" fill="${val >= 0 ? 'var(--primary)' : 'var(--accent)'}" font-weight="800">${val}</text>
+          <text x="${x + colWidth/2}" y="163" text-anchor="middle" font-size="9.5" fill="#555" font-weight="700">a_${i}</text>
+        `;
+      }
+    }
+
+    // --- SLIDE 10: SIMULADOR CONSTRUTOR DE PALITOS ---
+    function updateSlide10() {
+      const n = parseInt(document.getElementById('s10-slider-n').value);
+      document.getElementById('s10-n-val').innerText = n;
+
+      const palitos = 3 * n + 1;
+
+      document.getElementById('s10-calc-step1').innerText = `Para ${n} quadrado(s): ${palitos} palitos físicos construídos.`;
+      const step2 = document.getElementById('s10-calc-step2');
+      step2.innerHTML = `Fórmula geral: \\( P(${n}) = 3 \\cdot ${n} + 1 = ${palitos}\\text{ palitos} \\) ✓`;
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([step2]);
+      }
+
+      // Renderizar quadrados de palito no SVG
+      const svg = document.getElementById('s10-svg');
+      svg.innerHTML = '';
+
+      const sqSize = 25;
+      const startX = 35;
+      const y = 60;
+
+      for (let i = 0; i < n; i++) {
+        const x = startX + i * sqSize;
+
+        // Desenhar lados do quadrado como "palitos"
+        // Palito superior (horizontal)
+        svg.innerHTML += `
+          <line x1="${x + 2}" y1="${y}" x2="${x + sqSize - 2}" y2="${y}" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round" />
+          <circle cx="${x + sqSize - 2}" cy="${y}" r="2.8" fill="#F57F17" />
+        `;
+        // Palito inferior (horizontal)
+        svg.innerHTML += `
+          <line x1="${x + 2}" y1="${y + sqSize}" x2="${x + sqSize - 2}" y2="${y + sqSize}" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round" />
+          <circle cx="${x + sqSize - 2}" cy="${y + sqSize}" r="2.8" fill="#F57F17" />
+        `;
+        // Palito esquerdo (vertical, compartilhado se i > 0)
+        let strokeColor = i === 0 ? 'var(--accent)' : '#FBC02D';
+        svg.innerHTML += `
+          <line x1="${x}" y1="${y + 2}" x2="${x}" y2="${y + sqSize - 2}" stroke="${strokeColor}" stroke-width="3.5" stroke-linecap="round" />
+          <circle cx="${x}" cy="${y + sqSize - 2}" r="2.8" fill="#F57F17" />
+        `;
+        
+        // Palito direito (vertical, fechamento do último ou parede divisória)
+        if (i === n - 1) {
+          svg.innerHTML += `
+            <line x1="${x + sqSize}" y1="${y + 2}" x2="${x + sqSize}" y2="${y + sqSize - 2}" stroke="var(--accent)" stroke-width="3.5" stroke-linecap="round" />
+            <circle cx="${x + sqSize}" cy="${y + sqSize - 2}" r="2.8" fill="#F57F17" />
+          `;
+        }
+      }
+    }
+
+    let s10ResHidden = false;
+    function toggleS10Res() {
+      s10ResHidden = !s10ResHidden;
+      const box = document.getElementById('s10-calc-box');
+      const btn = document.getElementById('btn-toggle-s10-res');
+      if (s10ResHidden) {
+        box.style.display = 'none';
+        btn.innerHTML = '<i class="fa-solid fa-eye"></i> Mostrar Fórmulas';
+        btn.style.background = 'var(--primary-light)';
+        btn.style.borderColor = 'var(--primary-light)';
+      } else {
+        box.style.display = 'block';
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Ocultar Fórmulas';
+        btn.style.background = 'var(--info)';
+        btn.style.borderColor = 'var(--info)';
+      }
+    }
+
+    // --- SLIDE 12: SIMULADOR OTIMIZADOR DO HAMBÚRGUER ---
+    function updateSlide12() {
+      const pBase = parseFloat(document.getElementById('s12-slider-pbase').value);
+      const vBase = parseInt(document.getElementById('s12-slider-vbase').value);
+      const step = parseFloat(document.getElementById('s12-slider-step').value);
+      const drop = parseInt(document.getElementById('s12-slider-drop').value);
+
+      document.getElementById('s12-pbase-val').innerText = pBase.toFixed(2);
+      document.getElementById('s12-vbase-val').innerText = vBase;
+      document.getElementById('s12-step-val').innerText = step.toFixed(2);
+      document.getElementById('s12-drop-val').innerText = drop;
+
+      // Modelando R(x) = (pBase + step * x)(vBase - drop * x)
+      // R(x) = pBase * vBase - pBase * drop * x + vBase * step * x - step * drop * x^2
+      // R(x) = (-step * drop)x^2 + (vBase * step - pBase * drop)x + (pBase * vBase)
+      const a = -step * drop;
+      const b = vBase * step - pBase * drop;
+      const c = pBase * vBase;
+
+      const xv = -b / (2 * a);
+      const yv = a * xv * xv + b * xv + c;
+
+      const optPrice = pBase + step * xv;
+
+      const eqText = document.getElementById('s12-eq-text');
+      eqText.innerHTML = `Equação: \\( R(x) = ${a.toFixed(2)}x^2 + ${b.toFixed(1)}x + ${c} \\)`;
+
+      const xvText = document.getElementById('s12-xv-text');
+      xvText.innerHTML = `Vértice: \\( x_v = \\dfrac{-${b.toFixed(1)}}{2 \\cdot (${a.toFixed(2)})} = ${xv.toFixed(1)} \\) aumentos de preço`;
+
+      const optText = document.getElementById('s12-opt-text');
+      optText.innerHTML = `Preço Ideal = <strong>R$ ${optPrice.toFixed(2)}</strong> &nbsp;|&nbsp; Arrecadação Máxima = <strong>R$ ${yv.toFixed(2)}</strong>`;
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([eqText, xvText, optText]);
+      }
+
+      // Desenhar gráfico dinâmico
+      const svg = document.getElementById('s12-svg');
+      svg.innerHTML = '';
+
+      // desenha eixos cartesianos
+      svg.innerHTML += `
+        <line x1="25" y1="135" x2="280" y2="135" stroke="#bbb" stroke-width="1.5" />
+        <line x1="30" y1="10" x2="30" y2="145" stroke="#bbb" stroke-width="1.5" />
+        <text x="282" y="138" font-size="9" fill="#777" font-weight="700">Aumento</text>
+        <text x="32" y="15" font-size="9" fill="#777" font-weight="700">Faturamento (R$)</text>
+      `;
+
+      // Plotar a parábola R(x)
+      let d = '';
+      let first = true;
+      for (let xVal = 0; xVal <= 50; xVal += 1) {
+        const yVal = a * xVal * xVal + b * xVal + c;
+        const svgX = 30 + xVal * 4.8;
+        
+        // Mapear faturamento Y
+        const svgY = 135 - (yVal / 7000) * 110;
+
+        if (svgY >= 10 && svgY <= 145 && svgX <= 280) {
+          if (first) {
+            d += `M ${svgX} ${svgY}`;
+            first = false;
+          } else {
+            d += ` L ${svgX} ${svgY}`;
+          }
+        }
+      }
+
+      if (d) {
+        svg.innerHTML += `<path d="${d}" fill="none" stroke="var(--accent)" stroke-width="3" />`;
+      }
+
+      // Plota o Vértice
+      const svgXv = 30 + xv * 4.8;
+      const svgYv = 135 - (yv / 7000) * 110;
+      if (svgYv >= 10 && svgYv <= 145 && svgXv <= 280) {
+        svg.innerHTML += `
+          <circle cx="${svgXv}" cy="${svgYv}" r="6.5" fill="var(--warning)" />
+          <text x="${svgXv - 30}" y="${svgYv - 8}" font-size="9.5" fill="var(--warning)" font-weight="800">R$ ${yv.toFixed(0)} (x=${xv.toFixed(0)})</text>
+        `;
+      }
+    }
+
+    // --- SLIDE 14: QUIZ DE FIXAÇÃO ---
+    let quizDone = { 1: false, 2: false, 3: false, 4: false };
+    const quizGabs = { 1: 'b', 2: 'a', 3: 'a', 4: 'c' };
+
+    function setQuizQuestion(qNum) {
+      const slide14 = document.getElementById('slide-14');
+      if (!slide14) return;
+      slide14.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
+        tab.classList.toggle('active', idx + 1 === qNum);
+      });
+      slide14.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
+        q.classList.toggle('active', idx + 1 === qNum);
+      });
+    }
+
+    function checkAnswer(element, qNum, selectedOption) {
+      if (quizDone[qNum]) return;
+      quizDone[qNum] = true;
+
+      const correctAnswer = quizGabs[qNum];
+      const card = element.closest('.quiz-question-container');
+
+      card.querySelectorAll('.quiz-option').forEach(option => {
+        const optionLetter = option.innerText.trim().charAt(0).toLowerCase();
+        
+        if (optionLetter === correctAnswer) {
+          option.classList.add('correct');
+        } else if (optionLetter === selectedOption) {
+          option.classList.add('wrong');
+        }
+        option.classList.add('checked');
+      });
+
+      const btnReveal = document.getElementById(`btn-reveal-q1-q${qNum}`);
+      if (btnReveal) {
+        btnReveal.style.display = 'inline-flex';
+      }
+
+      saveProgress('quiz1', qNum, selectedOption, correctAnswer);
+
+      if (selectedOption === correctAnswer) {
+        triggerConfetti();
+      }
+    }
+
+    // --- SLIDE 15: SIMULADO ESPECIAL IFES ---
+    let quizDone2 = { 1: false, 2: false, 3: false };
+    const quizGabs2 = { 1: 'a', 2: 'c', 3: 'b' };
+
+    function setQuizQuestion2(qNum) {
+      const slide15 = document.getElementById('slide-15');
+      if (!slide15) return;
+      
+      slide15.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
+        tab.classList.toggle('active', idx + 1 === qNum);
+      });
+      
+      slide15.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
+        q.classList.toggle('active', idx + 1 === qNum);
+      });
+    }
+
+    function checkAnswer2(element, qNum, selectedOption) {
+      if (quizDone2[qNum]) return;
+      quizDone2[qNum] = true;
+
+      const correctAnswer = quizGabs2[qNum];
+      const card = element.closest('.quiz-question-container');
+
+      card.querySelectorAll('.quiz-option').forEach(option => {
+        const optionLetter = option.innerText.trim().charAt(0).toLowerCase();
+        
+        if (optionLetter === correctAnswer) {
+          option.classList.add('correct');
+        } else if (optionLetter === selectedOption) {
+          option.classList.add('wrong');
+        }
+        option.classList.add('checked');
+      });
+
+      const btnReveal = document.getElementById(`btn-reveal-q2-q${qNum}`);
+      if (btnReveal) {
+        btnReveal.style.display = 'inline-flex';
+      }
+
+      saveProgress('quiz2', qNum, selectedOption, correctAnswer);
+
+      if (selectedOption === correctAnswer) {
+        triggerConfetti();
+      }
+    }
+
+    // --- PERSISTÊNCIA DE PROGRESSO ---
+    function saveProgress(quizId, qNum, selectedOption, correctAnswer) {
+      const progress = JSON.parse(localStorage.getItem('aprovaifes_progress') || '{}');
+      if (!progress['aula4']) progress['aula4'] = {};
+      if (!progress['aula4'][quizId]) progress['aula4'][quizId] = {};
+      progress['aula4'][quizId][qNum] = {
+        selected: selectedOption,
+        correct: selectedOption === correctAnswer
+      };
+      localStorage.setItem('aprovaifes_progress', JSON.stringify(progress));
+    }
+
+    // Função de carregamento do progresso
+    function loadQuizProgress() {
+      const progress = JSON.parse(localStorage.getItem('aprovaifes_progress') || '{}');
+      const lessonProgress = progress['aula4'];
+      if (!lessonProgress) return;
+
+      // Restaura quiz 1
+      if (lessonProgress['quiz1']) {
+        for (const qNum in lessonProgress['quiz1']) {
+          const item = lessonProgress['quiz1'][qNum];
+          quizDone[qNum] = true;
+          const container = document.getElementById(`quiz-q${qNum}`);
+          if (container) {
+            container.querySelectorAll('.quiz-option').forEach(option => {
+              const letter = option.innerText.trim().charAt(0).toLowerCase();
+              if (letter === quizGabs[qNum]) {
+                option.classList.add('correct');
+              } else if (letter === item.selected) {
+                option.classList.add('wrong');
+              }
+              option.classList.add('checked');
+            });
+            const expl = container.querySelector('.quiz-explanation-drawer');
+            if (expl) expl.style.display = 'block';
+            
+            const btnReveal = document.getElementById(`btn-reveal-q1-q${qNum}`);
+            if (btnReveal) {
+              btnReveal.style.display = 'inline-flex';
+            }
+          }
+        }
+      }
+
+      // Restaura quiz 2
+      if (lessonProgress['quiz2']) {
+        for (const qNum in lessonProgress['quiz2']) {
+          const item = lessonProgress['quiz2'][qNum];
+          quizDone2[qNum] = true;
+          const container = document.getElementById(`quiz2-q${qNum}`) || document.getElementById(`quiz-2-q${qNum}`);
+          if (container) {
+            container.querySelectorAll('.quiz-option').forEach(option => {
+              const letter = option.innerText.trim().charAt(0).toLowerCase();
+              if (letter === quizGabs2[qNum]) {
+                option.classList.add('correct');
+              } else if (letter === item.selected) {
+                option.classList.add('wrong');
+              }
+              option.classList.add('checked');
+            });
+            const expl = container.querySelector('.quiz-explanation-drawer');
+            if (expl) expl.style.display = 'block';
+            
+            const btnReveal = document.getElementById(`btn-reveal-q2-q${qNum}`);
+            if (btnReveal) {
+              btnReveal.style.display = 'inline-flex';
+            }
+          }
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadQuizProgress);
+
+    function toggleRevealCalc(btn) {
+      const content = btn.nextElementSibling;
+      const isHidden = content.style.display === 'none' || content.style.display === '';
+      if (isHidden) {
+        content.style.display = 'block';
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Ocultar Explicação';
+        btn.style.background = 'var(--primary-light)';
+      } else {
+        content.style.display = 'none';
+        btn.innerHTML = '<i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada';
+        btn.style.background = 'var(--accent)';
+      }
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    // --- MOTOR DE CONFETES COM CANVAS ---
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let confettiList = [];
+    let animationFrameId = null;
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function triggerConfetti() {
+      resizeCanvas();
+      confettiList = [];
+      for (let i = 0; i < 120; i++) {
+        confettiList.push({
+          x: canvas.width / 2 + (Math.random() - 0.5) * 60,
+          y: canvas.height - 30,
+          vx: (Math.random() - 0.5) * 14,
+          vy: -Math.random() * 14 - 6,
+          color: ['#4CAF50', '#2196F3', '#FFEB3B', '#FF9800', '#E91E63', '#9C27B0'][Math.floor(Math.random() * 6)],
+          size: Math.random() * 8 + 5,
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 10
+        });
+      }
+      
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      animateConfetti();
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+
+      confettiList.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.35;
+        p.vx *= 0.98;
+        p.rotation += p.rotationSpeed;
+
+        if (p.y < canvas.height) {
+          alive = true;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        }
+      });
+
+      if (alive) {
+        animationFrameId = requestAnimationFrame(animateConfetti);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    // Inicialização
+    updatePresentationState();
+  </script>
+</body>
+</html>

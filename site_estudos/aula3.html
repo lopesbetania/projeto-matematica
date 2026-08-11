@@ -1,0 +1,2704 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AprovaIFES 2026 — Apresentação Interativa: Aula 3</title>
+  <!-- Google Fonts: Outfit e Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome para Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- MathJax para fórmulas matemáticas -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath:[['\\(','\\)']], displayMath:[['\\[','\\]']] },
+      options: { skipHtmlTags:['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+  <style>
+    /* --- CONFIGURAÇÃO GLOBAL --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1B5E20;
+      --primary-light: #2E7D32;
+      --primary-pale: #E8F5E9;
+      --accent: #C62828;
+      --accent-light: #FFCDD2;
+      --warning: #E65100;
+      --warning-light: #FFE0B2;
+      --info: #0D47A1;
+      --info-light: #E3F2FD;
+      --dark: #1A1A1A;
+      --gray-light: #F5F5F5;
+      --gray-medium: #E0E0E0;
+      --text: #333333;
+      --text-light: #666666;
+      --white: #ffffff;
+      --transition-speed: 0.4s;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f2010;
+      background: radial-gradient(circle at center, #1b381e 0%, #080f08 100%);
+      color: var(--white);
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    h1, h2, h3, .slide-title, .capa-title {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* --- LAYOUT DO APRESENTADOR --- */
+    .presentation-container {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* --- BARRA DE PROGRESSO --- */
+    .progress-bar-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 100;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary-light), var(--warning));
+      transition: width 0.3s ease;
+    }
+
+    /* --- SLIDES CONTÊINER --- */
+    .slides-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      height: 82vh;
+      min-height: 580px;
+      background: rgba(255, 255, 255, 0.98);
+      color: var(--dark);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- HEADER DO SLIDE --- */
+    .slide-header {
+      background: var(--primary-pale);
+      border-bottom: 2px solid var(--gray-medium);
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .slide-header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .slide-badge {
+      background: var(--primary);
+      color: var(--white);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .slide-title {
+      font-size: 20px;
+      color: var(--primary);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .slide-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--primary-light);
+    }
+
+    .slide-header-logo {
+      height: 35px;
+    }
+
+    /* --- CONTEÚDO DO SLIDE --- */
+    .slide-body {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .slide-pane {
+      display: none;
+      height: 100%;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .slide-pane.active {
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* --- FOOTER DO SLIDE --- */
+    .slide-footer {
+      background: var(--primary);
+      color: var(--white);
+      padding: 12px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .slide-number {
+      background: rgba(255,255,255,0.15);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    /* --- CONTROLES DE NAVEGAÇÃO --- */
+    .navigation-controls {
+      position: absolute;
+      bottom: 25px;
+      right: 45px;
+      display: flex;
+      gap: 12px;
+      z-index: 50;
+    }
+
+    .btn-nav {
+      background: var(--white);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav:hover {
+      background: var(--primary);
+      color: var(--white);
+      transform: scale(1.08);
+    }
+
+    .btn-nav:active {
+      transform: scale(0.95);
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: var(--gray-medium);
+      color: var(--text-light);
+    }
+
+    /* --- CONTROLES AUXILIARES --- */
+    .btn-auxiliary {
+      position: absolute;
+      bottom: 25px;
+      left: 45px;
+      display: flex;
+      gap: 12px;
+      z-index: 50;
+    }
+
+    .btn-aux {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid var(--gray-medium);
+      color: var(--dark);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: all 0.2s;
+    }
+
+    .btn-aux:hover {
+      background: var(--white);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    /* --- MENU LATERAL --- */
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 320px;
+      height: 100vh;
+      background: rgba(15, 32, 16, 0.95);
+      backdrop-filter: blur(10px);
+      border-right: 2px solid var(--primary-light);
+      z-index: 200;
+      padding: 30px 20px;
+      transition: left 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      color: var(--white);
+    }
+
+    .sidebar-menu.open {
+      left: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 15px;
+    }
+
+    .sidebar-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary-light);
+    }
+
+    .btn-close-sidebar {
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .menu-item-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .menu-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-item.active {
+      background: var(--primary-light);
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .menu-item-num {
+      width: 20px;
+      height: 20px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .menu-item.active .menu-item-num {
+      background: var(--white);
+      color: var(--primary-light);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 150;
+      display: none;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    /* --- SLIDE 1: CAPA --- */
+    .slide-capa {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 100%;
+      position: relative;
+    }
+
+    .capa-left {
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 30px;
+    }
+
+    .capa-right {
+      flex: 0.8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .capa-badge-ano {
+      background: var(--primary-light);
+      color: var(--white);
+      font-weight: 800;
+      font-size: 12px;
+      padding: 6px 16px;
+      border-radius: 30px;
+      display: inline-block;
+      align-self: flex-start;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    .capa-title-main {
+      font-size: 54px;
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .capa-title-sub {
+      font-size: 72px;
+      font-weight: 900;
+      line-height: 0.9;
+      color: var(--accent);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .capa-description {
+      font-size: 18px;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: 25px;
+      border-left: 4px solid var(--accent);
+      padding-left: 15px;
+    }
+
+    .capa-prof-info {
+      font-size: 14px;
+      color: var(--text-light);
+      font-weight: 500;
+      margin-top: 10px;
+    }
+
+    .capa-prof-info strong {
+      color: var(--primary);
+    }
+
+    .btn-start {
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      padding: 16px 36px;
+      border-radius: 30px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      align-self: flex-start;
+      margin-top: 10px;
+      box-shadow: 0 8px 20px rgba(27,94,32,0.3);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s;
+    }
+
+    .btn-start:hover {
+      background: var(--primary-light);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(27,94,32,0.4);
+    }
+
+    .capa-shapes-svg {
+      width: 100%;
+      max-width: 320px;
+      animation: floatShapes 8s ease-in-out infinite;
+    }
+
+    @keyframes floatShapes {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(4deg); }
+    }
+
+    /* --- LAYOUTS COMUNS DE SLIDE --- */
+    .slide-layout-split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 30px;
+      height: 100%;
+      align-items: center;
+    }
+
+    .slide-layout-full {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      height: 100%;
+    }
+
+    .panel-controls {
+      background: var(--gray-light);
+      border: 1px solid var(--gray-medium);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .panel-visual {
+      background: var(--white);
+      border: 2px dashed var(--gray-medium);
+      border-radius: 12px;
+      height: 100%;
+      min-height: 290px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
+    }
+
+    .slide-intro-txt {
+      font-size: 14.5px;
+      line-height: 1.65;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .slide-intro-txt strong {
+      color: var(--primary);
+    }
+
+    /* --- SIMULADORES E CONTROLES --- */
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .control-label span {
+      color: var(--accent);
+    }
+
+    .input-slider {
+      width: 100%;
+      height: 6px;
+      background: var(--gray-medium);
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .input-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .input-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .btn-toggle-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-toggle {
+      flex: 1;
+      background: var(--white);
+      border: 1.5px solid var(--gray-medium);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-toggle.active {
+      border-color: var(--primary);
+      background: var(--primary-pale);
+      color: var(--primary);
+    }
+
+    /* --- CAIXAS DE FÓRMULAS & RESOLUÇÕES --- */
+    .calculation-box {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 15px;
+      border-left: 4px solid var(--primary);
+      margin-top: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
+
+    .calc-step {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14.5px;
+      margin-bottom: 6px;
+      color: var(--text-light);
+    }
+
+    .calc-step strong {
+      color: var(--primary);
+    }
+
+    .calc-step.highlighted {
+      color: var(--accent);
+      font-size: 16.5px;
+      font-weight: 800;
+      border-top: 1px dashed var(--gray-medium);
+      padding-top: 6px;
+      margin-top: 6px;
+    }
+
+    .alert-box {
+      background: var(--accent-light);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #801010;
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .alert-box i {
+      font-size: 16px;
+      margin-top: 2px;
+    }
+
+    .dica-box {
+      background: var(--warning-light);
+      border-left: 4px solid var(--warning);
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #7f5000;
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .dica-box i {
+      font-size: 16px;
+      margin-top: 2px;
+      color: var(--warning);
+    }
+
+    .info-box {
+      background: var(--info-light);
+      border-left: 4px solid var(--info);
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #0b3c85;
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .info-box i {
+      font-size: 16px;
+      margin-top: 2px;
+      color: var(--info);
+    }
+
+    /* --- QUIZ INTERATIVO --- */
+    .quiz-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 1.5px solid var(--gray-medium);
+      padding-bottom: 10px;
+    }
+
+    .quiz-tab {
+      background: var(--white);
+      border: 1px solid var(--gray-medium);
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-tab.active {
+      background: var(--primary);
+      color: var(--white);
+      border-color: var(--primary);
+    }
+
+    .quiz-question-container {
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .quiz-question-container.active {
+      display: flex;
+    }
+
+    .quiz-text {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.6;
+      color: var(--dark);
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--white);
+      border: 1.5px solid var(--gray-medium);
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: all 0.2s;
+      color: var(--dark);
+    }
+
+    .quiz-option:hover:not(.checked) {
+      background: var(--primary-pale);
+      border-color: var(--primary-light);
+    }
+
+    .quiz-option-letter {
+      width: 24px;
+      height: 24px;
+      background: var(--primary-pale);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 11px;
+    }
+
+    .quiz-option.correct {
+      background: #C8E6C9 !important;
+      border-color: var(--primary-light) !important;
+      color: #1B5E20 !important;
+      font-weight: 700;
+    }
+
+    .quiz-option.correct .quiz-option-letter {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .quiz-option.wrong {
+      background: #FFCDD2 !important;
+      border-color: var(--accent) !important;
+      color: #C62828 !important;
+    }
+
+    .quiz-option.wrong .quiz-option-letter {
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    .quiz-explanation-drawer {
+      background: #F9F9F9;
+      border: 1.5px dashed var(--primary-light);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 15px;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .quiz-explanation-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-explanation-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    /* CONFETTI CANVAS */
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* --- BOTOES DE REVELACAO DE RESPOSTAS --- */
+    .btn-reveal-calc {
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-reveal-calc:hover {
+      background: #8e1010;
+      transform: scale(1.03);
+    }
+
+    /* --- ELEMENTOS DE GRID DE CARD --- */
+    .theory-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .theory-card {
+      background: var(--gray-light);
+      border: 1px solid var(--gray-medium);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .theory-card h3 {
+      font-size: 16px;
+      color: var(--primary);
+      margin-bottom: 8px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theory-card p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .theory-card .formula-box {
+      background: var(--primary-pale);
+      border: 1px solid var(--primary-light);
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin: 10px 0;
+      text-align: center;
+      font-family: 'Outfit';
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* --- ESTILO DOS EXERCÍCIOS --- */
+    .ex-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 5px;
+    }
+
+    .ex-item {
+      background: var(--gray-light);
+      border-left: 4px solid var(--primary-light);
+      border-radius: 8px;
+      padding: 12px 15px;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .ex-num {
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 3px;
+    }
+
+    /* --- ELEMENTOS VISUAIS DA MEDIANA/MODA --- */
+    .median-cell {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      background: var(--gray-medium);
+      color: var(--dark);
+      font-weight: 800;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      margin: 0 4px;
+      border: 1.5px solid transparent;
+    }
+
+    .median-cell.sorted {
+      background: var(--info-light);
+      color: var(--info);
+      border-color: #90caf9;
+    }
+
+    .median-cell.highlight-median {
+      background: var(--primary) !important;
+      color: var(--white) !important;
+      transform: scale(1.15);
+      box-shadow: 0 4px 10px rgba(27,94,32,0.3);
+    }
+
+    .median-cell.highlight-moda {
+      background: var(--warning) !important;
+      color: var(--white) !important;
+      transform: scale(1.1);
+      box-shadow: 0 4px 8px rgba(230,81,0,0.3);
+    }
+
+    /* --- PROBABILIDADE VISUAL --- */
+    .prob-space-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      margin: 10px 0;
+      border: 2px solid var(--primary);
+      border-radius: 8px;
+      padding: 10px;
+      background: #fafafa;
+    }
+
+    .prob-space-cell {
+      aspect-ratio: 1;
+      border-radius: 8px;
+      background: var(--gray-light);
+      border: 1.5px solid var(--gray-medium);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 16px;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .prob-space-cell.favorable {
+      background: var(--primary-pale);
+      border-color: var(--primary-light);
+      color: var(--primary);
+    }
+
+    /* URNA INTERATIVA */
+    .urn-container {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    .urn-box-graphic {
+      width: 140px;
+      height: 160px;
+      border: 4px solid #555;
+      border-top: none;
+      border-radius: 0 0 20px 20px;
+      position: relative;
+      background: rgba(255,255,255,0.7);
+      margin-bottom: 20px;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-end;
+      justify-content: center;
+      gap: 6px;
+      overflow: hidden;
+    }
+
+    .urn-ball {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: inline-block;
+      box-shadow: inset -2px -2px 6px rgba(0,0,0,0.3), 1px 1px 3px rgba(0,0,0,0.2);
+      animation: ballDrop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes ballDrop {
+      from { transform: translateY(-150px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .urn-ball.red { background: radial-gradient(circle at 30% 30%, #ff8a80, #c62828); }
+    .urn-ball.green { background: radial-gradient(circle at 30% 30%, #b9f6ca, #2e7d32); }
+    .urn-ball.blue { background: radial-gradient(circle at 30% 30%, #82b1ff, #0d47a1); }
+
+    .drawn-ball-display {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 3px solid #555;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      margin: 10px auto;
+      box-shadow: inset -4px -4px 10px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .drawn-ball-display.red { background: radial-gradient(circle at 30% 30%, #ff8a80, #c62828); color: white; }
+    .drawn-ball-display.green { background: radial-gradient(circle at 30% 30%, #b9f6ca, #2e7d32); color: white; }
+    .drawn-ball-display.blue { background: radial-gradient(circle at 30% 30%, #82b1ff, #0d47a1); color: white; }
+    .drawn-ball-display.empty { background: #eee; color: #aaa; border-style: dashed; }
+
+    /* --- BANNERS DE ANÚNCIO (MONETIZAÇÃO) --- */
+    .ad-banner-bottom {
+      width: 100%;
+      height: 95px;
+      background: rgba(8, 15, 8, 0.95);
+      border-top: 1px solid rgba(0, 230, 118, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .ad-banner-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.3);
+      font-weight: 700;
+    }
+
+    .ad-banner-placeholder {
+      width: 100%;
+      max-width: 728px;
+      height: 60px;
+      background: rgba(27, 56, 30, 0.2);
+      border: 1px dashed rgba(0, 230, 118, 0.25);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #b0bec5;
+      font-size: 12px;
+      transition: all 0.3s;
+    }
+
+    .ad-banner-placeholder:hover {
+      border-color: #00E676;
+      background: rgba(27, 56, 30, 0.3);
+    }
+
+    .ad-banner-placeholder i {
+      font-size: 18px;
+      color: #00E676;
+    }
+
+    /* Ocultar anúncio em telas pequenas/curtas para não prejudicar layout dos slides */
+    @media (max-height: 680px) {
+      .ad-banner-bottom {
+        display: none !important;
+      }
+    }
+
+    /* Ocultar anúncio ao entrar no modo tela cheia de apresentação */
+    :fullscreen ~ .ad-banner-bottom,
+    :-webkit-full-screen ~ .ad-banner-bottom,
+    :-moz-full-screen ~ .ad-banner-bottom,
+    .presentation-container:fullscreen ~ .ad-banner-bottom {
+      display: none !important;
+    }
+
+    /* Caso algum elemento interno fique fullscreen */
+    *:fullscreen .ad-banner-bottom {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE PROGRESSO -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="top-progress-bar"></div>
+  </div>
+
+  <!-- CONTAINER PRINCIPAL -->
+  <div class="presentation-container">
+    
+    <div class="slides-wrapper">
+      
+      <!-- HEADER DO SLIDE -->
+      <div class="slide-header" id="header-bar">
+        <div class="slide-header-left">
+          <span class="slide-badge" id="slide-badge-label">AULA 3</span>
+          <span class="slide-title" id="slide-header-title">ESTATÍSTICA, GRÁFICOS E PROBABILIDADE</span>
+        </div>
+        <div class="slide-header-right">
+          <span>PRÉ-IFES 2026</span>
+          <svg class="slide-header-logo" viewBox="0 0 48 65" width="22" height="30">
+            <circle cx="7" cy="7" r="7" fill="#C62828"/>
+            <rect x="17" y="0" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="34" y="0" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="0" y="17" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="17" y="17" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="0" y="34" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="17" y="34" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="34" y="34" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="0" y="51" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="17" y="51" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- CORPO DO SLIDE -->
+      <div class="slide-body">
+        
+        <!-- CANVAS PARA CONFETES -->
+        <canvas id="confetti-canvas"></canvas>
+
+        <!-- ==================== SLIDE 1: CAPA ==================== -->
+        <div class="slide-pane active" id="slide-1">
+          <div class="slide-capa">
+            <div class="capa-left">
+              <span class="capa-badge-ano">🏆 9º ANO • ENSINO FUNDAMENTAL</span>
+              <h1 class="capa-title-main">AprovaIFES</h1>
+              <h2 class="capa-title-sub">2026</h2>
+              <div class="capa-description">
+                Apresentação Interativa de Matemática<br>
+                <strong>Aula 3 — Estatística, Gráficos e Probabilidade</strong>
+              </div>
+              <button class="btn-start" onclick="nextSlide()">
+                Começar Aula <i class="fas fa-play"></i>
+              </button>
+              <div class="capa-prof-info">
+                Professora responsável: <strong>Betânia Almeida</strong>
+              </div>
+            </div>
+            <div class="capa-right">
+              <!-- Desenho dinâmico de gráficos e probabilidade flutuando -->
+              <svg class="capa-shapes-svg" viewBox="0 0 100 100">
+                <!-- Gráfico de barras -->
+                <g transform="translate(10, 35)">
+                  <rect x="0" y="25" width="10" height="25" fill="var(--primary)" rx="2" opacity="0.8"/>
+                  <rect x="14" y="10" width="10" height="40" fill="var(--warning)" rx="2" opacity="0.8"/>
+                  <rect x="28" y="18" width="10" height="32" fill="var(--info)" rx="2" opacity="0.8"/>
+                  <line x1="-5" y1="50" x2="42" y2="50" stroke="#333" stroke-width="2"/>
+                </g>
+                <!-- Dado de Probabilidade -->
+                <g transform="translate(55, 10)">
+                  <rect x="5" y="5" width="28" height="28" rx="6" fill="none" stroke="var(--accent)" stroke-width="2.2"/>
+                  <circle cx="12" cy="12" r="2.5" fill="var(--accent)"/>
+                  <circle cx="26" cy="12" r="2.5" fill="var(--accent)"/>
+                  <circle cx="19" cy="19" r="2.5" fill="var(--accent)"/>
+                  <circle cx="12" cy="26" r="2.5" fill="var(--accent)"/>
+                  <circle cx="26" cy="26" r="2.5" fill="var(--accent)"/>
+                </g>
+                <!-- Símbolos e Médias -->
+                <text x="60" y="80" font-family="'Outfit'" font-size="14" fill="var(--primary)" font-weight="900">P(A) = 3/6</text>
+                <text x="15" y="25" font-family="'Outfit'" font-size="18" fill="var(--accent)" font-weight="900">x̄</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 2: MÉDIA ARITMÉTICA SIMPLES ==================== -->
+        <div class="slide-pane" id="slide-2">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                A <strong>Média Aritmética Simples</strong> (\( \bar{x} \)) é uma medida de tendência central que resume um conjunto de valores em um único número representativo, indicando o ponto de equilíbrio dos dados.
+              </p>
+              <div style="font-size:13px; line-height:1.6; color:var(--text); margin-bottom:12px;">
+                É amplamente utilizada em nosso cotidiano: para calcular a média anual de notas escolares, a quantidade média de chuva em uma região, a média de gols por partida de um atleta ou a média salarial dos funcionários de um setor. Para calculá-la, basta somar todos os valores do conjunto e dividir pelo número total de elementos.
+              </div>
+              <div class="theory-card" style="background:#fff; margin-bottom:15px;">
+                <h3><i class="fa-solid fa-calculator"></i> Equação Geral</h3>
+                <p>Para um conjunto de \( n \) valores: \( x_1, x_2, \dots, x_n \):</p>
+                <div class="formula-box">\( \bar{x} = \dfrac{x_1 + x_2 + \dots + x_n}{n} = \dfrac{\sum x_i}{n} \)</div>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div class="calculation-box" style="margin-top:0;">
+                <div class="calc-step"><strong>Exemplo 1 (Notas de Provas):</strong></div>
+                <div class="calc-step">Um estudante obteve as notas \( 7{,}0 \); \( 8{,}0 \); \( 6{,}0 \) e \( 9{,}0 \) nas avaliações. Qual a média final?</div>
+                <div class="calc-step highlighted">\( \bar{x} = \dfrac{7 + 8 + 6 + 9}{4} = \dfrac{30}{4} = 7{,}5 \)</div>
+              </div>
+              <div class="calculation-box" style="margin-top:0;">
+                <div class="calc-step"><strong>Exemplo 2 (Idades de Colegas):</strong></div>
+                <div class="calc-step">A idade de cinco alunos da mesma turma é: 12, 13, 15, 12 e 13 anos. Qual a idade média?</div>
+                <div class="calc-step highlighted">\( \bar{x} = \dfrac{12 + 13 + 15 + 12 + 13}{5} = \dfrac{65}{5} = 13\text{ anos} \)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 3: MÉDIA ARITMÉTICA PONDERADA ==================== -->
+        <div class="slide-pane" id="slide-3">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                A <strong>Média Aritmética Ponderada</strong> (\( \bar{x}_p \)) é utilizada quando os valores do conjunto de dados possuem graus de importância ou frequências diferentes, representadas por <strong>pesos</strong>.
+              </p>
+              <div style="font-size:13px; line-height:1.6; color:var(--text); margin-bottom:12px;">
+                É o método padrão para determinar notas finais em instituições onde a prova trimestral tem um peso maior que as tarefas diárias, ou para encontrar o preço médio de vendas ponderado pela quantidade de itens comercializados a cada preço. O cálculo é feito multiplicando cada valor por seu respectivo peso, somando esses resultados e dividindo tudo pela soma total dos pesos.
+              </div>
+              <div class="theory-card" style="background:#fff; margin-bottom:15px;">
+                <h3><i class="fa-solid fa-weight-hanging"></i> Equação Geral</h3>
+                <p>Sendo \( x_1, x_2, \dots, x_k \) os valores e \( p_1, p_2, \dots, p_k \) os seus pesos:</p>
+                <div class="formula-box">\( \bar{x}_p = \dfrac{x_1 \cdot p_1 + x_2 \cdot p_2 + \dots + x_k \cdot p_k}{p_1 + p_2 + \dots + p_k} \)</div>
+              </div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div class="calculation-box" style="margin-top:0; padding:12px 15px;">
+                <div class="calc-step"><strong>Exemplo 1 (Avaliações Escolares):</strong></div>
+                <div class="calc-step">Notas \( 7{,}0 \); \( 8{,}0 \) e \( 6{,}0 \) com pesos \( 2 \); \( 3 \) e \( 5 \) respectivamente:</div>
+                <div class="calc-step highlighted">\( \bar{x}_p = \dfrac{7 \cdot 2 + 8 \cdot 3 + 6 \cdot 5}{2 + 3 + 5} = \dfrac{14 + 24 + 30}{10} = 6{,}8 \)</div>
+              </div>
+              <div class="calculation-box" style="margin-top:0; padding:12px 15px;">
+                <div class="calc-step"><strong>Exemplo 2 (Distribuição Salarial):</strong></div>
+                <div class="calc-step">Em uma loja, 3 funcionários recebem R$ 2.000,00 e 2 gerentes recebem R$ 3.000,00. Qual o salário médio? (Os pesos são as quantidades):</div>
+                <div class="calc-step highlighted">\( \bar{x}_p = \dfrac{2000 \cdot 3 + 3000 \cdot 2}{3 + 2} = \dfrac{12000}{5} = \text{R\$} 2.400{,}00 \)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 4: SIMULADOR INTERATIVO DE MÉDIA ==================== -->
+        <div class="slide-pane" id="slide-4">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Ajuste os controles deslizantes para alterar as notas e os pesos em tempo real e veja o impacto imediato na Média Ponderada:
+              </p>
+              
+              <div class="panel-controls">
+                <div class="control-group">
+                  <div class="control-label">Nota Prova 1: <span id="s4-n1-val">7.0</span></div>
+                  <input type="range" class="input-slider" id="s4-slider-n1" min="0" max="10" step="0.5" value="7" oninput="updateSlide4()">
+                  <div class="control-label" style="color:var(--text-light); font-size:10px;">Peso Prova 1: <span id="s4-p1-val" style="color:var(--accent);">2</span></div>
+                  <input type="range" class="input-slider" id="s4-slider-p1" min="1" max="5" step="1" value="2" oninput="updateSlide4()">
+                </div>
+                <hr style="border:none; border-top:1px solid var(--gray-medium);">
+                <div class="control-group">
+                  <div class="control-label">Nota Prova 2: <span id="s4-n2-val">8.0</span></div>
+                  <input type="range" class="input-slider" id="s4-slider-n2" min="0" max="10" step="0.5" value="8" oninput="updateSlide4()">
+                  <div class="control-label" style="color:var(--text-light); font-size:10px;">Peso Prova 2: <span id="s4-p2-val" style="color:var(--accent);">3</span></div>
+                  <input type="range" class="input-slider" id="s4-slider-p2" min="1" max="5" step="1" value="3" oninput="updateSlide4()">
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:15px; height:100%;">
+              <div class="panel-visual" style="flex:1;">
+                <div style="text-align:center; padding:15px;">
+                  <span style="font-size:11px; font-weight:800; color:var(--primary-light); text-transform:uppercase;">Média Calculada</span>
+                  <h3 style="font-family:'Outfit',sans-serif; color:var(--primary); font-size:38px; margin:5px 0;" id="s4-result-val">7.6</h3>
+                  <span class="slide-badge" id="s4-status-badge" style="background:var(--primary);">Aprovado</span>
+                </div>
+              </div>
+              <div class="calculation-box" style="margin-top:0;">
+                <div class="calc-step" id="s4-math-step">\( \bar{x}_p = \dfrac{7 \cdot 2 + 8 \cdot 3}{2 + 3} = \dfrac{14 + 24}{5} = 7{,}6 \)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 5: MODA E MEDIANA ==================== -->
+        <div class="slide-pane" id="slide-5">
+          <div class="slide-layout-full">
+            <p class="slide-intro-txt">
+              Embora a média seja muito útil, ela pode ser facilmente distorcida por valores extremos (muito altos ou muito baixos). Por esta razão, a Estatística emprega outras duas medidas fundamentais de tendência central: a <strong>Moda</strong> e a <strong>Mediana</strong>.
+            </p>
+            <div class="theory-grid-2">
+              <div class="theory-card">
+                <h3><i class="fa-solid fa-star"></i> Moda (Mo)</h3>
+                <p>
+                  Representa o valor de maior ocorrência, isto é, o elemento que apresenta a maior frequência absoluta dentro de um rol estatístico.
+                </p>
+                <div style="background:#FFF9C4; border-radius:6px; padding:8px; margin-top:8px; font-size:11.5px; border-left:3px solid var(--warning);">
+                  <strong>Exemplo prático:</strong> No conjunto {10, <strong>14</strong>, 12, <strong>14</strong>, 15, <strong>14</strong>, 11}, o elemento <strong>14</strong> repete-se 3 vezes (mais que qualquer outro). Portanto, <strong>Moda (Mo) = 14</strong>. Se nenhum se repetisse, seria amodal.
+                </div>
+              </div>
+              <div class="theory-card">
+                <h3><i class="fa-solid fa-arrows-left-right"></i> Mediana (Md)</h3>
+                <p>
+                  É o valor que ocupa a posição central de um conjunto ordenado, dividindo-o exatamente em duas partes iguais: 50% dos dados são menores ou iguais a ele, e 50% são maiores ou iguais.
+                </p>
+                <div class="alert-box" style="margin-top:8px; padding:6px 12px; font-size:11px;">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                  <div><strong>Etapa Obrigatória:</strong> Antes de encontrar o valor central, organize os dados em ordem crescente ou decrescente para construir o <strong>ROL</strong>!</div>
+                </div>
+              </div>
+            </div>
+            <div class="calculation-box" style="margin-top:5px; padding:12px 18px;">
+              <div class="calc-step"><strong>Exemplo com Quantidade Ímpar (n = 5):</strong> Encontre a mediana de <strong>{7, 2, 9, 1, 5}</strong>.</div>
+              <div class="calc-step">1. Ordenação dos termos em ROL: {1, 2, <strong>5</strong>, 7, 9}</div>
+              <div class="calc-step highlighted">2. O termo central é o 3º termo: Mediana (Md) = 5.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 6: MEDIANA COM TERMOS PARES ==================== -->
+        <div class="slide-pane" id="slide-6">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Quando trabalhamos com um conjunto cuja quantidade de termos (\( n \)) é <strong>par</strong>, não há um único termo posicionado exatamente no centro físico do ROL.
+              </p>
+              <div class="theory-card" style="background:#fff; margin-bottom:15px; font-size:12.5px;">
+                <h3><i class="fa-solid fa-divide"></i> Regra Operacional</h3>
+                <p>Identificamos as posições centrais dadas por \( \frac{n}{2} \) e \( \frac{n}{2} + 1 \). Em seguida, calculamos a <strong>média aritmética dos dois valores centrais</strong> correspondentes a essas posições.</p>
+              </div>
+              <div class="calculation-box" style="margin-top:0;">
+                <div class="calc-step"><strong>Exemplo Resolvido (n = 6):</strong></div>
+                <div class="calc-step">Calcule a mediana de: <strong>{12, 5, 20, 8, 15, 10}</strong>.</div>
+                <div class="calc-step">1. Ordenação (ROL): {5, 8, <strong>10</strong>, <strong>12</strong>, 15, 20}</div>
+                <div class="calc-step">2. Posições centrais: 3ª (\(6/2=3\)) e 4ª (\(3+1=4\)). Valores: 10 e 12.</div>
+                <div class="calc-step highlighted">3. Mediana (Md) = \( \dfrac{10 + 12}{2} = 11 \)</div>
+              </div>
+            </div>
+            <div class="panel-visual">
+              <div style="text-align:center; padding:15px; width:100%;">
+                <h4 style="font-size:14px; font-weight:800; color:var(--info); margin-bottom:15px;">Esquema Visual (Par)</h4>
+                
+                <div style="display:flex; justify-content:center; gap:8px; margin-bottom:15px;">
+                  <div class="median-cell sorted">5</div>
+                  <div class="median-cell sorted">8</div>
+                  <div class="median-cell sorted highlight-median">10</div>
+                  <div class="median-cell sorted highlight-median">12</div>
+                  <div class="median-cell sorted">15</div>
+                  <div class="median-cell sorted">20</div>
+                </div>
+
+                <div style="background:var(--info-light); border-radius:8px; padding:10px; font-size:12px; color:var(--info); font-weight:700; border-left:4px solid var(--info);">
+                  Cálculo da Mediana:<br>
+                  \( Md = \dfrac{10 + 12}{2} = 11 \)
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 7: SIMULADOR DE MEDIANA E MODA ==================== -->
+        <div class="slide-pane" id="slide-7">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Gere uma lista de números aleatórios. Clique em <strong>Ordenar Lista</strong> para ver o ROL e identificar a moda e mediana visualmente:
+              </p>
+              
+              <div class="panel-controls">
+                <button class="btn-toggle active" onclick="generateRandomList()"><i class="fa-solid fa-rotate"></i> Gerar Nova Lista</button>
+                <button class="btn-toggle" id="btn-sort-list" onclick="sortList()"><i class="fa-solid fa-arrow-down-1-9"></i> Ordenar Lista (ROL)</button>
+              </div>
+
+              <div class="theory-card" style="margin-top:15px; background:white; padding:12px;">
+                <p style="font-size:12px; line-height:1.5;">
+                  <span style="display:inline-block; width:12px; height:12px; background:var(--primary); border-radius:3px; vertical-align:middle; margin-right:5px;"></span> 
+                  <strong>Verde (Média/Central):</strong> Representa o(s) termo(s) central(is) da mediana.<br>
+                  <span style="display:inline-block; width:12px; height:12px; background:var(--warning); border-radius:3px; vertical-align:middle; margin-right:5px;"></span> 
+                  <strong>Laranja (Moda):</strong> Representa o valor mais frequente.
+                </p>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:15px; height:100%;">
+              <div class="panel-visual" style="flex:1; flex-direction:column; padding:20px;">
+                <div id="s7-list-container" style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-bottom:20px;">
+                  <!-- Gerado via JS -->
+                </div>
+                
+                <div style="width:100%; border-top:1px dashed var(--gray-medium); padding-top:12px;" id="s7-results-container">
+                  <div style="font-size:12px; font-weight:700; color:var(--text-light); display:flex; justify-content:space-between; margin-bottom:4px;">
+                    MEDIANA (Md): <strong id="s7-median-val" style="color:var(--primary); font-size:14px;">-</strong>
+                  </div>
+                  <div style="font-size:12px; font-weight:700; color:var(--text-light); display:flex; justify-content:space-between;">
+                    MODA (Mo): <strong id="s7-moda-val" style="color:var(--warning); font-size:14px;">-</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 8: LEITURA DE GRÁFICOS E TABELAS ==================== -->
+        <div class="slide-pane" id="slide-8">
+          <div class="slide-layout-full">
+            <p class="slide-intro-txt">
+              Nas provas do IFES, a Estatística quase sempre vem acompanhada da <strong>Leitura de Gráficos e Tabelas</strong>. Os tipos mais cobrados são:
+            </p>
+            <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap:15px;">
+              <div class="theory-card" style="padding:15px;">
+                <h3 style="font-size:14.5px;"><i class="fa-solid fa-chart-column"></i> Barras e Colunas</h3>
+                <p style="font-size:12px; margin-top:4px;">
+                  Servem para comparar categorias discretas. A altura da coluna é proporcional ao valor medido. Muito comum em votos por candidato ou vendas mensais.
+                </p>
+              </div>
+              <div class="theory-card" style="padding:15px;">
+                <h3><i class="fa-solid fa-chart-line"></i> Gráficos de Linhas</h3>
+                <p style="font-size:12px; margin-top:4px;">
+                  Ideais para demonstrar a evolução de uma variável contínua ao longo do tempo, revelando tendências de alta, queda ou estabilidade.
+                </p>
+              </div>
+              <div class="theory-card" style="padding:15px;">
+                <h3><i class="fa-solid fa-chart-pie"></i> Setores (Pizza)</h3>
+                <p style="font-size:12px; margin-top:4px;">
+                  Exibem a divisão proporcional de um todo em partes (porcentagens). Lembre-se: o total corresponde a 100% e a soma dos ângulos centrais é \( 360^\circ \).
+                </p>
+              </div>
+            </div>
+            
+            <div class="dica-box" style="margin-top:10px;">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              <div>
+                <strong>Dica Anti-Pegadinha do IFES:</strong> 
+                1. <strong>Leia sempre as legendas e títulos dos eixos.</strong> Às vezes, o eixo vertical não começa do zero ou está em milhares (ex: "1 = 1.000").
+                2. <strong>Proporções angulares:</strong> Para achar o ângulo central, multiplique a porcentagem por \( 3{,}6^\circ \). Exemplo: \( 15\% = 15 \times 3{,}6^\circ = 54^\circ \).
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 9: SIMULADOR DE GRÁFICO PROPORCIONAL ==================== -->
+        <div class="slide-pane" id="slide-9">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Muitas questões do IFES exigem dividir um total de moedas ou valores proporcionalmente às médias de pessoas. Ajuste os pesos abaixo para ver a divisão proporcional dinâmica:
+              </p>
+              
+              <div class="panel-controls">
+                <div class="control-group">
+                  <div class="control-label">Peso João: <span id="s9-w1-val" style="color:var(--primary-light);">7</span></div>
+                  <input type="range" class="input-slider" id="s9-slider-w1" min="1" max="10" value="7" oninput="updateSlide9()">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Peso Marcelo: <span id="s9-w2-val" style="color:var(--accent);">6</span></div>
+                  <input type="range" class="input-slider" id="s9-slider-w2" min="1" max="10" value="6" oninput="updateSlide9()">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Peso Vitor: <span id="s9-w3-val" style="color:var(--info);">8</span></div>
+                  <input type="range" class="input-slider" id="s9-slider-w3" min="1" max="10" value="8" oninput="updateSlide9()">
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:10px; height:100%;">
+              <div class="panel-visual" style="flex:1;">
+                <svg id="s9-svg-graph" width="280" height="190" viewBox="0 0 280 190">
+                  <!-- Renderizado via JS -->
+                </svg>
+              </div>
+              <div class="calculation-box" style="margin-top:0; padding:10px 15px;">
+                <div class="calc-step" style="font-size:12.5px;" id="s9-math-text">Total de 4.200 moedas repartidas proporcionalmente.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 10: INTRODUÇÃO À PROBABILIDADE ==================== -->
+        <div class="slide-pane" id="slide-10">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                A <strong>Probabilidade</strong> mede a chance matemática de um evento imprevisível ocorrer. Ela estuda os chamados experimentos aleatórios.
+              </p>
+              <div style="font-size:13px; line-height:1.6; color:var(--text); margin-bottom:10px;">
+                Dizemos que um experimento é aleatório quando, mesmo repetido sob condições idênticas, seu resultado final varia (como lançar um dado). A probabilidade teórica de um evento ocorrer baseia-se na razão dos casos favoráveis sobre os casos possíveis do espaço amostral.
+              </div>
+              <div class="theory-card" style="background:#fff; margin-bottom:12px;">
+                <h3><i class="fa-solid fa-percent"></i> Fórmula Fundamental</h3>
+                <div class="formula-box">\( P(\text{Evento}) = \dfrac{\text{Casos Favoráveis (o que quero)}}{\text{Casos Possíveis (o total)}} \)</div>
+              </div>
+            </div>
+            <div class="panel-visual">
+              <div style="padding:20px; width:100%; text-align:center;">
+                <h4 style="font-size:14px; font-weight:800; color:var(--primary); margin-bottom:15px;">Escala Probabilística</h4>
+                
+                <svg width="100%" height="80" viewBox="0 0 160 50">
+                  <line x1="10" y1="25" x2="150" y2="25" stroke="#aaa" stroke-width="2"/>
+                  <circle cx="10" cy="25" r="4.5" fill="var(--accent)"/>
+                  <circle cx="80" cy="25" r="4.5" fill="var(--warning)"/>
+                  <circle cx="150" cy="25" r="4.5" fill="var(--primary)"/>
+                  
+                  <text x="10" y="15" font-size="6" font-weight="bold" fill="var(--accent)" text-anchor="middle">Impossível (0%)</text>
+                  <text x="80" y="15" font-size="6" font-weight="bold" fill="var(--warning)" text-anchor="middle">50% (Equiprovável)</text>
+                  <text x="150" y="15" font-size="6" font-weight="bold" fill="var(--primary)" text-anchor="middle">Certo (100%)</text>
+                </svg>
+                
+                <div class="dica-box" style="font-size:11px; margin-top:10px; text-align:left;">
+                  <strong>Dica do IFES:</strong> A soma da probabilidade de um evento ocorrer com a de não ocorrer é sempre igual a 1 (ou 100%). Exemplo: Ganhar = 25% → Perder = 75%.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 11: ESPAÇO AMOSTRAL (DADOS E MOEDAS) ==================== -->
+        <div class="slide-pane" id="slide-11">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                O <strong>Espaço Amostral</strong> (\( S \)) é o conjunto de todos os resultados possíveis associados a um experimento aleatório.
+              </p>
+              <div class="theory-card" style="background:#fff; margin-bottom:10px; padding:10px 15px; font-size:12px;">
+                <h3><i class="fa-solid fa-dice"></i> Lançamento de um Dado</h3>
+                <p>O espaço amostral contém 6 números: \( S = \{1, 2, 3, 4, 5, 6\} \). Se o evento \( A \) for "sair número par" \( A = \{2, 4, 6\} \):</p>
+                <div class="formula-box" style="margin:5px 0; padding:4px; font-size:12px;">\( P(\text{par}) = \dfrac{3\text{ (favoráveis)}}{6\text{ (possíveis)}} = \dfrac{1}{2} = 50\% \)</div>
+              </div>
+              <div class="theory-card" style="background:#fff; margin-bottom:0; padding:10px 15px; font-size:12px;">
+                <h3><i class="fa-solid fa-coins"></i> Lançamento de Duas Moedas</h3>
+                <p>Resultados possíveis: \( S = \{(C,C), (C,K), (K,C), (K,K)\} \) (Total = 4). Se o evento \( B \) for "obter exatamente duas caras" \( B = \{(C,C)\} \):</p>
+                <div class="formula-box" style="margin:5px 0; padding:4px; font-size:12px;">\( P(\text{duas caras}) = \dfrac{1\text{ (favorável)}}{4\text{ (possíveis)}} = 25\% \)</div>
+              </div>
+            </div>
+            
+            <div class="panel-visual">
+              <div style="width:90%; padding:15px; text-align:center;">
+                <h4 style="font-size:13px; font-weight:800; color:var(--primary); margin-bottom:5px;">Visualização: Dado (6 Faces)</h4>
+                <div class="prob-space-grid">
+                  <div class="prob-space-cell">1<span style="font-size:8px; color:var(--accent);">Ímpar</span></div>
+                  <div class="prob-space-cell favorable">2<span style="font-size:8px; color:var(--primary);">Par</span></div>
+                  <div class="prob-space-cell">3<span style="font-size:8px; color:var(--accent);">Ímpar</span></div>
+                  <div class="prob-space-cell favorable">4<span style="font-size:8px; color:var(--primary);">Par</span></div>
+                  <div class="prob-space-cell">5<span style="font-size:8px; color:var(--accent);">Ímpar</span></div>
+                  <div class="prob-space-cell favorable">6<span style="font-size:8px; color:var(--primary);">Par</span></div>
+                </div>
+                <p style="font-size:12px; font-weight:700; color:var(--primary);">P(par) = 3/6 = 0,5 = 50%</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 12: SIMULADOR DE PROBABILIDADE (URNA) ==================== -->
+        <div class="slide-pane" id="slide-12">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Mude a quantidade de bolas de cada cor na urna. Veja a probabilidade teórica mudar em tempo real e realize sorteios para comparar:
+              </p>
+              
+              <div class="panel-controls">
+                <div class="control-group">
+                  <div class="control-label">Bolas Vermelhas: <span id="s12-red-val">2</span></div>
+                  <input type="range" class="input-slider" id="s12-slider-red" min="0" max="10" value="2" oninput="updateUrn()">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Bolas Verdes: <span id="s12-green-val">3</span></div>
+                  <input type="range" class="input-slider" id="s12-slider-green" min="0" max="10" value="3" oninput="updateUrn()">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Bolas Azuis: <span id="s12-blue-val">5</span></div>
+                  <input type="range" class="input-slider" id="s12-slider-blue" min="0" max="10" value="5" oninput="updateUrn()">
+                </div>
+                <div style="display:flex; flex-direction:column; gap:8px; margin-top:5px;">
+                  <button class="btn-toggle active" style="margin:0; width:100%;" onclick="drawBall()"><i class="fa-solid fa-hand-pointer"></i> Sortear Bola</button>
+                  <button class="btn-toggle" id="btn-toggle-s12-probs" style="margin:0; width:100%; background:var(--info); color:var(--white); border-color:var(--info);" onclick="toggleS12Probs()"><i class="fa-solid fa-eye-slash"></i> Ocultar Probabilidades</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:10px; height:100%;">
+              <div class="panel-visual" style="flex:1; display:grid; grid-template-columns:1fr 1fr; align-items:center; padding:10px;">
+                <div class="urn-container">
+                  <div class="urn-box-graphic" id="urn-balls-container">
+                    <!-- Gerado dinamicamente -->
+                  </div>
+                  <div style="font-size:10px; font-weight:800; color:var(--dark);">URNA DE BOLAS</div>
+                </div>
+                
+                <div style="text-align:center;">
+                  <div style="font-size:10px; font-weight:800; color:var(--text-light);">BOLA SORTEADA</div>
+                  <div class="drawn-ball-display empty" id="s12-drawn-display">?</div>
+                  <div style="font-size:11px; font-weight:700; color:var(--primary);" id="s12-drawn-text">Sorteie uma bola!</div>
+                </div>
+              </div>
+              
+              <div class="calculation-box" id="s12-calc-box" style="margin-top:0; font-size:11.5px; padding:10px 15px;">
+                <div class="calc-step" style="font-size:11.5px; margin-bottom:2px;" id="s12-calc-red">P(Vermelha) = 2/10 = 20.0%</div>
+                <div class="calc-step" style="font-size:11.5px; margin-bottom:2px;" id="s12-calc-green">P(Verde) = 3/10 = 30.0%</div>
+                <div class="calc-step" style="font-size:11.5px; margin-bottom:2px;" id="s12-calc-blue">P(Azul) = 5/10 = 50.0%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 13: EXERCÍCIOS DE FIXAÇÃO DA APOSTILA ==================== -->
+        <div class="slide-pane" id="slide-13">
+          <div class="slide-layout-full">
+            <p class="slide-intro-txt">
+              Aqui estão os principais <strong>Exercícios de Fixação da Aula 3</strong> presentes no material físico. Ideal para praticar e conferir resoluções na lousa:
+            </p>
+            <div class="ex-list">
+              <div class="ex-item">
+                <div class="ex-num">Exercício 1</div>
+                Calcule a média aritmética simples do conjunto de dados: <strong>{15, 20, 18, 22, 15}</strong>.
+              </div>
+              <div class="ex-item">
+                <div class="ex-num">Exercício 2</div>
+                Identifique a <strong>Moda</strong> no conjunto de valores: <strong>{10, 14, 12, 14, 15, 14, 11}</strong>.
+              </div>
+              <div class="ex-item">
+                <div class="ex-num">Exercício 3</div>
+                Calcule a <strong>Mediana</strong> do conjunto ordenado: <strong>{1, 2, 3, 5, 7, 8, 9}</strong>.
+              </div>
+              <div class="ex-item">
+                <div class="ex-num">Exercício 4</div>
+                Um aluno tirou notas <strong>7</strong>, <strong>8</strong> e <strong>6</strong> com pesos <strong>2</strong>, <strong>3</strong> e <strong>5</strong>. Calcule a média ponderada.
+              </div>
+              <div class="ex-item">
+                <div class="ex-num">Exercício 5</div>
+                Lançando-se uma moeda e um dado de 6 faces, qual a probabilidade de obter <strong>cara</strong> e <strong>número &gt; 4</strong>?
+              </div>
+              <div class="ex-item">
+                <div class="ex-num">Exercício 6</div>
+                Uma urna contém <strong>8 bolas vermelhas</strong> e <strong>12 azuis</strong>. Qual a probabilidade de retirar uma <strong>vermelha</strong>?
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 14: QUIZ DE FIXAÇÃO ==================== -->
+        <div class="slide-pane" id="slide-14">
+          <div>
+            <div class="quiz-tabs">
+              <div class="quiz-tab active" onclick="setQuizQuestion(1)">Questão 1</div>
+              <div class="quiz-tab" onclick="setQuizQuestion(2)">Questão 2</div>
+              <div class="quiz-tab" onclick="setQuizQuestion(3)">Questão 3</div>
+              <div class="quiz-tab" onclick="setQuizQuestion(4)">Questão 4</div>
+            </div>
+
+            <!-- QUESTAO 1 -->
+            <div class="quiz-question-container active" id="quiz-q1">
+              <div class="quiz-text">
+                <strong>Q1)</strong> Um grupo de cinco amigos mediu suas alturas: \( 1{,}60\text{m} \); \( 1{,}75\text{m} \); \( 1{,}68\text{m} \); \( 1{,}72\text{m} \) e \( 1{,}65\text{m} \). Qual é a altura média desse grupo?
+              </div>
+              <div class="quiz-options">
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'a')"><span class="quiz-option-letter">A</span> \( 1{,}66\text{m} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'b')"><span class="quiz-option-letter">B</span> \( 1{,}68\text{m} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'c')"><span class="quiz-option-letter">C</span> \( 1{,}70\text{m} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'd')"><span class="quiz-option-letter">D</span> \( 1{,}69\text{m} \)</div>
+              </div>
+              
+              <button class="btn-reveal-calc" id="btn-reveal-q1-q1" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" id="expl-q1" style="margin-top:5px;">
+                <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
+                <div class="quiz-explanation-text">
+                  A média é obtida somando as alturas e dividindo por 5: <br>
+                  \( \bar{x} = \dfrac{1{,}60 + 1{,}75 + 1{,}68 + 1{,}72 + 1{,}65}{5} = \dfrac{8{,}40}{5} = 1{,}68\text{m} \). <br>
+                  Logo, a alternativa correta é a <strong>B</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTAO 2 -->
+            <div class="quiz-question-container" id="quiz-q2">
+              <div class="quiz-text">
+                <strong>Q2)</strong> Determine a mediana dos seguintes tempos de corrida registrados por um atleta (em minutos): <strong>{12, 15, 10, 18, 14, 11}</strong>.
+              </div>
+              <div class="quiz-options">
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'a')"><span class="quiz-option-letter">A</span> 14 minutos</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'b')"><span class="quiz-option-letter">B</span> 13 minutos</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'c')"><span class="quiz-option-letter">C</span> 13,5 minutos</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'd')"><span class="quiz-option-letter">D</span> 12 minutos</div>
+              </div>
+              
+              <button class="btn-reveal-calc" id="btn-reveal-q1-q2" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" id="expl-q2" style="margin-top:5px;">
+                <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
+                <div class="quiz-explanation-text">
+                  Como a quantidade é par (\(n = 6\)), devemos primeiro ordenar os dados (ROL): <br>
+                  ROL: {10, 11, <strong>12</strong>, <strong>14</strong>, 15, 18}. <br>
+                  Os termos centrais são 12 e 14. Fazemos a média aritmética deles:<br>
+                  \( Md = \dfrac{12 + 14}{2} = 13\text{ minutos} \). A alternativa correta é a <strong>B</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTAO 3 -->
+            <div class="quiz-question-container" id="quiz-q3">
+              <div class="quiz-text">
+                <strong>Q3)</strong> Na média de um concurso, a prova de Português tem peso 3 e a de Matemática peso 2. Se um candidato tirou 6,0 em Português e 8,5 em Matemática, qual sua média ponderada final?
+              </div>
+              <div class="quiz-options">
+                <div class="quiz-option" onclick="checkAnswer(this, 3, 'a')"><span class="quiz-option-letter">A</span> 7,0</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 3, 'b')"><span class="quiz-option-letter">B</span> 7,25</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 3, 'c')"><span class="quiz-option-letter">C</span> 6,8</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 3, 'd')"><span class="quiz-option-letter">D</span> 7,5</div>
+              </div>
+              
+              <button class="btn-reveal-calc" id="btn-reveal-q1-q3" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" id="expl-q3" style="margin-top:5px;">
+                <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
+                <div class="quiz-explanation-text">
+                  Multiplicamos as notas por seus respectivos pesos e dividimos pela soma dos pesos (3+2=5):<br>
+                  \( \bar{x}_p = \dfrac{6 \cdot 3 + 8{,}5 \cdot 2}{3 + 2} = \dfrac{18 + 17}{5} = \dfrac{35}{5} = 7{,}0 \). <br>
+                  Portanto, a alternativa correta é a <strong>A</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTAO 4 -->
+            <div class="quiz-question-container" id="quiz-q4">
+              <div class="quiz-text">
+                <strong>Q4)</strong> Numa urna existem 8 bolas vermelhas, 7 verdes e 5 azuis. Retirando-se uma bola ao acaso, qual a probabilidade de ela ser VERDE?
+              </div>
+              <div class="quiz-options">
+                <div class="quiz-option" onclick="checkAnswer(this, 4, 'a')"><span class="quiz-option-letter">A</span> 35%</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 4, 'b')"><span class="quiz-option-letter">B</span> 40%</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 4, 'c')"><span class="quiz-option-letter">C</span> 25%</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 4, 'd')"><span class="quiz-option-letter">D</span> 30%</div>
+              </div>
+              
+              <button class="btn-reveal-calc" id="btn-reveal-q1-q4" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" id="expl-q4" style="margin-top:5px;">
+                <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
+                <div class="quiz-explanation-text">
+                  O número total de bolas (casos possíveis) é \( 8 + 7 + 5 = 20 \). <br>
+                  O número de casos favoráveis (bolas verdes) é \( 7 \).<br>
+                  \( P(\text{verde}) = \dfrac{7}{20} = \dfrac{35}{100} = 35\% \). A alternativa correta é a <strong>A</strong>.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 15: SIMULADO ESPECIAL IFES ==================== -->
+        <div class="slide-pane" id="slide-15">
+          <div>
+            <div class="quiz-tabs">
+              <div class="quiz-tab active" onclick="setQuizQuestion2(1)">Questão IFES 1</div>
+              <div class="quiz-tab" onclick="setQuizQuestion2(2)">Questão IFES 2</div>
+              <div class="quiz-tab" onclick="setQuizQuestion2(3)">Questão IFES 3</div>
+            </div>
+
+            <!-- QUESTÃO 1 (IFES 2022) -->
+            <div class="quiz-question-container active" id="quiz-2-q1">
+              <div class="quiz-text" style="font-size:13.5px;">
+                <strong>QUESTÃO 7 (IFES 2022) —</strong> Três estudantes receberam um total de 4.200 moedas virtuais em uma plataforma educacional. Essas moedas foram divididas de forma diretamente proporcional à média final que obtiveram em matemática: João obteve média 7; Marcelo obteve 6; e Vitor obteve 8. Quantas moedas virtuais João recebeu?
+              </div>
+              <div class="quiz-options" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="quiz-option" onclick="checkAnswer2(this, 1, 'a')"><span class="quiz-option-letter">A</span> 1.400 moedas</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 1, 'b')"><span class="quiz-option-letter">B</span> 1.200 moedas</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 1, 'c')"><span class="quiz-option-letter">C</span> 1.600 moedas</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 1, 'd')"><span class="quiz-option-letter">D</span> 1.500 moedas</div>
+              </div>
+              
+              <button class="btn-reveal-calc" id="btn-reveal-q2-q1" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" style="margin-top:5px;">
+                <div class="quiz-explanation-text">
+                  A divisão é diretamente proporcional. Primeiro somamos as notas dos três:<br>
+                  \( 7 + 6 + 8 = 21 \). <br>
+                  O valor de cada "cota" (k) de proporção é: <br>
+                  \( k = \dfrac{4200}{21} = 200\text{ moedas por ponto de média} \).<br>
+                  João obteve média 7, logo ele recebe:<br>
+                  \( \text{João} = 7 \cdot 200 = 1.400\text{ moedas} \). Resposta correta: <strong>A</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTÃO 2 (Elaborada) -->
+            <div class="quiz-question-container" id="quiz-2-q2">
+              <div class="quiz-text" style="font-size:13.5px;">
+                <strong>QUESTÃO 8 (Elaborada) —</strong> Uma urna contém bolas vermelhas (V) e brancas (E). Sabe-se que a probabilidade de retirar uma bola vermelha é dada por equações do total de bolas da urna. Se a soma do número de bolas vermelhas com as brancas é 10 (\(V + E = 10\)) e o triplo das vermelhas mais as brancas é 26 (\(3V + E = 26\)), quantas bolas brancas (E) existem na urna?
+              </div>
+              <div class="quiz-options" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="quiz-option" onclick="checkAnswer2(this, 2, 'a')"><span class="quiz-option-letter">A</span> 4 bolas</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 2, 'b')"><span class="quiz-option-letter">B</span> 3 bolas</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 2, 'c')"><span class="quiz-option-letter">C</span> 5 bolas</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 2, 'd')"><span class="quiz-option-letter">D</span> 2 bolas</div>
+              </div>
+
+              <button class="btn-reveal-calc" id="btn-reveal-q2-q2" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" style="margin-top:5px;">
+                <div class="quiz-explanation-text">
+                  Temos um sistema de equações lineares:<br>
+                  \( 1) \ V + E = 10 \)<br>
+                  \( 2) \ 3V + E = 26 \)<br>
+                  Subtraindo a equação (1) da equação (2):<br>
+                  \( (3V + E) - (V + E) = 26 - 10 \implies 2V = 16 \implies V = 8 \).<br>
+                  Substituindo na primeira equação:<br>
+                  \( 8 + E = 10 \implies E = 2\text{ bolas brancas} \). Resposta correta: <strong>D</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTÃO 3 (IFES Adaptada) -->
+            <div class="quiz-question-container" id="quiz-2-q3">
+              <div class="quiz-text" style="font-size:13.5px;">
+                <strong>QUESTÃO 9 (IFES Adaptada) —</strong> Em uma pesquisa sobre gastos familiares com lazer em um bairro, os resultados foram consolidados em um gráfico de setores. Se o setor correspondente a cinema representa um ângulo central de exatamente \( 54^\circ \), qual a porcentagem correspondente a cinema no orçamento dessas famílias?
+              </div>
+              <div class="quiz-options" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="quiz-option" onclick="checkAnswer2(this, 3, 'a')"><span class="quiz-option-letter">A</span> 12%</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 3, 'b')"><span class="quiz-option-letter">B</span> 15%</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 3, 'c')"><span class="quiz-option-letter">C</span> 18%</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 3, 'd')"><span class="quiz-option-letter">D</span> 20%</div>
+              </div>
+
+              <button class="btn-reveal-calc" id="btn-reveal-q2-q3" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" style="margin-top:5px;">
+                <div class="quiz-explanation-text">
+                  Em um gráfico de pizza, a circunferência completa de \( 360^\circ \) equivale a \( 100\% \).<br>
+                  Fazendo uma regra de três simples:<br>
+                  \( 360^\circ \longrightarrow 100\% \)<br>
+                  \( 54^\circ \longrightarrow x\% \)<br>
+                  \( x = \dfrac{54 \cdot 100}{360} = \dfrac{540}{36} = 15\% \). Resposta correta: <strong>B</strong>.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 16: CONCLUSÃO ==================== -->
+        <div class="slide-pane" id="slide-16">
+          <div class="slide-layout-full">
+            <h2 class="slide-title" style="color:var(--primary); font-size:24px; text-align:center;">🏁 Checklist de Revisão - Aula 3</h2>
+            <p class="slide-intro-txt" style="text-align:center;">
+              Parabéns por concluir a aula de hoje! Lembre-se desses tópicos principais para o IFES:
+            </p>
+            
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px; margin-top:5px;">
+              <div class="theory-card" style="border-left:4px solid var(--primary-light);">
+                <strong style="color:var(--primary); font-size:14px;"><i class="fa-solid fa-clipboard-list"></i> Estatística</strong>
+                <p style="font-size:12.5px; margin-top:4px;">
+                  - Média simples: somar tudo e dividir por \(n\).<br>
+                  - Média ponderada: multiplicar pelos pesos e dividir pela soma dos pesos.<br>
+                  - Mediana: colocar em ordem (ROL) primeiro! Se for par, calcular a média dos dois centrais.
+                </p>
+              </div>
+              <div class="theory-card" style="border-left:4px solid var(--accent);">
+                <strong style="color:var(--accent); font-size:14px;"><i class="fa-solid fa-percent"></i> Gráficos e Probabilidade</strong>
+                <p style="font-size:12.5px; margin-top:4px;">
+                  - Divisão proporcional: use a soma das partes para achar o coeficiente.<br>
+                  - Probabilidade: fração de favoráveis sobre o total de casos possíveis.<br>
+                  - Gráfico de pizza: a soma dos ângulos é \(360^\circ\) e representa \(100\%\).
+                </p>
+              </div>
+            </div>
+            
+            <div style="text-align:center; margin-top:15px; font-weight:800; color:var(--primary); font-size:16px;">
+              💪 "O resultado do seu esforço é o seu sucesso de amanhã!"
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER DO SLIDE -->
+      <div class="slide-footer">
+        <span>PRÉ-IFES 2026 — MATEMÁTICA</span>
+        <span class="slide-number" id="slide-num-label">Slide 1 de 16</span>
+      </div>
+
+    </div>
+
+    <!-- CONTROLES DE NAVEGAÇÃO -->
+    <div class="navigation-controls">
+      <button class="btn-nav" id="btn-prev" onclick="prevSlide()" title="Slide Anterior"><i class="fa-solid fa-arrow-left"></i></button>
+      <button class="btn-nav" id="btn-next" onclick="nextSlide()" title="Próximo Slide"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <!-- CONTROLES AUXILIARES -->
+    <div class="btn-auxiliary">
+      <a href="index.html" class="btn-aux" style="text-decoration: none;"><i class="fa-solid fa-home"></i> Voltar ao Portal</a>
+      <button class="btn-aux" onclick="toggleSidebar(true)"><i class="fa-solid fa-list"></i> Menu</button>
+      <button class="btn-aux" onclick="toggleFullscreen()"><i class="fa-solid fa-expand"></i> Tela Cheia</button>
+    </div>
+
+  </div>
+
+  <!-- AD BANNER FIXED BOTTOM -->
+  <div class="ad-banner-bottom">
+    <span class="ad-banner-label">Patrocínio</span>
+    <div class="ad-banner-placeholder">
+      <i class="fa-solid fa-rectangle-ad"></i>
+      <span>Google AdSense (Aula 3) - Recomendado: Banner Horizontal 728x90 / Adaptável</span>
+    </div>
+    <!-- Quando aprovado pelo AdSense, substitua a div.ad-banner-placeholder pelo código abaixo: -->
+    <!--
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+         data-ad-slot="AULA3_SLOT_ID"
+         data-ad-format="horizontal"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    -->
+  </div>
+
+  <!-- MENU LATERAL -->
+  <div class="overlay" id="overlay" onclick="toggleSidebar(false)"></div>
+  <div class="sidebar-menu" id="sidebar-menu">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Conteúdo da Aula 3</span>
+      <button class="btn-close-sidebar" onclick="toggleSidebar(false)"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <ul class="menu-item-list">
+      <li class="menu-item active" onclick="goToSlide(1)"><span class="menu-item-num">1</span> Capa: Aula 3</li>
+      <li class="menu-item" onclick="goToSlide(2)"><span class="menu-item-num">2</span> Média Simples</li>
+      <li class="menu-item" onclick="goToSlide(3)"><span class="menu-item-num">3</span> Média Ponderada</li>
+      <li class="menu-item" onclick="goToSlide(4)"><span class="menu-item-num">4</span> Simulador de Média</li>
+      <li class="menu-item" onclick="goToSlide(5)"><span class="menu-item-num">5</span> Moda e Mediana (Ímpar)</li>
+      <li class="menu-item" onclick="goToSlide(6)"><span class="menu-item-num">6</span> Mediana (Conjunto Par)</li>
+      <li class="menu-item" onclick="goToSlide(7)"><span class="menu-item-num">7</span> Simulador de Mediana</li>
+      <li class="menu-item" onclick="goToSlide(8)"><span class="menu-item-num">8</span> Gráficos e Tabelas</li>
+      <li class="menu-item" onclick="goToSlide(9)"><span class="menu-item-num">9</span> Gráfico Proporcional</li>
+      <li class="menu-item" onclick="goToSlide(10)"><span class="menu-item-num">10</span> Conceito de Probabilidade</li>
+      <li class="menu-item" onclick="goToSlide(11)"><span class="menu-item-num">11</span> Espaço Amostral</li>
+      <li class="menu-item" onclick="goToSlide(12)"><span class="menu-item-num">12</span> Simulador da Urna</li>
+      <li class="menu-item" onclick="goToSlide(13)"><span class="menu-item-num">13</span> Exercícios de Fixação</li>
+      <li class="menu-item" onclick="goToSlide(14)"><span class="menu-item-num">14</span> Quiz de Fixação</li>
+      <li class="menu-item" onclick="goToSlide(15)"><span class="menu-item-num">15</span> Simulado IFES</li>
+      <li class="menu-item" onclick="goToSlide(16)"><span class="menu-item-num">16</span> Conclusão da Aula</li>
+    </ul>
+  </div>
+
+  <script>
+    // --- GERENCIAMENTO DE SLIDES ---
+    let currentSlide = 1;
+    const totalSlides = 16;
+
+    const titles = {
+      1: "Estatística, Gráficos e Probabilidade",
+      2: "Média Aritmética Simples (Conceito)",
+      3: "Média Aritmética Ponderada (Pesos)",
+      4: "Simulador de Média Ponderada",
+      5: "Moda e Mediana (Conceito)",
+      6: "Mediana com Elementos Pares",
+      7: "Simulador Interativo de Mediana e Moda",
+      8: "Leitura de Gráficos e Tabelas (Tipos)",
+      9: "Simulador de Divisão Proporcional",
+      10: "Introdução à Probabilidade (Fórmula)",
+      11: "Espaço Amostral: Lançamento de Dado",
+      12: "Simulador de Probabilidade (Urna)",
+      13: "Exercícios de Fixação da Aula 3",
+      14: "Quiz de Fixação Interativo",
+      15: "Simulado Especial IFES",
+      16: "Conclusão & Checklist IFES"
+    };
+
+    function updatePresentationState() {
+      // Ativa o painel do slide correto
+      document.querySelectorAll('.slide-pane').forEach(pane => pane.classList.remove('active'));
+      document.getElementById(`slide-${currentSlide}`).classList.add('active');
+
+      // Atualiza o Header
+      document.getElementById('slide-header-title').innerText = titles[currentSlide];
+      document.getElementById('slide-badge-label').innerText = currentSlide === 1 ? "INÍCIO" : `SLIDE ${currentSlide}`;
+
+      // Atualiza o Footer
+      document.getElementById('slide-num-label').innerText = `Slide ${currentSlide} de ${totalSlides}`;
+
+      // Atualiza a Barra de Progresso superior
+      const percent = ((currentSlide - 1) / (totalSlides - 1)) * 100;
+      document.getElementById('top-progress-bar').style.width = `${percent}%`;
+
+      // Habilita/Desabilita botões
+      document.getElementById('btn-prev').disabled = currentSlide === 1;
+      document.getElementById('btn-next').disabled = currentSlide === totalSlides;
+
+      // Sincroniza itens do Menu Lateral
+      document.querySelectorAll('.menu-item').forEach((item, index) => {
+        if (index + 1 === currentSlide) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      // Roda o MathJax para processar as fórmulas dinâmicas do slide ativo
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+
+      // Reinicia/Atualiza os simuladores quando acessados
+      if (currentSlide === 4) updateSlide4();
+      if (currentSlide === 7) generateRandomList();
+      if (currentSlide === 9) updateSlide9();
+      if (currentSlide === 12) updateUrn();
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updatePresentationState();
+      }
+    }
+
+    // Reset de estado dos quizes ao avançar/voltar slides
+    function resetQuizzes() {
+      // Reset Quiz 1 (Slide 14)
+      quizDone = { 1: false, 2: false, 3: false, 4: false };
+      document.querySelectorAll('#slide-14 .quiz-option').forEach(opt => {
+        opt.className = 'quiz-option';
+      });
+      document.querySelectorAll('#slide-14 .quiz-explanation-drawer').forEach(drawer => {
+        drawer.style.display = 'none';
+      });
+      document.querySelectorAll('#slide-14 .btn-reveal-calc').forEach(btn => {
+        btn.style.display = 'none';
+        btn.innerHTML = '<i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada';
+        btn.style.background = 'var(--accent)';
+      });
+
+      // Reset Simulado (Slide 15)
+      quizDone2 = { 1: false, 2: false, 3: false };
+      document.querySelectorAll('#slide-15 .quiz-option').forEach(opt => {
+        opt.className = 'quiz-option';
+      });
+      document.querySelectorAll('#slide-15 .quiz-explanation-drawer').forEach(drawer => {
+        drawer.style.display = 'none';
+      });
+      document.querySelectorAll('#slide-15 .btn-reveal-calc').forEach(btn => {
+        btn.style.display = 'none';
+        btn.innerHTML = '<i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada';
+        btn.style.background = 'var(--accent)';
+      });
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updatePresentationState();
+      }
+    }
+
+    function goToSlide(num) {
+      currentSlide = num;
+      updatePresentationState();
+      toggleSidebar(false); // Fecha o menu lateral
+    }
+
+    // Navegação via teclado
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+
+    // --- CONTROLES DE TELA E MENU ---
+    function toggleSidebar(forceState) {
+      const menu = document.getElementById('sidebar-menu');
+      const overlay = document.getElementById('overlay');
+      
+      const isOpen = forceState !== undefined ? forceState : !menu.classList.contains('open');
+      
+      if (isOpen) {
+        menu.classList.add('open');
+        overlay.classList.add('active');
+      } else {
+        menu.classList.remove('open');
+        overlay.classList.remove('active');
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error(`Erro ao ativar Tela Cheia: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // --- SLIDE 4: SIMULADOR DE MÉDIA PONDERADA ---
+    function updateSlide4() {
+      const n1 = parseFloat(document.getElementById('s4-slider-n1').value);
+      const p1 = parseInt(document.getElementById('s4-slider-p1').value);
+      const n2 = parseFloat(document.getElementById('s4-slider-n2').value);
+      const p2 = parseInt(document.getElementById('s4-slider-p2').value);
+
+      document.getElementById('s4-n1-val').innerText = n1.toFixed(1);
+      document.getElementById('s4-p1-val').innerText = p1;
+      document.getElementById('s4-n2-val').innerText = n2.toFixed(1);
+      document.getElementById('s4-p2-val').innerText = p2;
+
+      const media = (n1 * p1 + n2 * p2) / (p1 + p2);
+      document.getElementById('s4-result-val').innerText = media.toFixed(1);
+
+      const statusBadge = document.getElementById('s4-status-badge');
+      if (media >= 7.0) {
+        statusBadge.innerText = 'Aprovado';
+        statusBadge.style.background = 'var(--primary)';
+      } else {
+        statusBadge.innerText = 'Recuperação';
+        statusBadge.style.background = 'var(--accent)';
+      }
+
+      const mathDiv = document.getElementById('s4-math-step');
+      const valStr = `\\( \\bar{x}_p = \\dfrac{${n1.toFixed(1)} \\cdot ${p1} + ${n2.toFixed(1)} \\cdot ${p2}}{${p1} + ${p2}} = \\dfrac{${(n1*p1).toFixed(1)} + ${(n2*p2).toFixed(1)}}{${p1+p2}} = ${media.toFixed(2)} \\)`;
+      mathDiv.innerHTML = valStr;
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([mathDiv]);
+      }
+    }
+
+    // --- SLIDE 7: SIMULADOR DE MEDIANA E MODA ---
+    let currentS7List = [];
+    let isSorted = false;
+
+    function generateRandomList() {
+      currentS7List = [];
+      const size = Math.random() > 0.5 ? 7 : 6; // Alterna entre quantidade par e ímpar
+      for (let i = 0; i < size; i++) {
+        currentS7List.push(Math.floor(Math.random() * 9) + 11); // Números entre 11 e 19
+      }
+      isSorted = false;
+      document.getElementById('btn-sort-list').classList.remove('active');
+      renderS7List();
+    }
+
+    function renderS7List() {
+      const container = document.getElementById('s7-list-container');
+      container.innerHTML = '';
+      
+      const counts = {};
+      let maxCount = 0;
+      let modes = [];
+      currentS7List.forEach(num => {
+        counts[num] = (counts[num] || 0) + 1;
+        if (counts[num] > maxCount) {
+          maxCount = counts[num];
+        }
+      });
+      
+      if (maxCount > 1) {
+        for (let num in counts) {
+          if (counts[num] === maxCount) {
+            modes.push(parseInt(num));
+          }
+        }
+      }
+
+      const n = currentS7List.length;
+      let medianIndices = [];
+      if (isSorted) {
+        if (n % 2 !== 0) {
+          medianIndices.push(Math.floor(n / 2));
+        } else {
+          medianIndices.push((n / 2) - 1);
+          medianIndices.push(n / 2);
+        }
+      }
+
+      currentS7List.forEach((num, idx) => {
+        const cell = document.createElement('div');
+        cell.className = 'median-cell';
+        cell.innerText = num;
+        
+        if (isSorted) {
+          cell.classList.add('sorted');
+          if (medianIndices.includes(idx)) {
+            cell.classList.add('highlight-median');
+          }
+        }
+        if (modes.includes(num)) {
+          if (!isSorted || !medianIndices.includes(idx)) {
+            cell.classList.add('highlight-moda');
+          }
+        }
+        
+        container.appendChild(cell);
+      });
+
+      // Calcula e exibe
+      const medianText = document.getElementById('s7-median-val');
+      const modaText = document.getElementById('s7-moda-val');
+
+      if (!isSorted) {
+        medianText.innerText = "Ordene a lista para ver a Mediana";
+        medianText.style.color = 'var(--text-light)';
+      } else {
+        const sortedArr = [...currentS7List].sort((a,b)=>a-b);
+        if (n % 2 !== 0) {
+          medianText.innerText = sortedArr[Math.floor(n / 2)].toString();
+        } else {
+          const mid1 = sortedArr[(n/2)-1];
+          const mid2 = sortedArr[n/2];
+          medianText.innerText = `(${mid1} + ${mid2}) / 2 = ${(mid1+mid2)/2}`;
+        }
+        medianText.style.color = 'var(--primary)';
+      }
+
+      if (modes.length === 0) {
+        modaText.innerText = 'Não existe (Amodal)';
+      } else {
+        modaText.innerText = modes.join(', ');
+      }
+    }
+
+    function sortList() {
+      if (isSorted) return;
+      currentS7List.sort((a, b) => a - b);
+      isSorted = true;
+      document.getElementById('btn-sort-list').classList.add('active');
+      renderS7List();
+    }
+
+    // --- SLIDE 9: SIMULADOR DE DIVISÃO PROPORCIONAL ---
+    function updateSlide9() {
+      const w1 = parseInt(document.getElementById('s9-slider-w1').value);
+      const w2 = parseInt(document.getElementById('s9-slider-w2').value);
+      const w3 = parseInt(document.getElementById('s9-slider-w3').value);
+
+      document.getElementById('s9-w1-val').innerText = w1;
+      document.getElementById('s9-w2-val').innerText = w2;
+      document.getElementById('s9-w3-val').innerText = w3;
+
+      const totalCoins = 4200;
+      const sumWeights = w1 + w2 + w3;
+      const val1 = Math.round((w1 / sumWeights) * totalCoins);
+      const val2 = Math.round((w2 / sumWeights) * totalCoins);
+      const val3 = totalCoins - val1 - val2; // Garante a soma perfeita de 4200
+
+      // Atualiza SVG
+      const svg = document.getElementById('s9-svg-graph');
+      const h1 = (val1 / totalCoins) * 220;
+      const h2 = (val2 / totalCoins) * 220;
+      const h3 = (val3 / totalCoins) * 220;
+
+      svg.innerHTML = `
+        <line x1="30" y1="10" x2="30" y2="150" stroke="#555" stroke-width="1.5" />
+        <line x1="30" y1="150" x2="260" y2="150" stroke="#555" stroke-width="1.5" />
+        
+        <rect x="50" y="${150 - h1}" width="40" height="${h1}" fill="var(--primary)" rx="4" />
+        <text x="70" y="${142 - h1}" text-anchor="middle" font-size="10.5" fill="var(--primary)" font-weight="800">${val1}</text>
+        <text x="70" y="165" text-anchor="middle" font-size="10" fill="#333" font-weight="700">João (${w1})</text>
+
+        <rect x="120" y="${150 - h2}" width="40" height="${h2}" fill="var(--accent)" rx="4" />
+        <text x="140" y="${142 - h2}" text-anchor="middle" font-size="10.5" fill="var(--accent)" font-weight="800">${val2}</text>
+        <text x="140" y="165" text-anchor="middle" font-size="10" fill="#333" font-weight="700">Marcelo (${w2})</text>
+
+        <rect x="190" y="${150 - h3}" width="40" height="${h3}" fill="var(--info)" rx="4" />
+        <text x="210" y="${142 - h3}" text-anchor="middle" font-size="10.5" fill="var(--info)" font-weight="800">${val3}</text>
+        <text x="210" y="165" text-anchor="middle" font-size="10" fill="#333" font-weight="700">Vitor (${w3})</text>
+      `;
+
+      // Texto matemático
+      const mathText = document.getElementById('s9-math-text');
+      mathText.innerHTML = `\\( \\text{Soma Pesos} = ${w1}+${w2}+${w3} = ${sumWeights} \\) &nbsp;|&nbsp; \\( \\text{Cota } k = \\dfrac{4200}{${sumWeights}} = ${ (totalCoins/sumWeights).toFixed(1) } \\)<br>João: \\( ${w1} \\times ${ (totalCoins/sumWeights).toFixed(1) } \\approx ${val1} \\text{ moedas} \\)`;
+      
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([mathText]);
+      }
+    }
+
+    // --- SLIDE 12: SIMULADOR DA URNA DE PROBABILIDADE ---
+    function updateUrn() {
+      const red = parseInt(document.getElementById('s12-slider-red').value);
+      const green = parseInt(document.getElementById('s12-slider-green').value);
+      const blue = parseInt(document.getElementById('s12-slider-blue').value);
+
+      document.getElementById('s12-red-val').innerText = red;
+      document.getElementById('s12-green-val').innerText = green;
+      document.getElementById('s12-blue-val').innerText = blue;
+
+      const total = red + green + blue;
+      const redProb = total > 0 ? ((red / total) * 100).toFixed(1) : "0.0";
+      const greenProb = total > 0 ? ((green / total) * 100).toFixed(1) : "0.0";
+      const blueProb = total > 0 ? ((blue / total) * 100).toFixed(1) : "0.0";
+
+      document.getElementById('s12-calc-red').innerHTML = `\\( P(\\text{Vermelha}) = \\dfrac{${red}}{${total}} = ${redProb}\\% \\)`;
+      document.getElementById('s12-calc-green').innerHTML = `\\( P(\\text{Verde}) = \\dfrac{${green}}{${total}} = ${greenProb}\\% \\)`;
+      document.getElementById('s12-calc-blue').innerHTML = `\\( P(\\text{Azul}) = \\dfrac{${blue}}{${total}} = ${blueProb}\\% \\)`;
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([
+          document.getElementById('s12-calc-red'),
+          document.getElementById('s12-calc-green'),
+          document.getElementById('s12-calc-blue')
+        ]);
+      }
+
+      // Preenche graficamente a urna
+      const urn = document.getElementById('urn-balls-container');
+      urn.innerHTML = '';
+      
+      for (let i = 0; i < red; i++) {
+        const ball = document.createElement('span');
+        ball.className = 'urn-ball red';
+        urn.appendChild(ball);
+      }
+      for (let i = 0; i < green; i++) {
+        const ball = document.createElement('span');
+        ball.className = 'urn-ball green';
+        urn.appendChild(ball);
+      }
+      for (let i = 0; i < blue; i++) {
+        const ball = document.createElement('span');
+        ball.className = 'urn-ball blue';
+        urn.appendChild(ball);
+      }
+    }
+
+    let s12ProbsHidden = false;
+    function toggleS12Probs() {
+      s12ProbsHidden = !s12ProbsHidden;
+      const box = document.getElementById('s12-calc-box');
+      const btn = document.getElementById('btn-toggle-s12-probs');
+      if (s12ProbsHidden) {
+        box.style.display = 'none';
+        btn.innerHTML = '<i class="fa-solid fa-eye"></i> Mostrar Probabilidades';
+        btn.style.background = 'var(--primary-light)';
+        btn.style.borderColor = 'var(--primary-light)';
+      } else {
+        box.style.display = 'block';
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Ocultar Probabilidades';
+        btn.style.background = 'var(--info)';
+        btn.style.borderColor = 'var(--info)';
+      }
+    }
+
+    function drawBall() {
+      const red = parseInt(document.getElementById('s12-slider-red').value);
+      const green = parseInt(document.getElementById('s12-slider-green').value);
+      const blue = parseInt(document.getElementById('s12-slider-blue').value);
+      const total = red + green + blue;
+
+      const display = document.getElementById('s12-drawn-display');
+      const text = document.getElementById('s12-drawn-text');
+
+      if (total === 0) {
+        display.className = 'drawn-ball-display empty';
+        display.innerText = '?';
+        text.innerText = 'Insira bolas na urna!';
+        text.style.color = 'var(--accent)';
+        return;
+      }
+
+      display.className = 'drawn-ball-display empty';
+      display.innerText = '...';
+      text.innerText = 'Sorteando...';
+      text.style.color = 'var(--text-light)';
+
+      setTimeout(() => {
+        const rand = Math.random() * total;
+        let drawnColor = '';
+
+        if (rand < red) {
+          drawnColor = 'red';
+        } else if (rand < red + green) {
+          drawnColor = 'green';
+        } else {
+          drawnColor = 'blue';
+        }
+
+        display.className = `drawn-ball-display ${drawnColor}`;
+        display.innerText = '';
+        
+        let colorName = drawnColor === 'red' ? 'Vermelha' : (drawnColor === 'green' ? 'Verde' : 'Azul');
+        text.innerText = `Sorteado: ${colorName}!`;
+        text.style.color = drawnColor === 'red' ? 'var(--accent)' : (drawnColor === 'green' ? 'var(--primary-light)' : 'var(--info)');
+        
+        // Efeito rápido de confetes se tirar a cor mais provável
+        const maxVal = Math.max(red, green, blue);
+        if ((drawnColor === 'red' && red === maxVal) || 
+            (drawnColor === 'green' && green === maxVal) || 
+            (drawnColor === 'blue' && blue === maxVal)) {
+          triggerConfetti();
+        }
+      }, 500);
+    }
+
+    // --- SLIDE 14: QUIZ DE FIXAÇÃO ---
+    let quizDone = { 1: false, 2: false, 3: false, 4: false };
+    const quizGabs = { 1: 'b', 2: 'b', 3: 'a', 4: 'a' };
+
+    function setQuizQuestion(qNum) {
+      const slide14 = document.getElementById('slide-14');
+      if (!slide14) return;
+      slide14.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
+        tab.classList.toggle('active', idx + 1 === qNum);
+      });
+      slide14.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
+        q.classList.toggle('active', idx + 1 === qNum);
+      });
+    }
+
+    function checkAnswer(element, qNum, selectedOption) {
+      if (quizDone[qNum]) return;
+      quizDone[qNum] = true;
+
+      const correctAnswer = quizGabs[qNum];
+      const card = element.closest('.quiz-question-container');
+
+      card.querySelectorAll('.quiz-option').forEach(option => {
+        const optionLetter = option.innerText.trim().charAt(0).toLowerCase();
+        
+        if (optionLetter === correctAnswer) {
+          option.classList.add('correct');
+        } else if (optionLetter === selectedOption) {
+          option.classList.add('wrong');
+        }
+        option.classList.add('checked');
+      });
+
+      const btnReveal = document.getElementById(`btn-reveal-q1-q${qNum}`);
+      if (btnReveal) {
+        btnReveal.style.display = 'inline-flex';
+      }
+
+      saveProgress('quiz1', qNum, selectedOption, correctAnswer);
+
+      if (selectedOption === correctAnswer) {
+        triggerConfetti();
+      }
+    }
+
+    // --- SLIDE 15: SIMULADO ESPECIAL IFES ---
+    let quizDone2 = { 1: false, 2: false, 3: false };
+    const quizGabs2 = { 1: 'a', 2: 'd', 3: 'b' };
+
+    function setQuizQuestion2(qNum) {
+      const slide15 = document.getElementById('slide-15'); // id corrigido para slide-15
+      if (!slide15) return;
+      
+      slide15.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
+        tab.classList.toggle('active', idx + 1 === qNum);
+      });
+      
+      slide15.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
+        q.classList.toggle('active', idx + 1 === qNum);
+      });
+    }
+
+    function checkAnswer2(element, qNum, selectedOption) {
+      if (quizDone2[qNum]) return;
+      quizDone2[qNum] = true;
+
+      const correctAnswer = quizGabs2[qNum];
+      const card = element.closest('.quiz-question-container');
+
+      card.querySelectorAll('.quiz-option').forEach(option => {
+        const optionLetter = option.innerText.trim().charAt(0).toLowerCase();
+        
+        if (optionLetter === correctAnswer) {
+          option.classList.add('correct');
+        } else if (optionLetter === selectedOption) {
+          option.classList.add('wrong');
+        }
+        option.classList.add('checked');
+      });
+
+      const btnReveal = document.getElementById(`btn-reveal-q2-q${qNum}`);
+      if (btnReveal) {
+        btnReveal.style.display = 'inline-flex';
+      }
+
+      saveProgress('quiz2', qNum, selectedOption, correctAnswer);
+
+      if (selectedOption === correctAnswer) {
+        triggerConfetti();
+      }
+    }
+
+    // --- PERSISTÊNCIA DE PROGRESSO ---
+    function saveProgress(quizId, qNum, selectedOption, correctAnswer) {
+      const progress = JSON.parse(localStorage.getItem('aprovaifes_progress') || '{}');
+      if (!progress['aula3']) progress['aula3'] = {};
+      if (!progress['aula3'][quizId]) progress['aula3'][quizId] = {};
+      progress['aula3'][quizId][qNum] = {
+        selected: selectedOption,
+        correct: selectedOption === correctAnswer
+      };
+      localStorage.setItem('aprovaifes_progress', JSON.stringify(progress));
+    }
+
+    function loadQuizProgress() {
+      const progress = JSON.parse(localStorage.getItem('aprovaifes_progress') || '{}');
+      const lessonProgress = progress['aula3'];
+      if (!lessonProgress) return;
+
+      // Restaura quiz 1
+      if (lessonProgress['quiz1']) {
+        for (const qNum in lessonProgress['quiz1']) {
+          const item = lessonProgress['quiz1'][qNum];
+          quizDone[qNum] = true;
+          const container = document.getElementById(`quiz-q${qNum}`);
+          if (container) {
+            container.querySelectorAll('.quiz-option').forEach(option => {
+              const letter = option.innerText.trim().charAt(0).toLowerCase();
+              if (letter === quizGabs[qNum]) {
+                option.classList.add('correct');
+              } else if (letter === item.selected) {
+                option.classList.add('wrong');
+              }
+              option.classList.add('checked');
+            });
+            const expl = container.querySelector('.quiz-explanation-drawer');
+            if (expl) expl.style.display = 'block';
+            
+            const btnReveal = document.getElementById(`btn-reveal-q1-q${qNum}`);
+            if (btnReveal) {
+              btnReveal.style.display = 'inline-flex';
+            }
+          }
+        }
+      }
+
+      // Restaura quiz 2
+      if (lessonProgress['quiz2']) {
+        for (const qNum in lessonProgress['quiz2']) {
+          const item = lessonProgress['quiz2'][qNum];
+          quizDone2[qNum] = true;
+          const container = document.getElementById(`quiz2-q${qNum}`) || document.getElementById(`quiz-2-q${qNum}`);
+          if (container) {
+            container.querySelectorAll('.quiz-option').forEach(option => {
+              const letter = option.innerText.trim().charAt(0).toLowerCase();
+              if (letter === quizGabs2[qNum]) {
+                option.classList.add('correct');
+              } else if (letter === item.selected) {
+                option.classList.add('wrong');
+              }
+              option.classList.add('checked');
+            });
+            const expl = container.querySelector('.quiz-explanation-drawer');
+            if (expl) expl.style.display = 'block';
+            
+            const btnReveal = document.getElementById(`btn-reveal-q2-q${qNum}`);
+            if (btnReveal) {
+              btnReveal.style.display = 'inline-flex';
+            }
+          }
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadQuizProgress);
+
+    function toggleRevealCalc(btn) {
+      const content = btn.nextElementSibling;
+      const isHidden = content.style.display === 'none' || content.style.display === '';
+      if (isHidden) {
+        content.style.display = 'block';
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Ocultar Explicação';
+        btn.style.background = 'var(--primary-light)';
+      } else {
+        content.style.display = 'none';
+        btn.innerHTML = '<i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada';
+        btn.style.background = 'var(--accent)';
+      }
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    // --- MOTOR DE CONFETES COM CANVAS ---
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let confettiList = [];
+    let animationFrameId = null;
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function triggerConfetti() {
+      resizeCanvas();
+      confettiList = [];
+      for (let i = 0; i < 120; i++) {
+        confettiList.push({
+          x: canvas.width / 2 + (Math.random() - 0.5) * 60,
+          y: canvas.height - 30,
+          vx: (Math.random() - 0.5) * 14,
+          vy: -Math.random() * 14 - 6,
+          color: ['#4CAF50', '#2196F3', '#FFEB3B', '#FF9800', '#E91E63', '#9C27B0'][Math.floor(Math.random() * 6)],
+          size: Math.random() * 8 + 5,
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 10
+        });
+      }
+      
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      animateConfetti();
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+
+      confettiList.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.35; // gravidade
+        p.vx *= 0.98; // atrito
+        p.rotation += p.rotationSpeed;
+
+        if (p.y < canvas.height) {
+          alive = true;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        }
+      });
+
+      if (alive) {
+        animationFrameId = requestAnimationFrame(animateConfetti);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    // Inicialização
+    updatePresentationState();
+  </script>
+</body>
+</html>

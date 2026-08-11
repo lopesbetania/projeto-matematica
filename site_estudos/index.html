@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portal do Aluno — AprovaIFES 2026</title>
+  <!-- Google Fonts: Outfit e Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome para Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google AdSense (Substitua ca-pub-XXXXXXXXXXXXXXXX pelo seu ID do AdSense) -->
+  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
+  
+  <style>
+    /* --- CONFIGURAÇÃO GLOBAL --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1B5E20;
+      --primary-light: #2E7D32;
+      --primary-pale: #E8F5E9;
+      --accent: #00E676;
+      --dark: #080f08;
+      --dark-card: rgba(27, 56, 30, 0.2);
+      --white: #ffffff;
+      --text-gray: #b0bec5;
+      --transition-speed: 0.3s;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark);
+      background: radial-gradient(circle at center, #112914 0%, #040904 100%);
+      color: var(--white);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, .brand-title {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* --- CONTAINER --- */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      width: 100%;
+      flex: 1;
+    }
+
+    /* --- HEADER / HERO --- */
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+      animation: fadeInDown 0.8s ease-out;
+    }
+
+    .brand-badge {
+      background: rgba(46, 125, 50, 0.25);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      padding: 6px 18px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      display: inline-block;
+      margin-bottom: 15px;
+      box-shadow: 0 0 15px rgba(0, 230, 118, 0.15);
+    }
+
+    .brand-title {
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, var(--white) 30%, #a5d6a7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 10px;
+    }
+
+    .brand-subtitle {
+      font-size: 18px;
+      color: var(--text-gray);
+      max-width: 600px;
+      margin: 0 auto;
+      font-weight: 300;
+    }
+
+    /* --- GRID --- */
+    .lessons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 30px;
+      animation: fadeInUp 0.8s ease-out 0.2s both;
+    }
+
+    /* --- CARDS --- */
+    .card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.07);
+      border-radius: 20px;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+      transition: all var(--transition-speed) cubic-bezier(0.25, 0.8, 0.25, 1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Glow effect on hover */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(800px circle at var(--x, 0px) var(--y, 0px), rgba(0, 230, 118, 0.06), transparent 40%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(0, 230, 118, 0.3);
+      box-shadow: 0 15px 40px rgba(0, 230, 118, 0.1);
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .card-badge {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--white);
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      letter-spacing: 0.5px;
+    }
+
+    .card-badge.highlight {
+      background: rgba(0, 230, 118, 0.15);
+      color: var(--accent);
+      border-color: rgba(0, 230, 118, 0.2);
+    }
+
+    .card-icon {
+      font-size: 36px;
+      color: var(--accent);
+      margin-bottom: 15px;
+      display: inline-block;
+      text-shadow: 0 0 15px rgba(0, 230, 118, 0.3);
+    }
+
+    .card-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: var(--white);
+      line-height: 1.3;
+    }
+
+    .card-description {
+      font-size: 14px;
+      color: var(--text-gray);
+      line-height: 1.6;
+      margin-bottom: 25px;
+      flex: 1;
+      font-weight: 300;
+    }
+
+    .card-topics {
+      margin-top: auto;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 15px;
+      margin-bottom: 25px;
+    }
+
+    .topics-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: #78909c;
+      letter-spacing: 1px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .topics-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .topic-tag {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      padding: 3px 8px;
+      font-size: 11.5px;
+      color: #b0bec5;
+    }
+
+    .card-btn {
+      background: linear-gradient(135deg, var(--primary-light), var(--primary));
+      color: var(--white);
+      border: none;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all var(--transition-speed);
+      box-shadow: 0 4px 15px rgba(27, 94, 32, 0.2);
+    }
+
+    .card-btn:hover {
+      background: linear-gradient(135deg, var(--accent), #00b0ff);
+      color: #040904;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(0, 230, 118, 0.3);
+    }
+
+    .card-btn:active {
+      transform: translateY(0);
+    }
+
+    .card-btn.btn-outline {
+      background: transparent;
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
+      color: var(--white);
+      box-shadow: none;
+    }
+
+    .card-btn.btn-outline:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(0, 230, 118, 0.05);
+      box-shadow: 0 0 15px rgba(0, 230, 118, 0.1);
+    }
+
+    /* --- FOOTER --- */
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      margin-top: 50px;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: #78909c;
+      font-size: 13px;
+      font-weight: 400;
+    }
+
+    footer strong {
+      color: var(--accent);
+    }
+
+    /* --- DASHBOARD DE PROGRESSO --- */
+    .dashboard-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      padding: 25px 30px;
+      margin-bottom: 40px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      animation: fadeInDown 0.8s ease-out 0.1s both;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 15px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .dashboard-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--white);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dashboard-title i {
+      color: var(--accent);
+    }
+
+    .dashboard-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 25px;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-gray);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--white);
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .stat-progress-bg {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .stat-progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(95deg, var(--primary-light), var(--accent));
+      border-radius: 4px;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .stat-progress-bar.correct-bar {
+      background: linear-gradient(95deg, #fbc02d, #f57f17);
+    }
+
+    .card-progress-container {
+      margin-top: auto;
+      margin-bottom: 20px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding-top: 15px;
+    }
+
+    .card-progress-indicator {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .card-progress-bar-mini-bg {
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin-top: 6px;
+      overflow: hidden;
+    }
+
+    .card-progress-bar-mini {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      border-radius: 2px;
+      transition: width 0.5s ease;
+    }
+
+    /* --- ANIMATIONS --- */
+    @keyframes fadeInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .brand-title {
+        font-size: 36px;
+      }
+      .brand-subtitle {
+        font-size: 15px;
+      }
+      .container {
+        padding: 20px 10px;
+      }
+    }
+
+    /* --- ANÚNCIOS / MONETIZAÇÃO --- */
+    .ad-container {
+      margin: 35px auto;
+      text-align: center;
+      width: 100%;
+      max-width: 970px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      position: relative;
+    }
+
+    .ad-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: rgba(255, 255, 255, 0.25);
+      font-weight: 700;
+    }
+
+    .ad-placeholder {
+      width: 100%;
+      min-height: 90px;
+      background: rgba(27, 56, 30, 0.15);
+      border: 1px dashed rgba(0, 230, 118, 0.25);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-gray);
+      font-size: 13px;
+      font-weight: 300;
+      transition: all var(--transition-speed);
+      padding: 15px;
+      gap: 6px;
+      box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .ad-placeholder:hover {
+      border-color: var(--accent);
+      background: rgba(27, 56, 30, 0.22);
+      box-shadow: 0 0 15px rgba(0, 230, 118, 0.1);
+    }
+
+    .ad-placeholder i {
+      font-size: 24px;
+      color: var(--accent);
+      opacity: 0.8;
+      text-shadow: 0 0 10px rgba(0, 230, 118, 0.3);
+    }
+
+    @media (max-width: 768px) {
+      .ad-placeholder {
+        min-height: 60px;
+        font-size: 11.5px;
+        padding: 10px;
+      }
+      .ad-placeholder i {
+        font-size: 18px;
+      }
+      .ad-container {
+        margin: 25px auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    
+    <!-- HEADER -->
+    <header>
+      <div class="brand-badge">PLANO DE ESTUDOS</div>
+      <h1 class="brand-title">AprovaIFES 2026</h1>
+      <p class="brand-subtitle">Módulo 2 — Matemática. Acesse as apresentações interativas, manipule os simuladores e resolva os simulados estilo IFES.</p>
+    </header>
+
+    <!-- ESPAÇO PARA ANÚNCIO: TOPO (LEADERBOARD) -->
+    <div class="ad-container">
+      <span class="ad-label">Patrocínio</span>
+      <div class="ad-placeholder">
+        <i class="fa-solid fa-rectangle-ad"></i>
+        <span>Google AdSense (Banner de Topo) - Recomendado: Leaderboard 728x90 / Mobile 320x50</span>
+      </div>
+      <!-- Quando aprovado pelo AdSense, substitua a div.ad-placeholder pelo código abaixo: -->
+      <!--
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="TOPO_SLOT_ID"
+           data-ad-format="horizontal"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      -->
+    </div>
+
+    <!-- DASHBOARD DE PROGRESSO -->
+    <div class="dashboard-card">
+      <div class="dashboard-header">
+        <h2 class="dashboard-title"><i class="fa-solid fa-graduation-cap"></i> Painel de Controle de Atividades</h2>
+        <button id="btn-reset-progress" class="card-btn btn-outline" style="padding: 8px 16px; font-size: 12.5px; border-radius: 10px; cursor: pointer; gap: 8px; margin-top: 0;">
+          <i class="fa-solid fa-rotate-left"></i> Resetar Progresso
+        </button>
+      </div>
+      <div class="dashboard-stats">
+        <div class="stat-item">
+          <span class="stat-label">Exercícios Resolvidos</span>
+          <span class="stat-value" id="stat-answered-val">0 / 30</span>
+          <div class="stat-progress-bg">
+            <div class="stat-progress-bar" id="stat-answered-bar"></div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Taxa de Acerto (Desempenho)</span>
+          <span class="stat-value" id="stat-correct-val">0%</span>
+          <div class="stat-progress-bg">
+            <div class="stat-progress-bar correct-bar" id="stat-correct-bar"></div>
+          </div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Aulas Concluídas</span>
+          <span class="stat-value" id="stat-lessons-val">0 / 4</span>
+          <div class="stat-progress-bg">
+            <div class="stat-progress-bar" id="stat-lessons-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ESPAÇO PARA ANÚNCIO: MEIO -->
+    <div class="ad-container" style="margin-bottom: 45px;">
+      <span class="ad-label">Patrocínio</span>
+      <div class="ad-placeholder">
+        <i class="fa-solid fa-rectangle-ad"></i>
+        <span>Google AdSense (Banner do Meio) - Recomendado: Banner Adaptável 728x90</span>
+      </div>
+      <!-- Quando aprovado pelo AdSense, substitua a div.ad-placeholder pelo código abaixo: -->
+      <!--
+      <ins class="adsbygoogle"
+           style="display:block"
+           data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+           data-ad-slot="MEIO_SLOT_ID"
+           data-ad-format="auto"
+           data-full-width-responsive="true"></ins>
+      <script>
+           (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+      -->
+    </div>
+
+    <!-- LESSONS GRID -->
+    <div class="lessons-grid">
+
+      <!-- CARD AULA 1 -->
+      <div class="card" data-lesson="aula1">
+        <span class="card-badge">AULA 1</span>
+        <div class="card-icon"><i class="fa-solid fa-ruler-combined"></i></div>
+        <h2 class="card-title">Área e Perímetro de Figuras Planas</h2>
+        <p class="card-description">Domine o cálculo das dimensões fundamentais de terrenos, figuras geométricas básicas e polígonos compostos.</p>
+        
+        <div class="card-topics">
+          <div class="topics-title">Tópicos principais</div>
+          <div class="topics-tags">
+            <span class="topic-tag">Quadrado e Retângulo</span>
+            <span class="topic-tag">Triângulo e Círculo</span>
+            <span class="topic-tag">Losango e Trapézio</span>
+            <span class="topic-tag">Figuras Compostas</span>
+          </div>
+        </div>
+
+        <div class="card-progress-container">
+          <div class="card-progress-indicator">
+            <i class="fa-regular fa-circle-play"></i> Não iniciada
+          </div>
+          <div class="card-progress-bar-mini-bg">
+            <div class="card-progress-bar-mini"></div>
+          </div>
+        </div>
+
+        <a href="aula1.html" class="card-btn">Estudar Aula 1 <i class="fa-solid fa-chevron-right"></i></a>
+      </div>
+
+      <!-- CARD AULA 2 -->
+      <div class="card" data-lesson="aula2">
+        <span class="card-badge">AULA 2</span>
+        <div class="card-icon"><i class="fa-solid fa-shapes"></i></div>
+        <h2 class="card-title">Volume, Potência, MDC/MMC & Pitágoras</h2>
+        <p class="card-description">Explore o espaço tridimensional (simulador 3D), as regras de fatoração simultânea de números e o Teorema de Pitágoras.</p>
+        
+        <div class="card-topics">
+          <div class="topics-title">Tópicos principais</div>
+          <div class="topics-tags">
+            <span class="topic-tag">Sólidos 3D: Cubo e Cilindro</span>
+            <span class="topic-tag">Propriedades de Potência</span>
+            <span class="topic-tag">Notação Científica</span>
+            <span class="topic-tag">MDC e MMC</span>
+            <span class="topic-tag">Teorema de Pitágoras</span>
+          </div>
+        </div>
+
+        <div class="card-progress-container">
+          <div class="card-progress-indicator">
+            <i class="fa-regular fa-circle-play"></i> Não iniciada
+          </div>
+          <div class="card-progress-bar-mini-bg">
+            <div class="card-progress-bar-mini"></div>
+          </div>
+        </div>
+
+        <a href="aula2.html" class="card-btn">Estudar Aula 2 <i class="fa-solid fa-chevron-right"></i></a>
+      </div>
+
+      <!-- CARD AULA 3 -->
+      <div class="card" data-lesson="aula3">
+        <span class="card-badge">AULA 3</span>
+        <div class="card-icon"><i class="fa-solid fa-chart-pie"></i></div>
+        <h2 class="card-title">Estatística, Gráficos e Probabilidade</h2>
+        <p class="card-description">Analise conjuntos de dados com médias aritméticas e ponderadas, interprete gráficos complexos e calcule chances exatas.</p>
+        
+        <div class="card-topics">
+          <div class="topics-title">Tópicos principais</div>
+          <div class="topics-tags">
+            <span class="topic-tag">Média Ponderada</span>
+            <span class="topic-tag">Leitura de Gráficos</span>
+            <span class="topic-tag">Cálculo de Probabilidade</span>
+            <span class="topic-tag">Divisão Proporcional</span>
+          </div>
+        </div>
+
+        <div class="card-progress-container">
+          <div class="card-progress-indicator">
+            <i class="fa-regular fa-circle-play"></i> Não iniciada
+          </div>
+          <div class="card-progress-bar-mini-bg">
+            <div class="card-progress-bar-mini"></div>
+          </div>
+        </div>
+
+        <a href="aula3.html" class="card-btn">Estudar Aula 3 <i class="fa-solid fa-chevron-right"></i></a>
+      </div>
+
+      <!-- CARD AULA 4 -->
+      <div class="card" data-lesson="aula4">
+        <span class="card-badge">AULA 4</span>
+        <div class="card-icon"><i class="fa-solid fa-calculator"></i></div>
+        <h2 class="card-title">Equações do 2º Grau e Sequências</h2>
+        <p class="card-description">Aprenda a encontrar raízes com a fórmula de Bhaskara, analisar problemas de otimização de máximos e mínimos e descobrir padrões lógicos.</p>
+        
+        <div class="card-topics">
+          <div class="topics-title">Tópicos principais</div>
+          <div class="topics-tags">
+            <span class="topic-tag">Fórmula de Bhaskara</span>
+            <span class="topic-tag">Análise do Delta (Δ)</span>
+            <span class="topic-tag">Máximos e Mínimos</span>
+            <span class="topic-tag">Padrões e Sequências</span>
+          </div>
+        </div>
+
+        <div class="card-progress-container">
+          <div class="card-progress-indicator">
+            <i class="fa-regular fa-circle-play"></i> Não iniciada
+          </div>
+          <div class="card-progress-bar-mini-bg">
+            <div class="card-progress-bar-mini"></div>
+          </div>
+        </div>
+
+        <a href="aula4.html" class="card-btn">Estudar Aula 4 <i class="fa-solid fa-chevron-right"></i></a>
+      </div>
+
+      <!-- CARD APOSTILA -->
+      <div class="card">
+        <span class="card-badge highlight">MATERIAL DIDÁTICO</span>
+        <div class="card-icon" style="color: var(--white); text-shadow: 0 0 15px rgba(255, 255, 255, 0.2);"><i class="fa-solid fa-book-open"></i></div>
+        <h2 class="card-title">Apostila Completa: Módulo 2</h2>
+        <p class="card-description">Material didático com toda a teoria integrada das aulas de 1 a 4, resoluções comentadas detalhadamente e exercícios adicionais.</p>
+        
+        <div class="card-topics">
+          <div class="topics-title">Conteúdo digital</div>
+          <div class="topics-tags">
+            <span class="topic-tag">Teoria e Fórmulas</span>
+            <span class="topic-tag">Exercícios Resolvidos</span>
+            <span class="topic-tag">Gabarito Integrado</span>
+          </div>
+        </div>
+        <a href="apostila.html" class="card-btn btn-outline" style="margin-top: auto;">Abrir Apostila Digital <i class="fa-solid fa-chevron-right"></i></a>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ESPAÇO PARA ANÚNCIO: RODAPÉ -->
+  <div class="ad-container" style="margin-top: 35px; margin-bottom: 15px;">
+    <span class="ad-label">Patrocínio</span>
+    <div class="ad-placeholder">
+      <i class="fa-solid fa-rectangle-ad"></i>
+      <span>Google AdSense (Banner do Rodapé) - Recomendado: Banner Horizontal Adaptável</span>
+    </div>
+    <!-- Quando aprovado pelo AdSense, substitua a div.ad-placeholder pelo código abaixo: -->
+    <!--
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+         data-ad-slot="RODAPE_SLOT_ID"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    -->
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>AprovaIFES 2026 • Desenvolvido para os alunos da <strong>Prof. Betânia Almeida</strong></p>
+  </footer>
+
+  <!-- CARD HOVER DYNAMIC GLOW SCRIPT -->
+  <script>
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--x', `${x}px`);
+        card.style.setProperty('--y', `${y}px`);
+      });
+    });
+
+    // --- CÁLCULO DE ESTATÍSTICAS E PROGRESSE ---
+    const quizQuestionCounts = {
+      'aula1': { quiz1: 5, quiz2: 4 },
+      'aula2': { quiz1: 4, quiz2: 3 },
+      'aula3': { quiz1: 4, quiz2: 3 },
+      'aula4': { quiz1: 4, quiz2: 3 }
+    };
+
+    function loadStats() {
+      const progress = JSON.parse(localStorage.getItem('aprovaifes_progress') || '{}');
+      
+      let totalQuestions = 0;
+      let answeredQuestions = 0;
+      let correctAnswers = 0;
+      let completedLessons = 0;
+
+      for (const lesson in quizQuestionCounts) {
+        let lessonTotal = 0;
+        let lessonAnswered = 0;
+        let lessonCorrect = 0;
+        
+        for (const quizId in quizQuestionCounts[lesson]) {
+          const count = quizQuestionCounts[lesson][quizId];
+          lessonTotal += count;
+          totalQuestions += count;
+          
+          if (progress[lesson] && progress[lesson][quizId]) {
+            for (let qNum = 1; qNum <= count; qNum++) {
+              const item = progress[lesson][quizId][qNum];
+              if (item) {
+                lessonAnswered++;
+                answeredQuestions++;
+                if (item.correct) {
+                  lessonCorrect++;
+                  correctAnswers++;
+                }
+              }
+            }
+          }
+        }
+        
+        const card = document.querySelector(`.card[data-lesson="${lesson}"]`);
+        if (card) {
+          const indicator = card.querySelector('.card-progress-indicator');
+          const miniBar = card.querySelector('.card-progress-bar-mini');
+          
+          if (lessonAnswered === 0) {
+            indicator.innerHTML = '<i class="fa-regular fa-circle-play" style="color: var(--text-gray);"></i> Não iniciada';
+            indicator.style.color = 'var(--text-gray)';
+            miniBar.style.width = '0%';
+          } else {
+            const percent = Math.round((lessonAnswered / lessonTotal) * 100);
+            if (lessonAnswered === lessonTotal) {
+              indicator.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--accent);"></i> Concluída (${lessonCorrect}/${lessonTotal} acertos)`;
+              indicator.style.color = 'var(--accent)';
+              completedLessons++;
+            } else {
+              indicator.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="color: #ffd54f;"></i> Em progresso (${lessonAnswered}/${lessonTotal} resolvidas)`;
+              indicator.style.color = '#ffd54f';
+            }
+            miniBar.style.width = `${percent}%`;
+          }
+        }
+      }
+
+      const progressPercent = totalQuestions > 0 ? Math.round((answeredQuestions / totalQuestions) * 100) : 0;
+      const successPercent = answeredQuestions > 0 ? Math.round((correctAnswers / answeredQuestions) * 100) : 0;
+
+      document.getElementById('stat-answered-val').innerText = `${answeredQuestions} / ${totalQuestions}`;
+      document.getElementById('stat-answered-bar').style.width = `${progressPercent}%`;
+
+      document.getElementById('stat-correct-val').innerText = `${successPercent}%`;
+      document.getElementById('stat-correct-bar').style.width = `${successPercent}%`;
+
+      document.getElementById('stat-lessons-val').innerText = `${completedLessons} / 4`;
+      document.getElementById('stat-lessons-bar').style.width = `${(completedLessons / 4) * 100}%`;
+    }
+
+    document.getElementById('btn-reset-progress').addEventListener('click', () => {
+      if (confirm('Tem certeza de que deseja resetar todo o seu progresso de estudos e atividades?')) {
+        localStorage.removeItem('aprovaifes_progress');
+        loadStats();
+      }
+    });
+
+    window.addEventListener('DOMContentLoaded', loadStats);
+  </script>
+</body>
+</html>

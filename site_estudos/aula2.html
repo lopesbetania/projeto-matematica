@@ -1,0 +1,2958 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AprovaIFES 2026 — Apresentação Interativa: Aula 2</title>
+  <!-- Google Fonts: Outfit e Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- FontAwesome para Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- MathJax para fórmulas matemáticas -->
+  <script>
+    window.MathJax = {
+      tex: { inlineMath:[['\\(','\\)']], displayMath:[['\\[','\\]']] },
+      options: { skipHtmlTags:['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+  <style>
+    /* --- CONFIGURAÇÃO GLOBAL --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1B5E20;
+      --primary-light: #2E7D32;
+      --primary-pale: #E8F5E9;
+      --accent: #C62828;
+      --accent-light: #FFCDD2;
+      --warning: #E65100;
+      --warning-light: #FFE0B2;
+      --dark: #1A1A1A;
+      --gray-light: #F5F5F5;
+      --gray-medium: #E0E0E0;
+      --text: #333333;
+      --text-light: #666666;
+      --white: #ffffff;
+      --transition-speed: 0.4s;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f2010;
+      background: radial-gradient(circle at center, #1b381e 0%, #080f08 100%);
+      color: var(--white);
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    h1, h2, h3, .slide-title, .capa-title {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* --- LAYOUT DO APRESENTADOR --- */
+    .presentation-container {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* --- BARRA DE PROGRESSO --- */
+    .progress-bar-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 100;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary-light), var(--warning));
+      transition: width 0.3s ease;
+    }
+
+    /* --- SLIDES CONTÊINER --- */
+    .slides-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      height: 82vh;
+      min-height: 580px;
+      background: rgba(255, 255, 255, 0.97);
+      color: var(--dark);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- HEADER DO SLIDE --- */
+    .slide-header {
+      background: var(--primary-pale);
+      border-bottom: 2px solid var(--gray-medium);
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .slide-header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .slide-badge {
+      background: var(--primary);
+      color: var(--white);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .slide-title {
+      font-size: 22px;
+      color: var(--primary);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .slide-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--primary-light);
+    }
+
+    .slide-header-logo {
+      height: 35px;
+    }
+
+    /* --- CONTEÚDO DO SLIDE --- */
+    .slide-body {
+      flex: 1;
+      padding: 30px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .slide-pane {
+      display: none;
+      height: 100%;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .slide-pane.active {
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* --- FOOTER DO SLIDE --- */
+    .slide-footer {
+      background: var(--primary);
+      color: var(--white);
+      padding: 12px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .slide-number {
+      background: rgba(255,255,255,0.15);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    /* --- CONTROLES DE NAVEGAÇÃO --- */
+    .navigation-controls {
+      position: absolute;
+      bottom: 25px;
+      right: 45px;
+      display: flex;
+      gap: 12px;
+      z-index: 50;
+    }
+
+    .btn-nav {
+      background: var(--white);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav:hover {
+      background: var(--primary);
+      color: var(--white);
+      transform: scale(1.08);
+    }
+
+    .btn-nav:active {
+      transform: scale(0.95);
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: var(--gray-medium);
+      color: var(--text-light);
+    }
+
+    /* --- CONTROLES AUXILIARES --- */
+    .btn-auxiliary {
+      position: absolute;
+      bottom: 25px;
+      left: 45px;
+      display: flex;
+      gap: 12px;
+      z-index: 50;
+    }
+
+    .btn-aux {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid var(--gray-medium);
+      color: var(--dark);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+      transition: all 0.2s;
+    }
+
+    .btn-aux:hover {
+      background: var(--white);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    }
+
+    /* --- MENU LATERAL --- */
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: -320px;
+      width: 320px;
+      height: 100vh;
+      background: rgba(15, 32, 16, 0.95);
+      backdrop-filter: blur(10px);
+      border-right: 2px solid var(--primary-light);
+      z-index: 200;
+      padding: 30px 20px;
+      transition: left 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      color: var(--white);
+    }
+
+    .sidebar-menu.open {
+      left: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 15px;
+    }
+
+    .sidebar-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary-light);
+    }
+
+    .btn-close-sidebar {
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .menu-item-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .menu-item {
+      padding: 10px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12.5px;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-item.active {
+      background: var(--primary-light);
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .menu-item-num {
+      width: 20px;
+      height: 20px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .menu-item.active .menu-item-num {
+      background: var(--white);
+      color: var(--primary-light);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.5);
+      z-index: 150;
+      display: none;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    /* --- SLIDE 1: CAPA --- */
+    .slide-capa {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 100%;
+      position: relative;
+    }
+
+    .capa-left {
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 30px;
+    }
+
+    .capa-right {
+      flex: 0.8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .capa-badge-ano {
+      background: var(--primary-light);
+      color: var(--white);
+      font-weight: 800;
+      font-size: 12px;
+      padding: 6px 16px;
+      border-radius: 30px;
+      display: inline-block;
+      align-self: flex-start;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    .capa-title-main {
+      font-size: 54px;
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .capa-title-sub {
+      font-size: 72px;
+      font-weight: 900;
+      line-height: 0.9;
+      color: var(--accent);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .capa-description {
+      font-size: 18px;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: 25px;
+      border-left: 4px solid var(--accent);
+      padding-left: 15px;
+    }
+
+    .capa-prof-info {
+      font-size: 14px;
+      color: var(--text-light);
+      font-weight: 500;
+      margin-top: 10px;
+    }
+
+    .capa-prof-info strong {
+      color: var(--primary);
+    }
+
+    .btn-start {
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      padding: 16px 36px;
+      border-radius: 30px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      align-self: flex-start;
+      margin-top: 10px;
+      box-shadow: 0 8px 20px rgba(27,94,32,0.3);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s;
+    }
+
+    .btn-start:hover {
+      background: var(--primary-light);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(27,94,32,0.4);
+    }
+
+    .capa-shapes-svg {
+      width: 100%;
+      max-width: 320px;
+      animation: floatShapes 8s ease-in-out infinite;
+    }
+
+    @keyframes floatShapes {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(4deg); }
+    }
+
+    /* --- LAYOUTS COMUNS DE SLIDE --- */
+    .slide-layout-split {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 30px;
+      height: 100%;
+      align-items: center;
+    }
+
+    .slide-layout-full {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      height: 100%;
+    }
+
+    .panel-controls {
+      background: var(--gray-light);
+      border: 1px solid var(--gray-medium);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .panel-visual {
+      background: var(--white);
+      border: 2px dashed var(--gray-medium);
+      border-radius: 12px;
+      height: 100%;
+      min-height: 290px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.02);
+    }
+
+    .slide-intro-txt {
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    /* --- SIMULADORES E CONTROLES --- */
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .control-label {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .control-label span {
+      color: var(--accent);
+    }
+
+    .input-slider {
+      width: 100%;
+      height: 6px;
+      background: var(--gray-medium);
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+
+    .input-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    .input-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .btn-toggle-group {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-toggle {
+      flex: 1;
+      background: var(--white);
+      border: 1.5px solid var(--gray-medium);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-toggle.active {
+      border-color: var(--primary);
+      background: var(--primary-pale);
+      color: var(--primary);
+    }
+
+    /* --- CAIXAS DE FÓRMULAS & RESOLUÇÕES --- */
+    .calculation-box {
+      background: var(--white);
+      border-radius: 8px;
+      padding: 15px;
+      border-left: 4px solid var(--primary);
+      margin-top: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
+
+    .calc-step {
+      font-family: 'Outfit', sans-serif;
+      font-size: 14px;
+      margin-bottom: 6px;
+      color: var(--text-light);
+    }
+
+    .calc-step strong {
+      color: var(--primary);
+    }
+
+    .calc-step.highlighted {
+      color: var(--accent);
+      font-size: 16px;
+      font-weight: 800;
+      border-top: 1px dashed var(--gray-medium);
+      padding-top: 6px;
+      margin-top: 6px;
+    }
+
+    .alert-box {
+      background: var(--accent-light);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #801010;
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .alert-box i {
+      font-size: 16px;
+      margin-top: 2px;
+    }
+
+    .dica-box {
+      background: var(--warning-light);
+      border-left: 4px solid var(--warning);
+      border-radius: 8px;
+      padding: 10px 15px;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #7f5000;
+      margin-top: 10px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    /* --- QUIZ INTERATIVO --- */
+    .quiz-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      border-bottom: 1.5px solid var(--gray-medium);
+      padding-bottom: 10px;
+    }
+
+    .quiz-tab {
+      background: var(--white);
+      border: 1px solid var(--gray-medium);
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-light);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-tab.active {
+      background: var(--primary);
+      color: var(--white);
+      border-color: var(--primary);
+    }
+
+    .quiz-question-container {
+      display: none;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .quiz-question-container.active {
+      display: flex;
+    }
+
+    .quiz-text {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.5;
+      color: var(--dark);
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--white);
+      border: 1.5px solid var(--gray-medium);
+      padding: 12px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13.5px;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .quiz-option:hover:not(.checked) {
+      background: var(--primary-pale);
+      border-color: var(--primary-light);
+    }
+
+    .quiz-option-letter {
+      width: 24px;
+      height: 24px;
+      background: var(--primary-pale);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 11px;
+    }
+
+    .quiz-option.correct {
+      background: #C8E6C9;
+      border-color: var(--primary-light);
+      color: #1B5E20;
+      font-weight: 700;
+    }
+
+    .quiz-option.correct .quiz-option-letter {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .quiz-option.wrong {
+      background: #FFCDD2;
+      border-color: var(--accent);
+      color: #C62828;
+    }
+
+    .quiz-option.wrong .quiz-option-letter {
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    .quiz-explanation-drawer {
+      background: #F9F9F9;
+      border: 1.5px dashed var(--primary-light);
+      border-radius: 8px;
+      padding: 15px;
+      margin-top: 15px;
+      display: none;
+      animation: slideDown 0.3s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .quiz-explanation-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--primary);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-explanation-text {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    /* CONFETTI CANVAS */
+    #confetti-canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* --- BOTOES DE REVELACAO DE RESPOSTAS --- */
+    .btn-reveal-calc {
+      background: var(--accent);
+      color: var(--white);
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-reveal-calc:hover {
+      background: #8e1010;
+      transform: scale(1.03);
+    }
+
+    /* --- DESIGN EXTRA DOS SIMULADORES AULA 2 --- */
+    .factoring-step {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--gray-medium);
+      padding: 6px 0;
+      font-size: 13.5px;
+    }
+
+    .factoring-step span.prime {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .pit-sq {
+      fill-opacity: 0.15;
+      stroke-width: 2;
+    }
+
+    /* --- ELEMENTOS DE GRID DE CARD --- */
+    .theory-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .theory-card {
+      background: var(--gray-light);
+      border: 1px solid var(--gray-medium);
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .theory-card h3 {
+      font-size: 16px;
+      color: var(--primary);
+      margin-bottom: 8px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theory-card p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text);
+    }
+
+    .theory-card .formula-box {
+      background: var(--primary-pale);
+      border: 1px solid var(--primary-light);
+      padding: 8px 12px;
+      border-radius: 6px;
+      margin: 10px 0;
+      text-align: center;
+      font-family: 'Outfit';
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* --- BANNERS DE ANÚNCIO (MONETIZAÇÃO) --- */
+    .ad-banner-bottom {
+      width: 100%;
+      height: 95px;
+      background: rgba(8, 15, 8, 0.95);
+      border-top: 1px solid rgba(0, 230, 118, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px;
+      z-index: 100;
+      flex-shrink: 0;
+    }
+
+    .ad-banner-label {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: rgba(255, 255, 255, 0.3);
+      font-weight: 700;
+    }
+
+    .ad-banner-placeholder {
+      width: 100%;
+      max-width: 728px;
+      height: 60px;
+      background: rgba(27, 56, 30, 0.2);
+      border: 1px dashed rgba(0, 230, 118, 0.25);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      color: #b0bec5;
+      font-size: 12px;
+      transition: all 0.3s;
+    }
+
+    .ad-banner-placeholder:hover {
+      border-color: #00E676;
+      background: rgba(27, 56, 30, 0.3);
+    }
+
+    .ad-banner-placeholder i {
+      font-size: 18px;
+      color: #00E676;
+    }
+
+    /* Ocultar anúncio em telas pequenas/curtas para não prejudicar layout dos slides */
+    @media (max-height: 680px) {
+      .ad-banner-bottom {
+        display: none !important;
+      }
+    }
+
+    /* Ocultar anúncio ao entrar no modo tela cheia de apresentação */
+    :fullscreen ~ .ad-banner-bottom,
+    :-webkit-full-screen ~ .ad-banner-bottom,
+    :-moz-full-screen ~ .ad-banner-bottom,
+    .presentation-container:fullscreen ~ .ad-banner-bottom {
+      display: none !important;
+    }
+
+    /* Caso algum elemento interno fique fullscreen */
+    *:fullscreen .ad-banner-bottom {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- BARRA DE PROGRESSO -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="top-progress-bar"></div>
+  </div>
+
+  <!-- CONTAINER PRINCIPAL -->
+  <div class="presentation-container">
+    
+    <div class="slides-wrapper">
+      
+      <!-- HEADER DO SLIDE -->
+      <div class="slide-header" id="header-bar">
+        <div class="slide-header-left">
+          <span class="slide-badge" id="slide-badge-label">AULA 2</span>
+          <span class="slide-title" id="slide-header-title">VOLUME, POTENCIAÇÃO, MDC/MMC E PITÁGORAS</span>
+        </div>
+        <div class="slide-header-right">
+          <span>PRÉ-IFES 2026</span>
+          <svg class="slide-header-logo" viewBox="0 0 48 65" width="22" height="30">
+            <circle cx="7" cy="7" r="7" fill="#C62828"/>
+            <rect x="17" y="0" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="34" y="0" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="0" y="17" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="17" y="17" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="0" y="34" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="17" y="34" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="34" y="34" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="0" y="51" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+            <rect x="17" y="51" width="14" height="14" rx="2.5" fill="#2E7D32"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- CORPO DO SLIDE -->
+      <div class="slide-body">
+        
+        <!-- CANVAS PARA CONFETES -->
+        <canvas id="confetti-canvas"></canvas>
+
+        <!-- ==================== SLIDE 1: CAPA ==================== -->
+        <div class="slide-pane active" id="slide-1">
+          <div class="slide-capa">
+            <div class="capa-left">
+              <span class="capa-badge-ano">🏆 9º ANO • ENSINO FUNDAMENTAL</span>
+              <h1 class="capa-title-main">AprovaIFES</h1>
+              <h2 class="capa-title-sub">2026</h2>
+              <div class="capa-description">
+                Apresentação Interativa de Matemática<br>
+                <strong>Aula 2 — Volume, Potenciação, MDC, MMC e Pitágoras</strong>
+              </div>
+              <button class="btn-start" onclick="nextSlide()">
+                Começar Aula <i class="fas fa-play"></i>
+              </button>
+              <div class="capa-prof-info">
+                Professora responsável: <strong>Betânia Almeida</strong>
+              </div>
+            </div>
+            <div class="capa-right">
+              <!-- Desenho dinâmico de figuras 3D flutuando -->
+              <svg class="capa-shapes-svg" viewBox="0 0 100 100">
+                <!-- Cubo Isometrico -->
+                <g transform="translate(15, 10)">
+                  <polygon points="15,20 35,10 55,20 55,40 35,50 15,40" fill="none" stroke="var(--primary-light)" stroke-width="1.8"/>
+                  <line x1="35" y1="10" x2="35" y2="50" stroke="var(--primary-light)" stroke-width="1.8"/>
+                  <line x1="15" y1="20" x2="35" y2="30" stroke="var(--primary-light)" stroke-width="1.8"/>
+                  <line x1="55" y1="20" x2="35" y2="30" stroke="var(--primary-light)" stroke-width="1.8"/>
+                </g>
+                <!-- Cilindro -->
+                <g transform="translate(50, 45)">
+                  <ellipse cx="25" cy="12" rx="18" ry="6" fill="none" stroke="var(--accent)" stroke-width="1.8"/>
+                  <line x1="7" y1="12" x2="7" y2="42" stroke="var(--accent)" stroke-width="1.8"/>
+                  <line x1="43" y1="12" x2="43" y2="42" stroke="var(--accent)" stroke-width="1.8"/>
+                  <path d="M 7,42 A 18,6 0 0 0 43,42" fill="none" stroke="var(--accent)" stroke-width="1.8"/>
+                  <path d="M 7,42 A 18,6 0 0 1 43,42" fill="none" stroke="var(--accent)" stroke-width="1.2" stroke-dasharray="3,3" opacity="0.6"/>
+                </g>
+                <!-- Símbolos matemáticos -->
+                <text x="15" y="80" font-family="'Outfit'" font-size="16" fill="var(--warning)" font-weight="900">a² + b² = c²</text>
+                <text x="65" y="25" font-family="'Outfit'" font-size="18" fill="var(--primary)" font-weight="900">2¹⁰</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 2: CONCEITO DE VOLUME (TEORIA) ==================== -->
+        <div class="slide-pane" id="slide-2">
+          <div class="slide-layout-full">
+            <p class="slide-intro-txt">
+              O <strong>Volume</strong> é a grandeza física que representa o espaço ocupado por um corpo tridimensional. Enquanto áreas tratam de superfícies bidimensionais (2D), volumes envolvem três dimensões: <strong>comprimento, largura e altura</strong>.
+            </p>
+            <div class="theory-grid-2">
+              <div class="theory-card">
+                <h3><i class="fa-solid fa-cube"></i> Dimensões Espaciais</h3>
+                <p>
+                  - <strong>1D (Unidimensional):</strong> Comprimento (ex: linha, perímetro). Medido em metros (\( \text{m} \)).<br>
+                  - <strong>2D (Bidimensional):</strong> Superfície plana (ex: quadrados, círculos). Medida em metros quadrados (\( \text{m}^2 \)).<br>
+                  - <strong>3D (Tridimensional):</strong> Sólido que ocupa lugar no espaço. Medido em metros cúbicos (\( \text{m}^3 \)).
+                </p>
+              </div>
+              <div class="theory-card">
+                <h3><i class="fa-solid fa-glass-water"></i> Relação com Capacidade</h3>
+                <p>
+                  Volume e capacidade medem coisas parecidas. Volume é o espaço físico, capacidade é o quanto de fluido (como água) cabe nele. <br>
+                  A conversão fundamental é:<br>
+                  <strong>\( 1\text{ decímetro cúbico (dm}^3) = 1\text{ Litro (L)} \)</strong>
+                </p>
+              </div>
+            </div>
+            <div class="dica-box" style="margin-top:10px;">
+              <i class="fa-solid fa-lightbulb"></i>
+              <div>
+                <strong>Atenção para o IFES:</strong> Unidades cúbicas variam de 1.000 em 1.000 (ex: \( 1\text{ m}^3 = 1.000\text{ dm}^3 = 1.000\text{ Litros} \)). Sempre guarde essa regra na memória!
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 3: VOLUME DO CUBO (TEORIA & EXEMPLOS) ==================== -->
+        <div class="slide-pane" id="slide-3">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                O <strong>Cubo</strong> é um prisma regular com 6 faces quadradas idênticas. Devido a isso, todas as suas arestas possuem o mesmo comprimento (\( a \)).
+              </p>
+              <div class="theory-card" style="background:#fff; margin-bottom:15px;">
+                <h3><i class="fa-solid fa-square-root-variable"></i> Equação Geral</h3>
+                <p>O volume do cubo é o produto das suas três dimensões idênticas:</p>
+                <div class="formula-box">\( V = a \cdot a \cdot a = a^3 \)</div>
+              </div>
+              <div class="calculation-box" style="margin-top:0;">
+                <div class="calc-step"><strong>Exemplo Resolvido:</strong></div>
+                <div class="calc-step">Calcule o volume de um reservatório cúbico com aresta \( a = 5\text{ cm} \).</div>
+                <div class="calc-step highlighted">\( V = 5^3 = 5 \times 5 \times 5 = 125\text{ cm}^3 \)</div>
+                <div class="calc-step" style="font-size:11px; margin-top:4px;">Como \( 1\text{ cm}^3 = 1\text{ mL} \), a capacidade é de \( 125\text{ mL} \) ou \( 0,125\text{ Litros} \).</div>
+              </div>
+            </div>
+            <div class="panel-visual">
+              <svg width="220" height="220" viewBox="0 0 120 100">
+                <!-- Desenho 3D de cubo estático detalhado e enquadrado -->
+                <polygon points="32.5,42.5 67.5,42.5 67.5,77.5 32.5,77.5" fill="#E8F5E9" stroke="var(--primary)" stroke-width="1.5"/>
+                <polygon points="32.5,42.5 52.5,22.5 87.5,22.5 67.5,42.5" fill="#C8E6C9" stroke="var(--primary)" stroke-width="1.5"/>
+                <polygon points="67.5,42.5 87.5,22.5 87.5,57.5 67.5,77.5" fill="#A5D6A7" stroke="var(--primary)" stroke-width="1.5"/>
+                <text x="50" y="85.5" font-size="5" fill="var(--primary)" font-weight="800" text-anchor="middle">aresta a</text>
+                <text x="29.5" y="62.5" font-size="5" fill="var(--accent)" font-weight="800" text-anchor="end">aresta a</text>
+                <text x="90" y="52.5" font-size="5" fill="var(--primary-light)" font-weight="800" text-anchor="start">aresta a</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 4: VOLUME DO PARALELEPÍPEDO ==================== -->
+        <div class="slide-pane" id="slide-4">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                O <strong>Paralelepípedo Retângulo</strong> é um bloco tridimensional cujas seis faces são retângulos. Ele é caracterizado por três dimensões independentes: <strong>comprimento (a), largura (b) e altura (c)</strong>.
+              </p>
+              <div class="theory-card" style="background:#fff; margin-bottom:15px;">
+                <h3><i class="fa-solid fa-ruler-combined"></i> Equação Geral</h3>
+                <p>O volume é dado pela multiplicação de suas três dimensões:</p>
+                <div class="formula-box">\( V = a \cdot b \cdot c \)</div>
+              </div>
+              <div class="calculation-box" style="margin-top:0;">
+                <div class="calc-step"><strong>Exemplo Resolvido:</strong></div>
+                <div class="calc-step">Uma caixa de papelão mede \( 30\text{ cm} \) de comprimento, \( 20\text{ cm} \) de largura e \( 15\text{ cm} \) de altura. Qual seu volume em litros?</div>
+                <div class="calc-step highlighted">\( V = 30 \times 20 \times 15 = 9.000\text{ cm}^3 \)</div>
+                <div class="calc-step" style="font-size:12px; margin-top:4px;">\( 9.000\text{ cm}^3 \div 1.000 = 9\text{ dm}^3 = 9\text{ Litros} \)</div>
+              </div>
+            </div>
+            <div class="panel-visual">
+              <svg width="240" height="200" viewBox="0 0 160 100">
+                <!-- Bloco paralelepípedo retangular estático e enquadrado -->
+                <polygon points="40,45 100,45 100,75 40,75" fill="#E8F5E9" stroke="var(--primary)" stroke-width="1.5"/>
+                <polygon points="40,45 60,25 120,25 100,45" fill="#C8E6C9" stroke="var(--primary)" stroke-width="1.5"/>
+                <polygon points="100,45 120,25 120,55 100,75" fill="#A5D6A7" stroke="var(--primary)" stroke-width="1.5"/>
+                <text x="70" y="83" font-size="5" fill="var(--primary)" font-weight="800" text-anchor="middle">comprimento a = 30</text>
+                <text x="123" y="65" font-size="5" fill="var(--primary-light)" font-weight="800" text-anchor="start">largura b = 20</text>
+                <text x="37" y="62.5" font-size="5" fill="var(--accent)" font-weight="800" text-anchor="end">altura c = 15</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 5: VOLUME DO CILINDRO ==================== -->
+        <div class="slide-pane" id="slide-5">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                O <strong>Cilindro</strong> é um sólido com duas bases circulares paralelas iguais e uma lateral curva. Seu volume é dado pela <strong>área do círculo da base</strong> multiplicada pela <strong>altura (h)</strong>.
+              </p>
+              <div class="theory-card" style="background:#fff; margin-bottom:15px;">
+                <h3><i class="fa-solid fa-shapes"></i> Equação Geral</h3>
+                <p>Como a base é um círculo de raio \( r \), temos \( A_{\text{base}} = \pi r^2 \). Assim:</p>
+                <div class="formula-box">\( V = \pi \cdot r^2 \cdot h \)</div>
+              </div>
+              <div class="calculation-box" style="margin-top:0;">
+                <div class="calc-step"><strong>Exemplo Resolvido:</strong></div>
+                <div class="calc-step">Calcule o volume de uma lata cilíndrica com raio \( r = 5\text{ cm} \) e altura \( h = 10\text{ cm} \) (Considere \( \pi \approx 3,14 \)):</div>
+                <div class="calc-step highlighted">\( V \approx 3,14 \times 5^2 \times 10 = 785\text{ cm}^3 \)</div>
+                <div class="calc-step" style="font-size:11px; margin-top:4px;">\( V = 3,14 \times 25 \times 10 = 785\text{ mL} \).</div>
+              </div>
+            </div>
+            <div class="panel-visual">
+              <svg width="220" height="220" viewBox="0 0 120 100">
+                <!-- Desenho cilíndrico estático e enquadrado -->
+                <ellipse cx="60" cy="27.5" rx="25" ry="8" fill="#C8E6C9" stroke="var(--primary)" stroke-width="1.5"/>
+                <rect x="35" y="27.5" width="50" height="45" fill="rgba(200, 230, 201, 0.5)"/>
+                <line x1="35" y1="27.5" x2="35" y2="72.5" stroke="var(--primary)" stroke-width="1.5"/>
+                <line x1="85" y1="27.5" x2="85" y2="72.5" stroke="var(--primary)" stroke-width="1.5"/>
+                <ellipse cx="60" cy="72.5" rx="25" ry="8" fill="#C8E6C9" stroke="var(--primary)" stroke-width="1.5"/>
+                <line x1="60" y1="27.5" x2="85" y2="27.5" stroke="var(--accent)" stroke-width="1.8"/>
+                <text x="72.5" y="23.5" font-size="5" fill="var(--accent)" font-weight="800" text-anchor="middle">raio r = 5</text>
+                <text x="88" y="52.5" font-size="5" fill="var(--primary-light)" font-weight="800" text-anchor="start">altura h = 10</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 6: SIMULADOR DE SÓLIDOS GEOMÉTRICOS ==================== -->
+        <div class="slide-pane" id="slide-6">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Mude os controles deslizantes para ver a alteração geométrica dos três principais sólidos em tempo real e ver a aplicação das equações:
+              </p>
+
+              <div class="panel-controls">
+                <div class="btn-toggle-group">
+                  <button class="btn-toggle active" id="btn-s6-cubo" onclick="setS6Type('cubo')"><i class="fa-solid fa-cube"></i> Cubo</button>
+                  <button class="btn-toggle" id="btn-s6-para" onclick="setS6Type('para')"><i class="fa-solid fa-cubes"></i> Paralelepípedo</button>
+                  <button class="btn-toggle" id="btn-s6-cil" onclick="setS6Type('cil')"><i class="fa-solid fa-circle-dot"></i> Cilindro</button>
+                </div>
+
+                <div class="control-group" id="ctrl-s6-a">
+                  <div class="control-label">Aresta / Raio (a / r): <span id="s6-a-val">5 cm</span></div>
+                  <input type="range" class="input-slider" id="s6-slider-a" min="2" max="10" value="5" oninput="updateSlide6()">
+                </div>
+                
+                <div class="control-group" id="ctrl-s6-b" style="display:none;">
+                  <div class="control-label">Largura (b): <span id="s6-b-val">4 cm</span></div>
+                  <input type="range" class="input-slider" id="s6-slider-b" min="2" max="10" value="4" oninput="updateSlide6()">
+                </div>
+
+                <div class="control-group" id="ctrl-s6-c" style="display:none;">
+                  <div class="control-label">Altura (c / h): <span id="s6-c-val">3 cm</span></div>
+                  <input type="range" class="input-slider" id="s6-slider-c" min="2" max="15" value="3" oninput="updateSlide6()">
+                </div>
+              </div>
+
+              <div class="calculation-box">
+                <div class="calc-step" id="s6-formula-lbl"><strong>Fórmula:</strong> \( V = a^3 \)</div>
+                <div class="calc-step highlighted" id="s6-calc-step">\( V = 5^3 = 125\text{ cm}^3 \)</div>
+              </div>
+            </div>
+
+            <div class="panel-visual">
+              <svg id="s6-svg" width="300" height="285" viewBox="0 0 300 285">
+                <!-- Renderizado dinamicamente via JS -->
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 7: CONVERSÃO DE UNIDADES (SIMULADOR) ==================== -->
+        <div class="slide-pane" id="slide-7">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                No IFES, os problemas costumam dar as dimensões em centímetros ou metros e pedir a resposta em <strong>Litros</strong> ou <strong>Mililitros</strong>. Digite um valor e escolha as unidades para converter:
+              </p>
+              
+              <div class="panel-controls">
+                <div class="control-group">
+                  <label class="control-label">Valor Numérico:</label>
+                  <input type="number" id="s7-input" class="btn-toggle" style="background:#fff; text-align:left; font-size:14px; padding:10px; cursor:text; width:100%;" value="2.5" min="0" step="0.1" oninput="updateSlide7()">
+                </div>
+                <div class="control-group" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                  <div>
+                    <label class="control-label">De:</label>
+                    <select id="s7-from" class="btn-toggle" style="width:100%; padding:8px;" onchange="updateSlide7()">
+                      <option value="m3" selected>m³</option>
+                      <option value="dm3">dm³ (L)</option>
+                      <option value="cm3">cm³ (mL)</option>
+                      <option value="L">Litros (L)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="control-label">Para:</label>
+                    <select id="s7-to" class="btn-toggle" style="width:100%; padding:8px;" onchange="updateSlide7()">
+                      <option value="L" selected>Litros (L)</option>
+                      <option value="mL">Mililitros (mL)</option>
+                      <option value="m3">m³</option>
+                      <option value="dm3">dm³</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="dica-box" style="margin-top:10px;">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <div>
+                  <strong>Não esqueça:</strong> Divida o volume em \( \text{cm}^3 \) por 1.000 para achar em Litros. Multiplique por 1.000 para ir de \( \text{m}^3 \) para Litros.
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:15px; height:100%;">
+              <div class="panel-visual" style="flex:1;">
+                <div style="text-align:center; padding:20px;">
+                  <span style="font-size:11px; font-weight:800; color:var(--primary-light); text-transform:uppercase;">Resultado</span>
+                  <h3 style="font-family:'Outfit',sans-serif; color:var(--warning); font-size:38px; margin:10px 0;" id="s7-result-val">2.500 L</h3>
+                  <p style="font-size:13.5px; color:var(--text); line-height:1.6;" id="s7-result-desc">Pois 1 m³ equivale a 1.000 L.</p>
+                </div>
+              </div>
+              <div class="calculation-box" style="margin-top:0;">
+                <div class="calc-step" id="s7-step-math">\( 2,5\text{ m}^3 \times 1.000 = 2.500\text{ L} \)</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 8: POTENCIAÇÃO (TEORIA & PROPRIEDADES) ==================== -->
+        <div class="slide-pane" id="slide-8">
+          <div class="slide-layout-full">
+            <p class="slide-intro-txt">
+              A <strong>Potenciação</strong> indica multiplicações sucessivas de um número por si mesmo: \( a^n = a \cdot a \cdot \dots \cdot a \) (\( n \) vezes).
+            </p>
+            <div class="theory-grid-2">
+              <div class="theory-card" style="padding:12px 18px;">
+                <h3><i class="fa-solid fa-list-check"></i> Regras Principais</h3>
+                <p style="font-size:12.5px;">
+                  - <strong>Expoente Zero:</strong> Qualquer número elevado a 0 é 1 (ex: \( 5^0 = 1 \)).<br>
+                  - <strong>Expoente Um:</strong> Qualquer base elevada a 1 é ela mesma (ex: \( 8^1 = 8 \)).<br>
+                  - <strong>Expoente Negativo:</strong> Inverte a base (ex: \( 2^{-3} = \dfrac{1}{2^3} = \dfrac{1}{8} \)).
+                </p>
+              </div>
+              <div class="theory-card" style="padding:12px 18px;">
+                <h3><i class="fa-solid fa-calculator"></i> Propriedades de Mesma Base</h3>
+                <p style="font-size:12.5px;">
+                  - <strong>Produto:</strong> Soma os expoentes \( a^m \cdot a^n = a^{m+n} \).<br>
+                  - <strong>Quociente:</strong> Subtrai os expoentes \( a^m \div a^n = a^{m-n} \).<br>
+                  - <strong>Potência de Potência:</strong> Multiplica expoentes \( (a^m)^n = a^{m \cdot n} \).
+                </p>
+              </div>
+            </div>
+            <div class="calculation-box" style="margin-top:10px; padding:12px 18px;">
+              <div class="calc-step" style="font-size:13px;"><strong>Exemplo em questões:</strong> Simplifique \( \dfrac{3^5 \cdot 3^2}{3^4} \)</div>
+              <div class="calc-step highlighted" style="font-size:15px; margin-top:2px;">\( \dfrac{3^{5+2}}{3^4} = \dfrac{3^7}{3^4} = 3^{7-4} = 3^3 = 27 \)</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 9: NOTAÇÃO CIENTÍFICA (TEORIA) ==================== -->
+        <div class="slide-pane" id="slide-9">
+          <div class="slide-layout-full">
+            <p class="slide-intro-txt">
+              A <strong>Notação Científica</strong> é uma forma de escrever números muito grandes ou muito pequenos usando potências de base 10. O formato padrão é:
+            </p>
+            <div class="theory-card" style="background:#fff; border-left-color:var(--accent); text-align:center; padding:15px;">
+              <h3 style="color:var(--accent); justify-content:center; font-size:24px;">\( N = a \times 10^n \)</h3>
+              <p style="font-size:14px; margin-top:5px; color:var(--text);">Onde <strong>\( 1 \le a < 10 \)</strong> (a mantissa é um número decimal de 1 a 9) e <strong>\( n \)</strong> é um expoente inteiro.</p>
+            </div>
+            
+            <div class="theory-grid-2" style="margin-top:10px;">
+              <div class="theory-card" style="padding:12px 18px;">
+                <strong style="color:var(--primary-light); font-size:13px;">📈 Números Grandes (n positivo)</strong>
+                <p style="font-size:12.5px; margin-top:4px;">Desloca a vírgula para a esquerda.<br>
+                  Exemplo: Velocidade da luz \( 300.000.000\text{ m/s} = 3 \times 10^8\text{ m/s} \).
+                </p>
+              </div>
+              <div class="theory-card" style="padding:12px 18px;">
+                <strong style="color:var(--accent); font-size:13px;">📉 Números Pequenos (n negativo)</strong>
+                <p style="font-size:12.5px; margin-top:4px;">Desloca a vírgula para a direita.<br>
+                  Exemplo: Tamanho de bactéria \( 0,000002\text{ m} = 2 \times 10^{-6}\text{ m} \).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 10: NOTAÇÃO CIENTÍFICA (PRÁTICA & EXEMPLOS) ==================== -->
+        <div class="slide-pane" id="slide-10">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Entender como a vírgula "anda" é a chave para dominar a <strong>Notação Científica</strong>. Clique nos exemplos reais abaixo para ver a transformação passo a passo em detalhes:
+              </p>
+              
+              <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:12px;">
+                <button class="btn-toggle" onclick="showS11Example(1)" id="s11-btn-1" style="font-size:12.5px; text-align:left; padding:8px 12px; background:var(--primary); color:#fff; border-color:var(--primary); width:100%; cursor:pointer;">
+                  <strong>1. Grandes:</strong> População da Terra (8 Bilhões)
+                </button>
+                <button class="btn-toggle" onclick="showS11Example(2)" id="s11-btn-2" style="font-size:12.5px; text-align:left; padding:8px 12px; width:100%; cursor:pointer;">
+                  <strong>2. Pequenos:</strong> Vírus da Influenza (0,00000012 m)
+                </button>
+                <button class="btn-toggle" onclick="showS11Example(3)" id="s11-btn-3" style="font-size:12.5px; text-align:left; padding:8px 12px; width:100%; cursor:pointer;">
+                  <strong>3. Grandes:</strong> Distância Terra ao Sol (150 Bilhões m)
+                </button>
+                <button class="btn-toggle" onclick="showS11Example(4)" id="s11-btn-4" style="font-size:12.5px; text-align:left; padding:8px 12px; width:100%; cursor:pointer;">
+                  <strong>4. Pequenos:</strong> Carga Elétrica do Elétron (0,000...00016 C)
+                </button>
+              </div>
+            </div>
+            
+            <div class="panel-visual" style="flex-direction:column; justify-content:flex-start; align-items:stretch; padding:15px; background:rgba(255,255,255,0.75); border:1px dashed var(--primary-light); border-radius:12px; min-height:220px;">
+              <h3 id="s11-ex-title" style="color:var(--primary); font-size:14.5px; margin-bottom:8px; display:flex; align-items:center; gap:6px;"><i class="fa-solid fa-earth-americas"></i> Exemplo 1: População da Terra (Grande)</h3>
+              
+              <div style="background:#fff; border:1px solid #ddd; border-radius:8px; padding:8px; margin-bottom:8px; font-family:monospace; font-size:13.5px; text-align:center;">
+                Número original: <span id="s11-ex-original" style="font-weight:bold; color:var(--text);">8.000.000.000</span>
+              </div>
+              
+              <div style="display:flex; flex-direction:column; gap:5px; font-size:12px; text-align:left;">
+                <div style="background:#E8F5E9; border-left:3px solid var(--primary); padding:5px 8px; border-radius:4px;">
+                  <strong>Passo 1:</strong> <span id="s11-ex-p1">A vírgula invisível está posicionada no final do número: 8.000.000.000,</span>
+                </div>
+                <div style="background:#FFE0B2; border-left:3px solid var(--warning); padding:5px 8px; border-radius:4px;">
+                  <strong>Passo 2:</strong> <span id="s11-ex-p2">Deslocamos a vírgula 9 casas para a esquerda até ficar após o 8: 8,0</span>
+                </div>
+                <div style="background:#FFCDD2; border-left:3px solid var(--accent); padding:5px 8px; border-radius:4px;">
+                  <strong>Passo 3:</strong> <span id="s11-ex-p3">Como a vírgula andou para a esquerda, o expoente de 10 será positivo (+9).</span>
+                </div>
+              </div>
+              
+              <div id="s11-ex-final" class="formula-box" style="margin-top:10px; font-size:17px; text-align:center; padding:8px; background:#E8F5E9;">
+                \( 8 \times 10^9 \)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 11: MDC vs MMC (REVISÃO RÁPIDA) ==================== -->
+        <div class="slide-pane" id="slide-11">
+          <div class="quiz-tabs" style="margin-bottom: 12px;">
+            <div class="quiz-tab active" onclick="setMdcMmcTab(1)">MDC vs MMC</div>
+            <div class="quiz-tab" onclick="setMdcMmcTab(2)">Exemplo 1: Vigas</div>
+            <div class="quiz-tab" onclick="setMdcMmcTab(3)">Exemplo 2: Semáforos</div>
+            <div class="quiz-tab" onclick="setMdcMmcTab(4)">Exemplo 3: Remédios</div>
+            <div class="quiz-tab" onclick="setMdcMmcTab(5)">Exemplo 4: Equipes</div>
+          </div>
+
+          <!-- TAB 1: CONCEITO GERAL -->
+          <div class="slide-layout-full s11-tab-content" id="s11-tab-1">
+            <p class="slide-intro-txt" style="margin-bottom:8px;">
+              MDC e MMC são ferramentas de fatoração usadas para resolver problemas cotidianos de divisão e ciclos. Vamos relembrar as diferenças principais:
+            </p>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-top: 5px;">
+              <div class="theory-card" style="background:#FFF9C4; border-left-color:var(--warning); padding:15px; margin:0;">
+                <h3 style="color:var(--warning); font-size:15px; margin:0 0 8px 0; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-scissors"></i> MDC (Divisão Máxima)</h3>
+                <p style="font-size:13px; line-height:1.5; margin:0;">
+                  <strong>Foco:</strong> Repartir, dividir ou cortar coisas em pedaços de tamanho máximo igual.<br><br>
+                  <strong>Palavras-chave:</strong> Maior tamanho possível, repartir igualmente, sem sobbrar, divisão em partes iguais.<br><br>
+                  <strong>Caso Real:</strong> Vigas de 60cm e 84cm cortadas no maior tamanho comum: \( \text{MDC}(60, 84) = 12\text{ cm} \).
+                </p>
+              </div>
+              <div class="theory-card" style="background:#E8F5E9; border-left-color:var(--primary); padding:15px; margin:0;">
+                <h3 style="color:var(--primary); font-size:15px; margin:0 0 8px 0; display:flex; align-items:center; gap:8px;"><i class="fa-solid fa-rotate"></i> MMC (Ciclos e Reencontro)</h3>
+                <p style="font-size:13px; line-height:1.5; margin:0;">
+                  <strong>Foco:</strong> Coincidência, repetição de tempo, ciclos que ocorrem juntos no futuro.<br><br>
+                  <strong>Palavras-chave:</strong> Coincidir, de quanto em quanto tempo, voltar a se encontrar, tempo que se repete.<br><br>
+                  <strong>Caso Real:</strong> Semáforos com ciclos de 4s, 6s and 10s voltam a piscar juntos em: \( \text{MMC}(4, 6, 10) = 60\text{s} \).
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: EXEMPLO 1 (VIGAS) -->
+          <div class="slide-layout-split s11-tab-content" id="s11-tab-2" style="display:none;">
+            <div>
+              <p class="slide-intro-txt" style="margin-bottom:8px;">
+                <strong>Exemplo 1: Corte de Vigas</strong><br>
+                Um carpinteiro tem duas vigas de madeira, uma com 60 cm e outra com 84 cm. Ele precisa cortá-las em pedaços de mesmo tamanho, o maior possível, sem que sobre madeira. Qual deve ser o comprimento de cada pedaço?
+              </p>
+              
+              <button class="btn-reveal-calc" style="margin-top: 10px; margin-bottom: 10px; display: inline-flex;" onclick="toggleS11Resolution(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução
+              </button>
+              
+              <div class="s11-res-wrapper" style="display:none;">
+                <div class="theory-card" style="background:#FFF9C4; border-left-color:var(--warning); padding:8px 12px; margin-bottom:8px;">
+                  <strong style="color:#E65100; font-size:12px;"><i class="fa-solid fa-lightbulb"></i> Como Pensar?</strong>
+                  <p style="font-size:11px; margin-top:3px; line-height:1.3;">
+                    O problema pede para <strong>dividir (cortar)</strong> duas vigas em pedaços de <strong>tamanhos iguais e máximos possíveis</strong>. Isso indica que devemos encontrar o maior divisor comum entre as medidas.
+                  </p>
+                </div>
+                
+                <div class="calculation-box" style="margin-top:0; padding:10px 15px;">
+                  <div class="calc-step" style="font-size:12px;"><strong>Resolução Passo a Passo:</strong> Fatores comuns de 60 e 84:</div>
+                  <div class="calc-step" style="font-size:13px;">\( 60 = 2^2 \times 3 \times 5 \)</div>
+                  <div class="calc-step" style="font-size:13px;">\( 84 = 2^2 \times 3 \times 7 \)</div>
+                  <div class="calc-step highlighted" style="font-size:14px; margin-top:2px;">\( \text{MDC}(60, 84) = 2^2 \times 3 = 12\text{ cm} \)</div>
+                  <div class="calc-step" style="font-size:11px; margin-top:4px; color:var(--text-light);">
+                    Cada pedaço medirá <strong>12 cm</strong>. A viga de 60 cm dará 5 pedaços (\(60 \div 12\)) e a de 84 cm dará 7 pedaços (\(84 \div 12\)), totalizando 12 pedaços.
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="panel-visual s11-img-wrapper" style="display:none;">
+              <svg width="95%" height="95%" viewBox="0 0 200 140" style="max-height: 250px;">
+                <!-- Viga A: 60 cm -->
+                <text x="10" y="16" font-size="7" font-weight="800" fill="var(--warning)">Viga A (60 cm) → 5 pedaços de 12 cm</text>
+                <rect x="10" y="21" width="120" height="15" fill="#FFE0B2" stroke="var(--warning)" stroke-width="1" rx="1"/>
+                <!-- Cut lines for Viga A -->
+                <line x1="34" y1="19" x2="34" y2="38" stroke="#C62828" stroke-width="1" stroke-dasharray="1.5,1.5"/>
+                <line x1="58" y1="19" x2="58" y2="38" stroke="#C62828" stroke-width="1" stroke-dasharray="1.5,1.5"/>
+                <line x1="82" y1="19" x2="82" y2="38" stroke="#C62828" stroke-width="1" stroke-dasharray="1.5,1.5"/>
+                <line x1="106" y1="19" x2="106" y2="38" stroke="#C62828" stroke-width="1" stroke-dasharray="1.5,1.5"/>
+                
+                <text x="22" y="30" font-size="5" font-weight="700" fill="#E65100" text-anchor="middle">12cm</text>
+                <text x="46" y="30" font-size="5" font-weight="700" fill="#E65100" text-anchor="middle">12cm</text>
+                <text x="70" y="30" font-size="5" font-weight="700" fill="#E65100" text-anchor="middle">12cm</text>
+                <text x="94" y="30" font-size="5" font-weight="700" fill="#E65100" text-anchor="middle">12cm</text>
+                <text x="118" y="30" font-size="5" font-weight="700" fill="#E65100" text-anchor="middle">12cm</text>
+
+                <!-- Viga B: 84 cm -->
+                <text x="10" y="61" font-size="7" font-weight="800" fill="var(--primary)">Viga B (84 cm) → 7 pedaços de 12 cm</text>
+                <rect x="10" y="66" width="168" height="15" fill="#E8F5E9" stroke="var(--primary)" stroke-width="1" rx="1"/>
+                <!-- Cut lines for Viga B -->
+                <line x1="34" y1="64" x2="34" y2="83" stroke="#C62828" stroke-width="1" stroke-dasharray="1.5,1.5"/>
+                <line x1="58" y1="64" x2="58" y2="83" stroke="#C62828" stroke-width="1" stroke-dasharray="1.5,1.5"/>
+                <line x1="82" y1="64" x2="82" y2="83" stroke="#C62828" stroke-width="1" stroke-dasharray="1.5,1.5"/>
+                <line x1="106" y1="64" x2="106" y2="83" stroke="#C62828" stroke-width="1" stroke-dasharray="1.5,1.5"/>
+                <line x1="130" y1="64" x2="130" y2="83" stroke="#C62828" stroke-width="1" stroke-dasharray="1.5,1.5"/>
+                <line x1="154" y1="64" x2="154" y2="83" stroke="#C62828" stroke-width="1" stroke-dasharray="1.5,1.5"/>
+                
+                <text x="22" y="75" font-size="5" font-weight="700" fill="var(--primary)" text-anchor="middle">12cm</text>
+                <text x="46" y="75" font-size="5" font-weight="700" fill="var(--primary)" text-anchor="middle">12cm</text>
+                <text x="70" y="75" font-size="5" font-weight="700" fill="var(--primary)" text-anchor="middle">12cm</text>
+                <text x="94" y="75" font-size="5" font-weight="700" fill="var(--primary)" text-anchor="middle">12cm</text>
+                <text x="118" y="75" font-size="5" font-weight="700" fill="var(--primary)" text-anchor="middle">12cm</text>
+                <text x="142" y="75" font-size="5" font-weight="700" fill="var(--primary)" text-anchor="middle">12cm</text>
+                <text x="166" y="75" font-size="5" font-weight="700" fill="var(--primary)" text-anchor="middle">12cm</text>
+
+                <!-- Highlight corte -->
+                <path d="M 34,36 L 34,66 M 58,36 L 58,66 M 82,36 L 82,66 M 106,36 L 106,66" stroke="#C62828" stroke-dasharray="1,2" stroke-width="0.5" opacity="0.6"/>
+                <text x="100" y="108" font-size="7" font-weight="800" fill="#C62828" text-anchor="middle">Pedaço Máximo Comum = 12 cm</text>
+                <text x="100" y="118" font-size="6" fill="var(--text-light)" text-anchor="middle">Os cortes se alinham perfeitamente sem sobras!</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- TAB 3: EXEMPLO 2 (SEMÁFOROS) -->
+          <div class="slide-layout-split s11-tab-content" id="s11-tab-3" style="display:none;">
+            <div>
+              <p class="slide-intro-txt" style="margin-bottom:8px;">
+                <strong>Exemplo 2: Encontro de Semáforos</strong><br>
+                Três semáforos de um cruzamento piscam em intervalos diferentes: o primeiro a cada 4 segundos, o segundo a cada 6 segundos e o terceiro a cada 10 segundos. Se eles piscaram juntos agora, após quantos segundos voltarão a piscar juntos?
+              </p>
+              
+              <button class="btn-reveal-calc" style="margin-top: 10px; margin-bottom: 10px; display: inline-flex;" onclick="toggleS11Resolution(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução
+              </button>
+              
+              <div class="s11-res-wrapper" style="display:none;">
+                <div class="theory-card" style="background:#E8F5E9; border-left-color:var(--primary); padding:8px 12px; margin-bottom:8px;">
+                  <strong style="color:var(--primary); font-size:12px;"><i class="fa-solid fa-lightbulb"></i> Como Pensar?</strong>
+                  <p style="font-size:11px; margin-top:3px; line-height:1.3;">
+                    O problema envolve eventos que ocorrem em <strong>ciclos de tempo repetitivos</strong> e pergunta quando esses ciclos irão <strong>coincidir novamente no futuro</strong>. Isso indica que buscamos o menor múltiplo comum.
+                  </p>
+                </div>
+                
+                <div class="calculation-box" style="margin-top:0; padding:10px 15px;">
+                  <div class="calc-step" style="font-size:12px;"><strong>Resolução Passo a Passo:</strong> Multiplicamos todos os fatores primos:</div>
+                  <div class="calc-step" style="font-size:13px;">\( 4 = 2^2 \), \( 6 = 2 \times 3 \), \( 10 = 2 \times 5 \)</div>
+                  <div class="calc-step highlighted" style="font-size:14px; margin-top:2px;">\( \text{MMC}(4, 6, 10) = 2^2 \times 3 \times 5 = 60\text{ segundos} \)</div>
+                  <div class="calc-step" style="font-size:11px; margin-top:4px; color:var(--text-light);">
+                    Eles piscarão juntos novamente após <strong>60 segundos</strong> (1 minuto).
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="panel-visual s11-img-wrapper" style="display:none;">
+              <svg width="95%" height="95%" viewBox="0 0 200 140" style="max-height: 250px;">
+                <text x="10" y="14" font-size="7" font-weight="800" fill="var(--primary)">Linha do Tempo de Coincidência</text>
+                
+                <!-- Semáforo 1 (4s) -->
+                <text x="10" y="27" font-size="6" font-weight="700">S1 (4s):</text>
+                <line x1="45" y1="25" x2="185" y2="25" stroke="#ccc" stroke-width="1"/>
+                <circle cx="45" cy="25" r="1.8" fill="var(--primary-light)"/>
+                <circle cx="54.3" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="63.6" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="73" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="82.3" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="91.6" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="101" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="110.3" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="119.6" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="129" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="138.3" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="147.6" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="157" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="166.3" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="175.6" cy="25" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="185" cy="25" r="2.2" fill="#C62828"/>
+                
+                <!-- Semáforo 2 (6s) -->
+                <text x="10" y="52" font-size="6" font-weight="700">S2 (6s):</text>
+                <line x1="45" y1="50" x2="185" y2="50" stroke="#ccc" stroke-width="1"/>
+                <circle cx="45" cy="50" r="1.8" fill="var(--primary-light)"/>
+                <circle cx="59" cy="50" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="73" cy="50" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="87" cy="50" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="101" cy="50" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="115" cy="50" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="129" cy="50" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="143" cy="50" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="157" cy="50" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="171" cy="50" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="185" cy="50" r="2.2" fill="#C62828"/>
+
+                <!-- Semáforo 3 (10s) -->
+                <text x="10" y="77" font-size="6" font-weight="700">S3 (10s):</text>
+                <line x1="45" y1="75" x2="185" y2="75" stroke="#ccc" stroke-width="1"/>
+                <circle cx="45" cy="75" r="1.8" fill="var(--primary-light)"/>
+                <circle cx="68.3" cy="75" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="91.6" cy="75" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="115" cy="75" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="138.3" cy="75" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="161.6" cy="75" r="1.2" fill="var(--primary-light)"/>
+                <circle cx="185" cy="75" r="2.2" fill="#C62828"/>
+
+                <!-- Grid Lines -->
+                <line x1="45" y1="18" x2="45" y2="85" stroke="var(--primary)" stroke-dasharray="1.5,1.5" stroke-width="0.8"/>
+                <text x="45" y="93" font-size="6" font-weight="800" fill="var(--primary)" text-anchor="middle">0s</text>
+                <text x="45" y="99" font-size="4.5" fill="var(--primary)" text-anchor="middle" font-weight="700">Início</text>
+
+                <line x1="185" y1="18" x2="185" y2="85" stroke="#C62828" stroke-dasharray="1.5,1.5" stroke-width="0.8"/>
+                <text x="185" y="93" font-size="6" font-weight="800" fill="#C62828" text-anchor="middle">60s</text>
+                <text x="185" y="99" font-size="4.5" fill="#C62828" text-anchor="middle" font-weight="700">(1 min)</text>
+
+                <text x="115" y="118" font-size="7" font-weight="800" fill="#C62828" text-anchor="middle">Próximo Reencontro aos 60s</text>
+                <text x="115" y="126" font-size="5.5" fill="var(--text-light)" text-anchor="middle">Os três piscam em sincronia exata!</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- TAB 4: EXEMPLO 3 (REMÉDIOS) -->
+          <div class="slide-layout-split s11-tab-content" id="s11-tab-4" style="display:none;">
+            <div>
+              <p class="slide-intro-txt" style="margin-bottom:8px;">
+                <strong>Exemplo 3: Horário de Remédios</strong><br>
+                Um paciente deve tomar o Remédio A de 8 em 8 horas e o Remédio B de 12 em 12 horas. Se ele tomou ambos os remédios juntos às 10h da manhã de Segunda-feira, a que horas e em qual dia tomará os dois juntos novamente?
+              </p>
+              
+              <button class="btn-reveal-calc" style="margin-top: 10px; margin-bottom: 10px; display: inline-flex;" onclick="toggleS11Resolution(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução
+              </button>
+              
+              <div class="s11-res-wrapper" style="display:none;">
+                <div class="theory-card" style="background:#E8F5E9; border-left-color:var(--primary); padding:8px 12px; margin-bottom:8px;">
+                  <strong style="color:var(--primary); font-size:12px;"><i class="fa-solid fa-lightbulb"></i> Como Pensar?</strong>
+                  <p style="font-size:11px; margin-top:3px; line-height:1.3;">
+                    Trata-se de ciclos de tempo que se repetem (8h e 12h) e queremos encontrar o **próximo momento comum de coincidência** no futuro.
+                  </p>
+                </div>
+                
+                <div class="calculation-box" style="margin-top:0; padding:10px 15px;">
+                  <div class="calc-step" style="font-size:12px;"><strong>Resolução Passo a Passo:</strong> Multiplicando os fatores:</div>
+                  <div class="calc-step" style="font-size:13px;">Múltiplos de 8: \( \{0, 8, 16, \mathbf{24}, 32, 40, \dots\} \)</div>
+                  <div class="calc-step" style="font-size:13px;">Múltiplos de 12: \( \{0, 12, \mathbf{24}, 36, 48, \dots\} \)</div>
+                  <div class="calc-step highlighted" style="font-size:14px; margin-top:2px;">\( \text{MMC}(8, 12) = 24\text{ horas} \)</div>
+                  <div class="calc-step" style="font-size:11px; margin-top:4px; color:var(--text-light);">
+                    Eles coincidirão de 24 em 24 horas. Portanto, o reencontro será na <strong>Terça-feira, às 10h da manhã</strong> (exatamente 1 dia depois).
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="panel-visual s11-img-wrapper" style="display:none;">
+              <svg width="95%" height="95%" viewBox="0 0 200 140" style="max-height: 250px;">
+                <text x="10" y="14" font-size="7" font-weight="800" fill="var(--primary)">Intervalos de 24 Horas dos Medicamentos</text>
+                
+                <!-- Timeline track -->
+                <line x1="30" y1="50" x2="170" y2="50" stroke="#aaa" stroke-width="1.5"/>
+                <text x="30" y="42" font-size="5" text-anchor="middle" font-weight="700">Seg, 10:00</text>
+                <circle cx="30" cy="50" r="2.5" fill="#C62828"/>
+                <text x="30" y="62" font-size="5" text-anchor="middle" font-weight="800" fill="#C62828">Dose 1 (A e B)</text>
+
+                <!-- Remédio A path (8 em 8h) -->
+                <path d="M 30,50 Q 53.3,30 76.6,50 Q 100,30 123.3,50 Q 146.6,30 170,50" fill="none" stroke="var(--warning)" stroke-width="1.2"/>
+                <circle cx="76.6" cy="50" r="1.8" fill="var(--warning)"/>
+                <text x="76.6" y="62" font-size="4" text-anchor="middle" fill="#E65100">Remédio A</text>
+                <text x="76.6" y="68" font-size="4" text-anchor="middle" fill="#E65100">Seg, 18:00</text>
+                
+                <circle cx="123.3" cy="50" r="1.8" fill="var(--warning)"/>
+                <text x="123.3" y="62" font-size="4" text-anchor="middle" fill="#E65100">Remédio A</text>
+                <text x="123.3" y="68" font-size="4" text-anchor="middle" fill="#E65100">Ter, 02:00</text>
+
+                <!-- Remédio B path (12 em 12h) -->
+                <path d="M 30,50 Q 65,70 100,50 Q 135,70 170,50" fill="none" stroke="var(--primary)" stroke-width="1.2"/>
+                <circle cx="100" cy="50" r="1.8" fill="var(--primary)"/>
+                <text x="100" y="38" font-size="4" text-anchor="middle" fill="var(--primary)">Remédio B</text>
+                <text x="100" y="32" font-size="4" text-anchor="middle" fill="var(--primary)">Seg, 22:00</text>
+
+                <!-- Reencontro -->
+                <circle cx="170" cy="50" r="2.5" fill="#C62828"/>
+                <text x="170" y="42" font-size="5" text-anchor="middle" font-weight="700">Ter, 10:00</text>
+                <text x="170" y="62" font-size="5" text-anchor="middle" font-weight="800" fill="#C62828">Dose 2 (A e B)</text>
+
+                <text x="100" y="108" font-size="7" font-weight="800" fill="#C62828" text-anchor="middle">Próxima coincidência após 24 horas</text>
+                <text x="100" y="118" font-size="6" fill="var(--text-light)" text-anchor="middle">Exatamente 1 dia inteiro depois das doses iniciais!</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- TAB 5: EXEMPLO 4 (EQUIPES) -->
+          <div class="slide-layout-split s11-tab-content" id="s11-tab-5" style="display:none;">
+            <div>
+              <p class="slide-intro-txt" style="margin-bottom:8px;">
+                <strong>Exemplo 4: Divisão de Equipes</strong><br>
+                Um professor deve dividir 24 meninos e 30 meninas em equipes para uma gincana. Cada equipe deve ser composta apenas por pessoas do mesmo sexo, ter o mesmo número de pessoas e ter a maior quantidade de alunos possível. Quantas equipes serão formadas?
+              </p>
+              
+              <button class="btn-reveal-calc" style="margin-top: 10px; margin-bottom: 10px; display: inline-flex;" onclick="toggleS11Resolution(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução
+              </button>
+              
+              <div class="s11-res-wrapper" style="display:none;">
+                <div class="theory-card" style="background:#FFF9C4; border-left-color:var(--warning); padding:8px 12px; margin-bottom:8px;">
+                  <strong style="color:#E65100; font-size:12px;"><i class="fa-solid fa-lightbulb"></i> Como Pensar?</strong>
+                  <p style="font-size:11px; margin-top:3px; line-height:1.3;">
+                    O problema envolve **repartir/dividir** dois grupos de pessoas de tamanhos diferentes em equipes **iguais** e com o **maior tamanho possível**.
+                  </p>
+                </div>
+                
+                <div class="calculation-box" style="margin-top:0; padding:10px 15px;">
+                  <div class="calc-step" style="font-size:12px;"><strong>Resolução Passo a Passo:</strong> Divisores comuns:</div>
+                  <div class="calc-step" style="font-size:13px;">Divisores de 24: \( \{1, 2, 3, 4, \mathbf{6}, 8, 12, 24\} \)</div>
+                  <div class="calc-step" style="font-size:13px;">Divisores de 30: \( \{1, 2, 3, 5, \mathbf{6}, 10, 15, 30\} \)</div>
+                  <div class="calc-step highlighted" style="font-size:14px; margin-top:2px;">\( \text{MDC}(24, 30) = 6\text{ alunos por equipe} \)</div>
+                  <div class="calc-step" style="font-size:11px; margin-top:4px; color:var(--text-light);">
+                    Meninos: \(24 \div 6 = 4\) equipes. Meninas: \(30 \div 6 = 5\) equipes.<br>
+                    Total de equipes formadas = <strong>9 equipes</strong> de 6 alunos.
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="panel-visual s11-img-wrapper" style="display:none;">
+              <svg width="95%" height="95%" viewBox="0 0 200 140" style="max-height: 250px;">
+                <text x="10" y="14" font-size="7" font-weight="800" fill="var(--primary)">Divisão dos Grupos</text>
+                
+                <!-- Meninos (24) -> 4 equipes de 6 -->
+                <text x="10" y="26" font-size="6" font-weight="800" fill="var(--primary)">Meninos: 24 alunos → 4 equipes de 6</text>
+                <!-- Group 1 -->
+                <rect x="10" y="30" width="22" height="15" fill="#E3F2FD" stroke="var(--primary-light)" stroke-width="0.5" rx="2"/>
+                <circle cx="14" cy="35" r="1.5" fill="var(--primary)"/>
+                <circle cx="18" cy="35" r="1.5" fill="var(--primary)"/>
+                <circle cx="22" cy="35" r="1.5" fill="var(--primary)"/>
+                <circle cx="14" cy="40" r="1.5" fill="var(--primary)"/>
+                <circle cx="18" cy="40" r="1.5" fill="var(--primary)"/>
+                <circle cx="22" cy="40" r="1.5" fill="var(--primary)"/>
+
+                <!-- Group 2 -->
+                <rect x="36" y="30" width="22" height="15" fill="#E3F2FD" stroke="var(--primary-light)" stroke-width="0.5" rx="2"/>
+                <circle cx="40" cy="35" r="1.5" fill="var(--primary)"/>
+                <circle cx="44" cy="35" r="1.5" fill="var(--primary)"/>
+                <circle cx="48" cy="35" r="1.5" fill="var(--primary)"/>
+                <circle cx="40" cy="40" r="1.5" fill="var(--primary)"/>
+                <circle cx="44" cy="40" r="1.5" fill="var(--primary)"/>
+                <circle cx="48" cy="40" r="1.5" fill="var(--primary)"/>
+
+                <!-- Group 3 -->
+                <rect x="62" y="30" width="22" height="15" fill="#E3F2FD" stroke="var(--primary-light)" stroke-width="0.5" rx="2"/>
+                <circle cx="66" cy="35" r="1.5" fill="var(--primary)"/>
+                <circle cx="70" cy="35" r="1.5" fill="var(--primary)"/>
+                <circle cx="74" cy="35" r="1.5" fill="var(--primary)"/>
+                <circle cx="66" cy="40" r="1.5" fill="var(--primary)"/>
+                <circle cx="70" cy="40" r="1.5" fill="var(--primary)"/>
+                <circle cx="74" cy="40" r="1.5" fill="var(--primary)"/>
+
+                <!-- Group 4 -->
+                <rect x="88" y="30" width="22" height="15" fill="#E3F2FD" stroke="var(--primary-light)" stroke-width="0.5" rx="2"/>
+                <circle cx="92" cy="35" r="1.5" fill="var(--primary)"/>
+                <circle cx="96" cy="35" r="1.5" fill="var(--primary)"/>
+                <circle cx="100" cy="35" r="1.5" fill="var(--primary)"/>
+                <circle cx="92" cy="40" r="1.5" fill="var(--primary)"/>
+                <circle cx="96" cy="40" r="1.5" fill="var(--primary)"/>
+                <circle cx="100" cy="40" r="1.5" fill="var(--primary)"/>
+
+
+                <!-- Meninas (30) -> 5 equipes de 6 -->
+                <text x="10" y="62" font-size="6" font-weight="800" fill="var(--accent)">Meninas: 30 alunas → 5 equipes de 6</text>
+                <!-- Group 1 -->
+                <rect x="10" y="66" width="22" height="15" fill="#FCE4EC" stroke="var(--accent)" stroke-width="0.5" rx="2"/>
+                <circle cx="14" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="18" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="22" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="14" cy="76" r="1.5" fill="var(--accent)"/>
+                <circle cx="18" cy="76" r="1.5" fill="var(--accent)"/>
+                <circle cx="22" cy="76" r="1.5" fill="var(--accent)"/>
+
+                <!-- Group 2 -->
+                <rect x="36" y="66" width="22" height="15" fill="#FCE4EC" stroke="var(--accent)" stroke-width="0.5" rx="2"/>
+                <circle cx="40" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="44" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="48" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="40" cy="76" r="1.5" fill="var(--accent)"/>
+                <circle cx="44" cy="76" r="1.5" fill="var(--accent)"/>
+                <circle cx="48" cy="76" r="1.5" fill="var(--accent)"/>
+
+                <!-- Group 3 -->
+                <rect x="62" y="66" width="22" height="15" fill="#FCE4EC" stroke="var(--accent)" stroke-width="0.5" rx="2"/>
+                <circle cx="66" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="70" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="74" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="66" cy="76" r="1.5" fill="var(--accent)"/>
+                <circle cx="70" cy="76" r="1.5" fill="var(--accent)"/>
+                <circle cx="74" cy="76" r="1.5" fill="var(--accent)"/>
+
+                <!-- Group 4 -->
+                <rect x="88" y="66" width="22" height="15" fill="#FCE4EC" stroke="var(--accent)" stroke-width="0.5" rx="2"/>
+                <circle cx="92" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="96" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="100" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="92" cy="76" r="1.5" fill="var(--accent)"/>
+                <circle cx="96" cy="76" r="1.5" fill="var(--accent)"/>
+                <circle cx="100" cy="76" r="1.5" fill="var(--accent)"/>
+
+                <!-- Group 5 -->
+                <rect x="114" y="66" width="22" height="15" fill="#FCE4EC" stroke="var(--accent)" stroke-width="0.5" rx="2"/>
+                <circle cx="118" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="122" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="126" cy="71" r="1.5" fill="var(--accent)"/>
+                <circle cx="118" cy="76" r="1.5" fill="var(--accent)"/>
+                <circle cx="122" cy="76" r="1.5" fill="var(--accent)"/>
+                <circle cx="126" cy="76" r="1.5" fill="var(--accent)"/>
+
+                <text x="75" y="106" font-size="7" font-weight="800" fill="#C62828" text-anchor="middle">Equipes com 6 alunos cada</text>
+                <text x="75" y="116" font-size="5.5" fill="var(--text-light)" text-anchor="middle">9 equipes formadas (4 de meninos e 5 de meninas)</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+        <!-- ==================== SLIDE 12: SIMULADOR FATORADOR MDC E MMC ==================== -->
+        <div class="slide-pane" id="slide-12">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                Veja o cálculo simultâneo dos divisores passo a passo. Digite os dois números para obter a fatoração e os resultados do MDC e MMC:
+              </p>
+
+              <div class="panel-controls">
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                  <div class="control-group">
+                    <label class="control-label">Número A:</label>
+                    <input type="number" id="s13-num-a" class="btn-toggle" style="background:#fff; text-align:center; padding:10px;" value="60" oninput="runS13Calc()">
+                  </div>
+                  <div class="control-group">
+                    <label class="control-label">Número B:</label>
+                    <input type="number" id="s13-num-b" class="btn-toggle" style="background:#fff; text-align:center; padding:10px;" value="84" oninput="runS13Calc()">
+                  </div>
+                </div>
+              </div>
+
+              <div class="dica-box" style="margin-top:15px;">
+                <i class="fa-solid fa-circle-question"></i>
+                <div>
+                  <strong>Como calcular manualmente?</strong> Fatore ambos em fatores primos. Para o MDC, multiplique apenas os fatores que dividiram os dois ao mesmo tempo (com estrela ★). Para o MMC, multiplique todos.
+                </div>
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:15px; height:100%;">
+              <div class="panel-visual" style="flex:1; flex-direction:column; padding:15px; overflow-y:auto; justify-content: flex-start; align-items: stretch;">
+                <span style="font-size:11px; font-weight:800; text-align:center; color:var(--text-light); text-transform:uppercase; margin-bottom:10px;">Fatoração Passo a Passo</span>
+                <div id="s13-factoring-box" style="flex:1;">
+                  <!-- Gerado via JS -->
+                </div>
+              </div>
+              <div class="calculation-box" style="margin-top:0; display:grid; grid-template-columns:1fr 1fr; gap:15px; padding:10px;">
+                <div>
+                  <div style="font-size:9.5px; font-weight:800; color:var(--primary-light);">DIVISOR COMUM (MDC):</div>
+                  <strong style="font-size:16px; color:var(--primary);" id="s13-mdc-val">12</strong>
+                </div>
+                <div>
+                  <div style="font-size:9.5px; font-weight:800; color:var(--accent);">MÚLTIPLO COMUM (MMC):</div>
+                  <strong style="font-size:16px; color:var(--accent);" id="s13-mmc-val">420</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 13: TEOREMA DE PITÁGORAS ==================== -->
+        <div class="slide-pane" id="slide-13">
+          <div class="slide-layout-split">
+            <div>
+              <p class="slide-intro-txt">
+                O <strong>Teorema de Pitágoras</strong> aplica-se somente a triângulos retângulos (que possuem um ângulo de \( 90^\circ \)). A hipotenusa (\( c \)) é o lado oposto ao ângulo reto.
+              </p>
+
+              <div class="panel-controls">
+                <div class="control-group">
+                  <div class="control-label">Cateto Vertical (a): <span id="s14-a-val">3 cm</span></div>
+                  <input type="range" class="input-slider" id="s14-slider-a" min="3" max="8" value="3" oninput="updateSlide14()">
+                </div>
+                <div class="control-group">
+                  <div class="control-label">Cateto Horizontal (b): <span id="s14-b-val">4 cm</span></div>
+                  <input type="range" class="input-slider" id="s14-slider-b" min="4" max="10" value="4" oninput="updateSlide14()">
+                </div>
+              </div>
+
+              <div class="calculation-box">
+                <div class="calc-step"><strong>Fórmula:</strong> \( c^2 = a^2 + b^2 \implies c = \sqrt{a^2 + b^2} \)</div>
+                <div class="calc-step highlighted" id="s14-calc-step">\( c = \sqrt{3^2 + 4^2} = 5\text{ cm} \)</div>
+              </div>
+            </div>
+
+            <div class="panel-visual">
+              <svg id="s14-svg" width="300" height="280" viewBox="0 0 300 280">
+                <!-- Gerado via JS -->
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 14: QUIZ DE FIXAÇÃO ==================== -->
+        <div class="slide-pane" id="slide-14">
+          <div>
+            <div class="quiz-tabs">
+              <div class="quiz-tab active" onclick="setQuizQuestion(1)">Questão 1</div>
+              <div class="quiz-tab" onclick="setQuizQuestion(2)">Questão 2</div>
+              <div class="quiz-tab" onclick="setQuizQuestion(3)">Questão 3</div>
+              <div class="quiz-tab" onclick="setQuizQuestion(4)">Questão 4</div>
+            </div>
+
+            <!-- QUESTAO 1 -->
+            <div class="quiz-question-container active" id="quiz-q1">
+              <div class="quiz-text">
+                <strong>Q1)</strong> Um dado de metal no formato de cubo possui arestas medindo exatamente \( 3\text{ cm} \). Qual é o volume ocupado por esse dado?
+              </div>
+              <div class="quiz-options">
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'a')"><span class="quiz-option-letter">A</span> \( 9\text{ cm}^3 \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'b')"><span class="quiz-option-letter">B</span> \( 27\text{ cm}^3 \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'c')"><span class="quiz-option-letter">C</span> \( 54\text{ cm}^3 \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'd')"><span class="quiz-option-letter">D</span> \( 18\text{ cm}^3 \)</div>
+              </div>
+              <div class="quiz-explanation-drawer" id="expl-q1">
+                <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
+                <div class="quiz-explanation-text">
+                  O volume de um cubo é dado por \( V = a^3 \). <br>
+                  Portanto, para aresta \( a = 3\text{ cm} \): <br>
+                  \( V = 3 \times 3 \times 3 = 27\text{ cm}^3 \). A opção correta é a <strong>B</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTAO 2 -->
+            <div class="quiz-question-container" id="quiz-q2">
+              <div class="quiz-text">
+                <strong>Q2)</strong> Uma embalagem de suco no formato de paralelepípedo retângulo tem dimensões \( 10\text{ cm} \times 5\text{ cm} \times 20\text{ cm} \). Qual é a sua capacidade total em litros?
+              </div>
+              <div class="quiz-options">
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'a')"><span class="quiz-option-letter">A</span> 1 Litro</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'b')"><span class="quiz-option-letter">B</span> 1.000 Litros</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'c')"><span class="quiz-option-letter">C</span> 2 Litros</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'd')"><span class="quiz-option-letter">D</span> 0,5 Litro</div>
+              </div>
+              <div class="quiz-explanation-drawer" id="expl-q2">
+                <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
+                <div class="quiz-explanation-text">
+                  O volume é dado por \( V = a \cdot b \cdot c = 10 \times 5 \times 20 = 1.000\text{ cm}^3 \).<br>
+                  Como \( 1.000\text{ cm}^3 = 1.000\text{ mL} \), convertemos para litros dividindo por 1.000:<br>
+                  \( 1.000 \div 1.000 = 1\text{ Litro} \). A alternativa correta é a <strong>A</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTAO 3 -->
+            <div class="quiz-question-container" id="quiz-q3">
+              <div class="quiz-text">
+                <strong>Q3)</strong> Simplifique a expressão a seguir utilizando as propriedades da potenciação de mesma base: \( 3^5 \times 3^2 \div 3^4 \). Qual o valor final obtido?
+              </div>
+              <div class="quiz-options">
+                <div class="quiz-option" onclick="checkAnswer(this, 3, 'a')"><span class="quiz-option-letter">A</span> 27</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 3, 'b')"><span class="quiz-option-letter">B</span> 9</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 3, 'c')"><span class="quiz-option-letter">C</span> 3</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 3, 'd')"><span class="quiz-option-letter">D</span> 81</div>
+              </div>
+              <div class="quiz-explanation-drawer" id="expl-q3">
+                <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
+                <div class="quiz-explanation-text">
+                  Primeiro resolvemos o produto de mesma base somando os expoentes: \( 3^5 \times 3^2 = 3^{5+2} = 3^7 \).<br>
+                  Depois resolvemos a divisão de mesma base subtraindo os expoentes: \( 3^7 \div 3^4 = 3^{7-4} = 3^3 \).<br>
+                  Calculando o valor final: \( 3^3 = 3 \times 3 \times 3 = 27 \). A opção correta é a <strong>A</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTAO 4 -->
+            <div class="quiz-question-container" id="quiz-q4">
+              <div class="quiz-text">
+                <strong>Q4)</strong> Dois ciclistas partem juntos de uma linha de largada em uma pista circular. O primeiro completa uma volta a cada 12 minutos e o segundo a cada 18 minutos. Após quanto tempo eles se cruzarão novamente no ponto de largada?
+              </div>
+              <div class="quiz-options">
+                <div class="quiz-option" onclick="checkAnswer(this, 4, 'a')"><span class="quiz-option-letter">A</span> 18 minutos</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 4, 'b')"><span class="quiz-option-letter">B</span> 36 minutos</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 4, 'c')"><span class="quiz-option-letter">C</span> 30 minutos</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 4, 'd')"><span class="quiz-option-letter">D</span> 72 minutos</div>
+              </div>
+              <div class="quiz-explanation-drawer" id="expl-q4">
+                <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
+                <div class="quiz-explanation-text">
+                  Este é um problema clássico de encontro e ciclos repetitivos, resolvido por MMC:<br>
+                  Fatorando 12 e 18 simultaneamente:<br>
+                  \( 12, 18 \mid 2 \implies 6, 9 \mid 2 \implies 3, 9 \mid 3 \implies 1, 3 \mid 3 \implies 1, 1 \).<br>
+                  \( \text{MMC}(12, 18) = 2^2 \times 3^2 = 4 \times 9 = 36\text{ minutos} \). A opção correta é a <strong>B</strong>.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 15: SIMULADO ESPECIAL IFES ==================== -->
+        <div class="slide-pane" id="slide-15">
+          <div>
+            <div class="quiz-tabs">
+              <div class="quiz-tab active" onclick="setQuizQuestion2(1)">Questão IFES 1</div>
+              <div class="quiz-tab" onclick="setQuizQuestion2(2)">Questão IFES 2</div>
+              <div class="quiz-tab" onclick="setQuizQuestion2(3)">Questão IFES 3</div>
+            </div>
+
+            <!-- QUESTÃO 1 (IFES 2022) -->
+            <div class="quiz-question-container active" id="quiz-2-q1">
+              <div class="quiz-text" style="font-size:13.5px;">
+                <strong>QUESTÃO 4 (IFES 2022) —</strong> Uma maquete da letra "E" foi construída utilizando cubinhos maciços de aresta \( 1\text{ cm} \). O bloco de dimensões totais seria de \( 5\text{ cm} \) de altura, \( 3\text{ cm} \) de largura e \( 1\text{ cm} \) de espessura. Sabendo que foram retiradas duas fileiras centrais da frente, quantos cubinhos compõem essa letra "E"?
+              </div>
+              <div class="quiz-options" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="quiz-option" onclick="checkAnswer2(this, 1, 'a')"><span class="quiz-option-letter">A</span> 10 cubinhos</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 1, 'b')"><span class="quiz-option-letter">B</span> 11 cubinhos</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 1, 'c')"><span class="quiz-option-letter">C</span> 12 cubinhos</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 1, 'd')"><span class="quiz-option-letter">D</span> 13 cubinhos</div>
+              </div>
+              
+              <button class="btn-reveal-calc" id="btn-reveal-q2-q1" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" style="margin-top:5px;">
+                <div class="quiz-explanation-text">
+                  O bloco total de \( 5 \times 3 \times 1 \) teria \( 15\text{ cubinhos} \).<br>
+                  A letra "E" é vazada retirando duas partes. As partes retiradas são as fileiras horizontais centrais superior e inferior da frente.<br>
+                  Cada fileira retirada tem \( 2\text{ cubinhos} \) de comprimento. <br>
+                  Portanto, cubinhos restantes = \( 15 - (2 \times 2) = 11\text{ cubinhos} \). Resposta correta: <strong>B</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTÃO 2 (Elaborada) -->
+            <div class="quiz-question-container" id="quiz-2-q2">
+              <div class="quiz-text" style="font-size:13.5px;">
+                <strong>QUESTÃO 2 (Elaborada) —</strong> Três faróis marítimos piscam em frequências fixas e distintas: o primeiro a cada \( 15\text{ segundos} \), o segundo a cada \( 20\text{ segundos} \), e o terceiro a cada \( 25\text{ segundos} \). Se eles piscaram juntos agora, após quanto tempo piscarão novamente de forma síncrona?
+              </div>
+              <div class="quiz-options" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="quiz-option" onclick="checkAnswer2(this, 2, 'a')"><span class="quiz-option-letter">A</span> 150 s</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 2, 'b')"><span class="quiz-option-letter">B</span> 300 s</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 2, 'c')"><span class="quiz-option-letter">C</span> 100 s</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 2, 'd')"><span class="quiz-option-letter">D</span> 600 s</div>
+              </div>
+
+              <button class="btn-reveal-calc" id="btn-reveal-q2-q2" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" style="margin-top:5px;">
+                <div class="quiz-explanation-text">
+                  Determinamos o menor tempo comum fazendo o \( \text{MMC}(15, 20, 25) \):<br>
+                  Fatorando:<br>
+                  \( 15, 20, 25 \mid 2 \implies 15, 10, 25 \)<br>
+                  \( 15, 10, 25 \mid 2 \implies 15, 5, 25 \)<br>
+                  \( 15, 5, 25 \mid 3 \implies 5, 5, 25 \)<br>
+                  \( 5, 5, 25 \mid 5 \implies 1, 1, 5 \)<br>
+                  \( 1, 1, 5 \mid 5 \implies 1, 1, 1 \).<br>
+                  MMC: \( 2 \times 2 \times 3 \times 5 \times 5 = 300\text{ segundos} \) (5 minutos). Resposta correta: <strong>B</strong>.
+                </div>
+              </div>
+            </div>
+
+            <!-- QUESTÃO 3 (Estilo IFES) -->
+            <div class="quiz-question-container" id="quiz-2-q3">
+              <div class="quiz-text" style="font-size:13.5px;">
+                <strong>QUESTÃO 3 (Estilo IFES) —</strong> Uma rampa de acesso reta e inclinada possui um comprimento total de \( 10\text{ metros} \) e atinge uma altura vertical máxima de \( 6\text{ metros} \) em relação ao solo. Qual é o comprimento da projeção horizontal dessa rampa sobre o solo?
+              </div>
+              <div class="quiz-options" style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div class="quiz-option" onclick="checkAnswer2(this, 3, 'a')"><span class="quiz-option-letter">A</span> 4 metros</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 3, 'b')"><span class="quiz-option-letter">B</span> 8 metros</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 3, 'c')"><span class="quiz-option-letter">C</span> 12 metros</div>
+                <div class="quiz-option" onclick="checkAnswer2(this, 3, 'd')"><span class="quiz-option-letter">D</span> 16 metros</div>
+              </div>
+
+              <button class="btn-reveal-calc" id="btn-reveal-q2-q3" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
+                <i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada
+              </button>
+              <div class="quiz-explanation-drawer" style="margin-top:5px;">
+                <div class="quiz-explanation-text">
+                  A rampa, sua altura e sua projeção horizontal formam um triângulo retângulo. A rampa representa a hipotenusa (\( c = 10\text{ m} \)), a altura vertical é um dos catetos (\( a = 6\text{ m} \)), e a projeção horizontal é o outro cateto (\( b \)).<br>
+                  Aplicando o Teorema de Pitágoras:<br>
+                  \( c^2 = a^2 + b^2 \implies 10^2 = 6^2 + b^2 \)<br>
+                  \( 100 = 36 + b^2 \implies b^2 = 100 - 36 = 64 \)<br>
+                  \( b = \sqrt{64} = 8\text{ metros} \). Resposta correta: <strong>B</strong>.
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+      <!-- FOOTER DO SLIDE -->
+      <div class="slide-footer">
+        <span>PRÉ-IFES 2026 — MATEMÁTICA</span>
+        <span class="slide-number" id="slide-num-label">Slide 1 de 15</span>
+      </div>
+
+    </div>
+
+    <!-- CONTROLES DE NAVEGAÇÃO -->
+    <div class="navigation-controls">
+      <button class="btn-nav" id="btn-prev" onclick="prevSlide()" title="Slide Anterior"><i class="fa-solid fa-arrow-left"></i></button>
+      <button class="btn-nav" id="btn-next" onclick="nextSlide()" title="Próximo Slide"><i class="fa-solid fa-arrow-right"></i></button>
+    </div>
+
+    <!-- CONTROLES AUXILIARES -->
+    <div class="btn-auxiliary">
+      <a href="index.html" class="btn-aux" style="text-decoration: none;"><i class="fa-solid fa-home"></i> Voltar ao Portal</a>
+      <button class="btn-aux" onclick="toggleSidebar(true)"><i class="fa-solid fa-list"></i> Menu</button>
+      <button class="btn-aux" onclick="toggleFullscreen()"><i class="fa-solid fa-expand"></i> Tela Cheia</button>
+    </div>
+
+  </div>
+
+  <!-- AD BANNER FIXED BOTTOM -->
+  <div class="ad-banner-bottom">
+    <span class="ad-banner-label">Patrocínio</span>
+    <div class="ad-banner-placeholder">
+      <i class="fa-solid fa-rectangle-ad"></i>
+      <span>Google AdSense (Aula 2) - Recomendado: Banner Horizontal 728x90 / Adaptável</span>
+    </div>
+    <!-- Quando aprovado pelo AdSense, substitua a div.ad-banner-placeholder pelo código abaixo: -->
+    <!--
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
+         data-ad-slot="AULA2_SLOT_ID"
+         data-ad-format="horizontal"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+    -->
+  </div>
+
+  <!-- MENU LATERAL -->
+  <div class="overlay" id="overlay" onclick="toggleSidebar(false)"></div>
+  <div class="sidebar-menu" id="sidebar-menu">
+    <div class="sidebar-header">
+      <span class="sidebar-title">Conteúdo da Aula 2</span>
+      <button class="btn-close-sidebar" onclick="toggleSidebar(false)"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <ul class="menu-item-list">
+      <li class="menu-item active" onclick="goToSlide(1)"><span class="menu-item-num">1</span> Capa: Aula 2</li>
+      <li class="menu-item" onclick="goToSlide(2)"><span class="menu-item-num">2</span> Conceito de Volume</li>
+      <li class="menu-item" onclick="goToSlide(3)"><span class="menu-item-num">3</span> Cubo (Teoria & Exemplos)</li>
+      <li class="menu-item" onclick="goToSlide(4)"><span class="menu-item-num">4</span> Paralelepípedo (Teoria)</li>
+      <li class="menu-item" onclick="goToSlide(5)"><span class="menu-item-num">5</span> Cilindro (Teoria)</li>
+      <li class="menu-item" onclick="goToSlide(6)"><span class="menu-item-num">6</span> Simulador de Sólidos 3D</li>
+      <li class="menu-item" onclick="goToSlide(7)"><span class="menu-item-num">7</span> Conversão de Unidades</li>
+      <li class="menu-item" onclick="goToSlide(8)"><span class="menu-item-num">8</span> Potenciação (Teoria)</li>
+      <li class="menu-item" onclick="goToSlide(9)"><span class="menu-item-num">9</span> Notação Científica (Teoria)</li>
+      <li class="menu-item" onclick="goToSlide(10)"><span class="menu-item-num">10</span> Notação Científica na Prática</li>
+      <li class="menu-item" onclick="goToSlide(11)"><span class="menu-item-num">11</span> MDC vs MMC (Revisão Rápida)</li>
+      <li class="menu-item" onclick="goToSlide(12)"><span class="menu-item-num">12</span> Simulador MDC e MMC</li>
+      <li class="menu-item" onclick="goToSlide(13)"><span class="menu-item-num">13</span> Teorema de Pitágoras</li>
+      <li class="menu-item" onclick="goToSlide(14)"><span class="menu-item-num">14</span> Quiz de Fixação</li>
+      <li class="menu-item" onclick="goToSlide(15)"><span class="menu-item-num">15</span> Simulado IFES</li>
+    </ul>
+  </div>
+
+  <script>
+    // --- GERENCIAMENTO DE SLIDES ---
+    let currentSlide = 1;
+    const totalSlides = 15;
+
+    const titles = {
+      1: "Volume, Potenciação, MDC/MMC e Pitágoras",
+      2: "Conceito Geral de Volume (3D)",
+      3: "Volume do Cubo (Faces Quadradas)",
+      4: "Volume do Paralelepípedo (Prisma Retangular)",
+      5: "Volume do Cilindro (Revolução)",
+      6: "Simulador de Volumes Interativo",
+      7: "Conversão de Medidas de Volume & Capacidade",
+      8: "Potenciação & Propriedades das Potências",
+      9: "Notação Científica (Teoria)",
+      10: "Notação Científica na Prática (Exemplos)",
+      11: "MDC vs MMC (Revisão Rápida)",
+      12: "Fatorador Simultâneo de MDC e MMC",
+      13: "Teorema de Pitágoras (Geometricamente)",
+      14: "Quiz de Fixação Interativo",
+      15: "Simulado Especial IFES"
+    };
+
+    function updatePresentationState() {
+      // Ativa o painel do slide correto
+      document.querySelectorAll('.slide-pane').forEach(pane => pane.classList.remove('active'));
+      document.getElementById(`slide-${currentSlide}`).classList.add('active');
+
+      // Atualiza o Header
+      document.getElementById('slide-header-title').innerText = titles[currentSlide];
+      document.getElementById('slide-badge-label').innerText = currentSlide === 1 ? "INÍCIO" : `SLIDE ${currentSlide}`;
+
+      // Atualiza o Footer
+      document.getElementById('slide-num-label').innerText = `Slide ${currentSlide} de ${totalSlides}`;
+
+      // Atualiza a Barra de Progresso superior
+      const percent = ((currentSlide - 1) / (totalSlides - 1)) * 100;
+      document.getElementById('top-progress-bar').style.width = `${percent}%`;
+
+      // Habilita/Desabilita botões
+      document.getElementById('btn-prev').disabled = currentSlide === 1;
+      document.getElementById('btn-next').disabled = currentSlide === totalSlides;
+
+      // Sincroniza itens do Menu Lateral
+      document.querySelectorAll('.menu-item').forEach((item, index) => {
+        if (index + 1 === currentSlide) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      // Roda o MathJax para processar as fórmulas dinâmicas do slide ativo
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+
+      // Reinicia/Atualiza os simuladores quando acessados
+      if (currentSlide === 6) updateSlide6();
+      if (currentSlide === 7) updateSlide7();
+      if (currentSlide === 10) showS11Example(1);
+      if (currentSlide === 11) setMdcMmcTab(1);
+      if (currentSlide === 12) runS13Calc();
+      if (currentSlide === 13) updateSlide14();
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updatePresentationState();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updatePresentationState();
+      }
+    }
+
+    function goToSlide(num) {
+      currentSlide = num;
+      updatePresentationState();
+      toggleSidebar(false); // Fecha o menu lateral
+    }
+
+    // --- SLIDE 11: ABAS INTERATIVAS MDC E MMC ---
+    function setMdcMmcTab(tabNum) {
+      const slide11 = document.getElementById('slide-11');
+      if (!slide11) return;
+      
+      slide11.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
+        tab.classList.toggle('active', idx + 1 === tabNum);
+      });
+      
+      slide11.querySelectorAll('.s11-tab-content').forEach((content, idx) => {
+        if (idx + 1 === tabNum) {
+          content.style.display = (tabNum === 1) ? 'block' : 'grid';
+          content.classList.add('active');
+        } else {
+          content.style.display = 'none';
+          content.classList.remove('active');
+        }
+
+        // Oculta a resolução ao trocar de aba
+        const resWrapper = content.querySelector('.s11-res-wrapper');
+        const imgWrapper = content.querySelector('.s11-img-wrapper');
+        const btn = content.querySelector('.btn-reveal-calc');
+        if (resWrapper && btn) {
+          resWrapper.style.display = 'none';
+          if (imgWrapper) imgWrapper.style.display = 'none';
+          btn.innerHTML = '<i class="fa-solid fa-eye"></i> Mostrar Resolução';
+          btn.style.background = 'var(--accent)';
+        }
+      });
+      
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    function toggleS11Resolution(btn) {
+      const parent = btn.closest('.s11-tab-content');
+      if (!parent) return;
+      const resWrapper = parent.querySelector('.s11-res-wrapper');
+      const imgWrapper = parent.querySelector('.s11-img-wrapper');
+      
+      const isHidden = resWrapper.style.display === 'none' || resWrapper.style.display === '';
+      if (isHidden) {
+        resWrapper.style.display = 'block';
+        if (imgWrapper) {
+          imgWrapper.style.display = 'flex';
+        }
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Ocultar Resolução';
+        btn.style.background = 'var(--primary-light)';
+      } else {
+        resWrapper.style.display = 'none';
+        if (imgWrapper) {
+          imgWrapper.style.display = 'none';
+        }
+        btn.innerHTML = '<i class="fa-solid fa-eye"></i> Mostrar Resolução';
+        btn.style.background = 'var(--accent)';
+      }
+      
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    // Navegação via teclado
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+
+    // --- CONTROLES DE TELA E MENU ---
+    function toggleSidebar(forceState) {
+      const menu = document.getElementById('sidebar-menu');
+      const overlay = document.getElementById('overlay');
+      
+      const isOpen = forceState !== undefined ? forceState : !menu.classList.contains('open');
+      
+      if (isOpen) {
+        menu.classList.add('open');
+        overlay.classList.add('active');
+      } else {
+        menu.classList.remove('open');
+        overlay.classList.remove('active');
+      }
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error(`Erro ao ativar Tela Cheia: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    // --- SLIDE 6: SIMULADOR DE SÓLIDOS GEOMÉTRICOS ---
+    let s6Type = 'cubo';
+
+    function setS6Type(type) {
+      s6Type = type;
+      document.getElementById('btn-s6-cubo').classList.toggle('active', type === 'cubo');
+      document.getElementById('btn-s6-para').classList.toggle('active', type === 'para');
+      document.getElementById('btn-s6-cil').classList.toggle('active', type === 'cil');
+
+      document.getElementById('ctrl-s6-b').style.display = type === 'para' ? 'block' : 'none';
+      document.getElementById('ctrl-s6-c').style.display = (type === 'para' || type === 'cil') ? 'block' : 'none';
+
+      const labelA = document.querySelector('#ctrl-s6-a .control-label');
+      const labelC = document.querySelector('#ctrl-s6-c .control-label');
+      
+      if (type === 'cubo') {
+        labelA.innerHTML = 'Aresta (a): <span id="s6-a-val">5 cm</span>';
+      } else if (type === 'para') {
+        labelA.innerHTML = 'Comprimento (a): <span id="s6-a-val">5 cm</span>';
+        labelC.innerHTML = 'Altura (c): <span id="s6-c-val">3 cm</span>';
+      } else {
+        labelA.innerHTML = 'Raio da Base (r): <span id="s6-a-val">5 cm</span>';
+        labelC.innerHTML = 'Altura (h): <span id="s6-c-val">3 cm</span>';
+      }
+
+      updateSlide6();
+    }
+
+    function updateSlide6() {
+      const a = parseInt(document.getElementById('s6-slider-a').value);
+      const b = s6Type === 'cubo' ? a : parseInt(document.getElementById('s6-slider-b').value);
+      const c = s6Type === 'cubo' ? a : parseInt(document.getElementById('s6-slider-c').value);
+
+      document.getElementById('s6-a-val').innerText = `${a} cm`;
+      if (s6Type === 'para') {
+        document.getElementById('s6-b-val').innerText = `${b} cm`;
+        document.getElementById('s6-c-val').innerText = `${c} cm`;
+      } else if (s6Type === 'cil') {
+        document.getElementById('s6-c-val').innerText = `${c} cm`;
+      }
+
+      const svg = document.getElementById('s6-svg');
+      svg.innerHTML = '';
+
+      if (s6Type === 'cubo' || s6Type === 'para') {
+        const vol = a * b * c;
+        const scaleX = 16;
+        const scaleY = 6;
+        const scaleZ = 16;
+
+        const w = a * scaleX;
+        const dx = b * scaleY;
+        const dy = b * scaleY;
+        const h = c * scaleZ;
+
+        const ox = 150 - (w + dx)/2;
+        const oy = 142.5 + (h + dy)/2;
+
+        const p1 = { x: ox, y: oy };
+        const p2 = { x: ox + w, y: oy };
+        const p3 = { x: ox + w + dx, y: oy - dy };
+        const p4 = { x: ox + dx, y: oy - dy };
+        const p5 = { x: p1.x, y: p1.y - h };
+        const p6 = { x: p2.x, y: p2.y - h };
+        const p7 = { x: p3.x, y: p3.y - h };
+        const p8 = { x: p4.x, y: p4.y - h };
+
+        svg.innerHTML = `
+          <polyline points="${p4.x},${p4.y} ${p3.x},${p3.y}" stroke="#ccc" stroke-width="1.2" stroke-dasharray="3,3" />
+          <polyline points="${p4.x},${p4.y} ${p1.x},${p1.y}" stroke="#ccc" stroke-width="1.2" stroke-dasharray="3,3" />
+          <polyline points="${p4.x},${p4.y} ${p8.x},${p8.y}" stroke="#ccc" stroke-width="1.2" stroke-dasharray="3,3" />
+          
+          <polygon points="${p1.x},${p1.y} ${p2.x},${p2.y} ${p6.x},${p6.y} ${p5.x},${p5.y}" fill="#C8E6C9" stroke="var(--primary)" stroke-width="2" />
+          <polygon points="${p2.x},${p2.y} ${p3.x},${p3.y} ${p7.x},${p7.y} ${p6.x},${p6.y}" fill="#81C784" stroke="var(--primary)" stroke-width="2" />
+          <polygon points="${p5.x},${p5.y} ${p6.x},${p6.y} ${p7.x},${p7.y} ${p8.x},${p8.y}" fill="#A5D6A7" stroke="var(--primary)" stroke-width="2" />
+
+          <text x="${(p1.x + p2.x)/2}" y="${p1.y + 16}" text-anchor="middle" font-size="11" fill="var(--primary)" font-weight="800">a = ${a}</text>
+          <text x="${(p2.x + p3.x)/2 + 10}" y="${(p2.y + p3.y)/2 + 8}" text-anchor="middle" font-size="11" fill="var(--primary-light)" font-weight="800">${s6Type === 'para' ? 'b = ' + b : 'a = ' + a}</text>
+          <text x="${p1.x - 12}" y="${(p1.y + p5.y)/2}" text-anchor="end" font-size="11" font-weight="800" fill="var(--accent)">${s6Type === 'para' ? 'c = ' + c : 'a = ' + a}</text>
+        `;
+
+        const formulaContainer = document.getElementById('s6-formula-lbl');
+        const calcContainer = document.getElementById('s6-calc-step');
+
+        if (s6Type === 'cubo') {
+          formulaContainer.innerHTML = `<strong>Fórmula do Cubo:</strong> \\( V = a^3 \\)`;
+          calcContainer.innerHTML = `\\( V = ${a}^3 = ${vol}\\text{ cm}^3 \\)`;
+        } else {
+          formulaContainer.innerHTML = `<strong>Fórmula do Paralelepípedo:</strong> \\( V = a \\cdot b \\cdot c \\)`;
+          calcContainer.innerHTML = `\\( V = ${a} \\times ${b} \\times ${c} = ${vol}\\text{ cm}^3 \\)`;
+        }
+
+      } else {
+        // Cilindro
+        const r = a;
+        const h = c;
+        const vol = (Math.PI * r * r * h).toFixed(1);
+        const volClean = (3.14 * r * r * h).toFixed(1);
+
+        const scaleR = 12;
+        const scaleH = 10;
+
+        const baseRadius = r * scaleR;
+        const height = h * scaleH;
+        const ellipseH = baseRadius * 0.25;
+
+        const cx = 150;
+        const cyTop = 140 - height/2;
+        const cyBottom = 140 + height/2;
+
+        svg.innerHTML = `
+          <path d="M ${cx - baseRadius},${cyBottom} A ${baseRadius},${ellipseH} 0 0 1 ${cx + baseRadius},${cyBottom}" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.6" />
+          <rect x="${cx - baseRadius}" y="${cyTop}" width="${2 * baseRadius}" height="${height}" fill="#C8E6C9" />
+          <ellipse cx="${cx}" cy="${cyTop}" rx="${baseRadius}" ry="${ellipseH}" fill="#A5D6A7" stroke="var(--primary)" stroke-width="2" />
+          
+          <line x1="${cx - baseRadius}" y1="${cyTop}" x2="${cx - baseRadius}" y2="${cyBottom}" stroke="var(--primary)" stroke-width="2" />
+          <line x1="${cx + baseRadius}" y1="${cyTop}" x2="${cx + baseRadius}" y2="${cyBottom}" stroke="var(--primary)" stroke-width="2" />
+          
+          <path d="M ${cx - baseRadius},${cyBottom} A ${baseRadius},${ellipseH} 0 0 0 ${cx + baseRadius},${cyBottom}" fill="none" stroke="var(--primary)" stroke-width="2" />
+          
+          <line x1="${cx}" y1="${cyTop}" x2="${cx + baseRadius}" y2="${cyTop}" stroke="var(--accent)" stroke-width="2.5" />
+          <circle cx="${cx}" cy="${cyTop}" r="3.5" fill="var(--accent)" />
+          <text x="${cx + baseRadius/2}" y="${cyTop - 6}" font-size="11" fill="var(--accent)" font-weight="800" text-anchor="middle">r = ${r}</text>
+          
+          <line x1="${cx + baseRadius + 15}" y1="${cyTop}" x2="${cx + baseRadius + 15}" y2="${cyBottom}" stroke="var(--primary-light)" stroke-width="1.5" />
+          <text x="${cx + baseRadius + 22}" y="${(cyTop + cyBottom)/2 + 4}" font-size="11" fill="var(--primary-light)" font-weight="800">h = ${h}</text>
+        `;
+
+        const formulaContainer = document.getElementById('s6-formula-lbl');
+        const calcContainer = document.getElementById('s6-calc-step');
+
+        formulaContainer.innerHTML = `<strong>Fórmula do Cilindro:</strong> \\( V = \\pi r^2 h \\)`;
+        calcContainer.innerHTML = `\\( V \\approx 3,14 \\times ${r}^2 \\times ${h} = ${volClean}\\text{ cm}^3 \\)`;
+      }
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([
+          document.getElementById('s6-formula-lbl'),
+          document.getElementById('s6-calc-step')
+        ]);
+      }
+    }
+
+    // --- SLIDE 7: CONVERSOR DE MEDIDAS ---
+    function updateSlide7() {
+      const val = parseFloat(document.getElementById('s7-input').value) || 0;
+      const from = document.getElementById('s7-from').value;
+      const to = document.getElementById('s7-to').value;
+
+      let liters = 0;
+      if (from === 'm3') liters = val * 1000;
+      else if (from === 'dm3') liters = val;
+      else if (from === 'cm3') liters = val / 1000;
+      else if (from === 'L') liters = val;
+
+      let outputVal = 0;
+      let displayUnit = '';
+      if (to === 'L') { outputVal = liters; displayUnit = 'L'; }
+      else if (to === 'mL') { outputVal = liters * 1000; displayUnit = 'mL'; }
+      else if (to === 'm3') { outputVal = liters / 1000; displayUnit = 'm³'; }
+      else if (to === 'dm3') { outputVal = liters; displayUnit = 'dm³'; }
+
+      const formattedOutput = outputVal.toLocaleString('pt-BR', { maximumFractionDigits: 4 });
+      document.getElementById('s7-result-val').innerText = `${formattedOutput} ${displayUnit}`;
+
+      let desc = '';
+      let math = '';
+      if (from === 'm3' && to === 'L') {
+        desc = "Multiplicamos o valor por 1.000, pois cada metro cúbico comporta 1.000 Litros.";
+        math = `\\( ${val}\\text{ m}^3 \\times 1.000 = ${formattedOutput}\\text{ L} \\)`;
+      } else if (from === 'cm3' && to === 'mL') {
+        desc = "Conversão direta de 1 para 1, visto que 1 cm³ é exatamente equivalente a 1 mL.";
+        math = `\\( ${val}\\text{ cm}^3 = ${formattedOutput}\\text{ mL} \\)`;
+      } else if (from === 'dm3' && to === 'L') {
+        desc = "Conversão direta de 1 para 1, visto que 1 dm³ é exatamente equivalente a 1 Litro.";
+        math = `\\( ${val}\\text{ dm}^3 = ${formattedOutput}\\text{ L} \\)`;
+      } else {
+        desc = `Convertido utilizando equivalência de bases físicas.`;
+        math = `\\( ${val}\\text{ (origem)} \\to ${formattedOutput}\\text{ ${displayUnit}} \\)`;
+      }
+
+      document.getElementById('s7-result-desc').innerText = desc;
+      const mathContainer = document.getElementById('s7-step-math');
+      mathContainer.innerHTML = math;
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([mathContainer]);
+      }
+    }
+
+
+
+    // --- SLIDE 11: NOTAÇÃO CIENTÍFICA EXEMPLOS PRÁTICOS ---
+    function showS11Example(idx) {
+      // Deativa todos os botões do slide 11
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`s11-btn-${i}`);
+        if (btn) {
+          btn.style.background = '#f5f5f5';
+          btn.style.color = 'var(--text)';
+          btn.style.borderColor = '#ddd';
+        }
+      }
+      // Ativa o botão selecionado
+      const activeBtn = document.getElementById(`s11-btn-${idx}`);
+      if (activeBtn) {
+        activeBtn.style.background = 'var(--primary)';
+        activeBtn.style.color = '#fff';
+        activeBtn.style.borderColor = 'var(--primary)';
+      }
+
+      const title = document.getElementById('s11-ex-title');
+      const original = document.getElementById('s11-ex-original');
+      const p1 = document.getElementById('s11-ex-p1');
+      const p2 = document.getElementById('s11-ex-p2');
+      const p3 = document.getElementById('s11-ex-p3');
+      const finalBox = document.getElementById('s11-ex-final');
+
+      if (idx === 1) {
+        title.innerHTML = '<i class="fa-solid fa-earth-americas"></i> Exemplo 1: População da Terra (Grande)';
+        original.innerHTML = '8.000.000.000';
+        p1.innerHTML = 'A vírgula invisível está posicionada no final do número inteiro: 8.000.000.000,';
+        p2.innerHTML = 'Deslocamos a vírgula 9 casas para a esquerda até ficar após o primeiro algarismo significativo: 8,0';
+        p3.innerHTML = 'Como a vírgula andou para a esquerda, o expoente de 10 será positivo (+9).';
+        finalBox.innerHTML = '\\( 8 \\times 10^9 \\)';
+      } else if (idx === 2) {
+        title.innerHTML = '<i class="fa-solid fa-virus"></i> Exemplo 2: Vírus da Influenza (Pequeno)';
+        original.innerHTML = '0,00000012 m';
+        p1.innerHTML = 'A vírgula está visível no início do número decimal: 0,00000012';
+        p2.innerHTML = 'Deslocamos a vírgula 7 casas para a direita para obtermos uma mantissa entre 1 e 10: 1,2';
+        p3.innerHTML = 'Como a vírgula andou para a direita, o expoente de 10 será negativo (-7).';
+        finalBox.innerHTML = '\\( 1,2 \\times 10^{-7}\\text{ m} \\)';
+      } else if (idx === 3) {
+        title.innerHTML = '<i class="fa-solid fa-sun"></i> Exemplo 3: Distância Terra-Sol (Grande)';
+        original.innerHTML = '150.000.000.000 m';
+        p1.innerHTML = 'A vírgula invisível está no final do número inteiro: 150.000.000.000,';
+        p2.innerHTML = 'Deslocamos a vírgula 11 casas para a esquerda para obtermos a mantissa correta: 1,5';
+        p3.innerHTML = 'Como a vírgula andou para a esquerda, o expoente de 10 será positivo (+11).';
+        finalBox.innerHTML = '\\( 1,5 \\times 10^{11}\\text{ m} \\)';
+      } else if (idx === 4) {
+        title.innerHTML = '<i class="fa-solid fa-bolt"></i> Exemplo 4: Carga do Elétron (Pequeno)';
+        original.innerHTML = '0,00000000000000000016 C';
+        p1.innerHTML = 'A vírgula está visível no início do número decimal: 0,00000000000000000016';
+        p2.innerHTML = 'Deslocamos a vírgula 19 casas para a direita para obtermos a mantissa correta: 1,6';
+        p3.innerHTML = 'Como a vírgula andou para a direita, o expoente de 10 será negativo (-19).';
+        finalBox.innerHTML = '\\( 1,6 \\times 10^{-19}\\text{ C} \\)';
+      }
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([finalBox]);
+      }
+    }
+
+    // --- SLIDE 13: FATORADOR SIMULTÂNEO MDC E MMC ---
+    function runS13Calc() {
+      const a = parseInt(document.getElementById('s13-num-a').value) || 1;
+      const b = parseInt(document.getElementById('s13-num-b').value) || 1;
+
+      const calcMDC = (x, y) => y === 0 ? x : calcMDC(y, x % y);
+      const mdc = calcMDC(a, b);
+      const mmc = (a * b) / mdc;
+
+      document.getElementById('s13-mdc-val').innerText = mdc;
+      document.getElementById('s13-mmc-val').innerText = mmc;
+
+      let stepsHtml = '';
+      let tempA = a;
+      let tempB = b;
+      let d = 2;
+
+      while (tempA > 1 || tempB > 1) {
+        let divides = false;
+        let isCommon = false;
+
+        if (tempA % d === 0 && tempB % d === 0) {
+          isCommon = true;
+          divides = true;
+        } else if (tempA % d === 0 || tempB % d === 0) {
+          divides = true;
+        }
+
+        if (divides) {
+          stepsHtml += `
+            <div class="factoring-step">
+              <span>${tempA}, ${tempB}</span>
+              <span class="prime" style="${isCommon ? 'background:var(--primary-pale); padding:2px 6px; border-radius:4px;' : ''}">${d} ${isCommon ? '★' : ''}</span>
+            </div>
+          `;
+          if (tempA % d === 0) tempA = tempA / d;
+          if (tempB % d === 0) tempB = tempB / d;
+        } else {
+          d++;
+        }
+        if (d > 100) break;
+      }
+
+      stepsHtml += `<div class="factoring-step" style="font-weight:800;"><span>1, 1</span><span>fim</span></div>`;
+      stepsHtml += `<div style="font-size:10px; color:var(--text-light); text-align:right; margin-top:5px;">★ Divisor comum a ambos (fator do MDC)</div>`;
+
+      document.getElementById('s13-factoring-box').innerHTML = stepsHtml;
+    }
+
+    // --- SLIDE 14: TEOREMA DE PITÁGORAS ---
+    function updateSlide14() {
+      const a = parseInt(document.getElementById('s14-slider-a').value);
+      const b = parseInt(document.getElementById('s14-slider-b').value);
+
+      document.getElementById('s14-a-val').innerText = `${a} cm`;
+      document.getElementById('s14-b-val').innerText = `${b} cm`;
+
+      const diag = Math.sqrt(a * a + b * b);
+      const diagClean = diag.toFixed(2);
+
+      const step = document.getElementById('s14-calc-step');
+      step.innerHTML = `\\( c = \\sqrt{${a}^2 + ${b}^2} = \\sqrt{${a*a} + ${b*b}} = \\sqrt{${a*a + b*b}} \\approx ${diagClean}\\text{ cm} \\)`;
+
+      const svg = document.getElementById('s14-svg');
+      svg.innerHTML = '';
+
+      // Cálculo de escala dinâmica para centralizar e ajustar perfeitamente ao viewBox de 300x280
+      const scale1 = 250 / (b + 2 * a);
+      const scale2 = 230 / (2 * b + a);
+      const scale = Math.min(scale1, scale2);
+
+      const w = b * scale;
+      const h = a * scale;
+
+      // rx e ry dinâmicos para centralizar a bounding box
+      const rx = (300 - (w + 2 * h)) / 2 + h;
+      const ry = (280 - (h + 2 * w)) / 2 + h + w;
+
+      const pRight = { x: rx + w, y: ry };
+      const pTop = { x: rx, y: ry - h };
+
+      const qA = `
+        <rect x="${rx - h}" y="${pTop.y}" width="${h}" height="${h}" fill="#FFF9C4" class="pit-sq" stroke="var(--warning)" />
+        <text x="${rx - h/2}" y="${pTop.y + h/2 + 4}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--warning)">a² = ${a*a}</text>
+      `;
+
+      const qB = `
+        <rect x="${rx}" y="${ry}" width="${w}" height="${w}" fill="#C8E6C9" class="pit-sq" stroke="var(--primary)" />
+        <text x="${rx + w/2}" y="${ry + w/2 + 4}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--primary)">b² = ${b*b}</text>
+      `;
+
+      // Coordenadas perfeitas do quadrado da hipotenusa (inclinado de verdade)
+      const pHyp1 = pTop;
+      const pHyp2 = pRight;
+      const pHyp3 = { x: pRight.x + h, y: pRight.y - w };
+      const pHyp4 = { x: pTop.x + h, y: pTop.y - w };
+      const areaC = (a*a + b*b);
+      const qC = `
+        <polygon points="${pHyp1.x},${pHyp1.y} ${pHyp2.x},${pHyp2.y} ${pHyp3.x},${pHyp3.y} ${pHyp4.x},${pHyp4.y}" fill="#FFCDD2" class="pit-sq" stroke="var(--accent)" />
+        <text x="${(pHyp1.x + pHyp3.x)/2}" y="${(pHyp1.y + pHyp3.y)/2 + 4}" text-anchor="middle" font-size="9" font-weight="700" fill="var(--accent)" transform="rotate(${-Math.atan2(h, w) * 180 / Math.PI} ${(pHyp1.x + pHyp3.x)/2} ${(pHyp1.y + pHyp3.y)/2})">c² = ${areaC}</text>
+      `;
+
+      svg.innerHTML = `
+        ${qA}
+        ${qB}
+        ${qC}
+
+        <!-- Desenha o Triângulo Retângulo -->
+        <polygon points="${rx},${ry} ${pRight.x},${pRight.y} ${pTop.x},${pTop.y}" fill="#eaeaea" stroke="#333" stroke-width="2.5" />
+        
+        <!-- Símbolo de ângulo reto -->
+        <polyline points="${rx},${ry - 8} ${rx + 8},${ry - 8} ${rx + 8},${ry}" fill="none" stroke="#333" stroke-width="1.5" />
+        <circle cx="${rx + 4}" cy="${ry - 4}" r="1.5" fill="#333" />
+      `;
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise([step]);
+      }
+    }
+
+    // --- SLIDE 14: QUIZ INTERATIVO COM CONFETES ---
+    let quizDone = { 1: false, 2: false, 3: false, 4: false };
+    const quizGabs = { 1: 'b', 2: 'a', 3: 'a', 4: 'b' };
+
+    function setQuizQuestion(qNum) {
+      const slide14 = document.getElementById('slide-14');
+      if (!slide14) return;
+      slide14.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
+        tab.classList.toggle('active', idx + 1 === qNum);
+      });
+      slide14.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
+        q.classList.toggle('active', idx + 1 === qNum);
+      });
+    }
+
+    function checkAnswer(element, qNum, selectedOption) {
+      if (quizDone[qNum]) return;
+      quizDone[qNum] = true;
+
+      const correctAnswer = quizGabs[qNum];
+      const card = element.closest('.quiz-question-container');
+
+      card.querySelectorAll('.quiz-option').forEach(option => {
+        const optionLetter = option.innerText.trim().charAt(0).toLowerCase();
+        
+        if (optionLetter === correctAnswer) {
+          option.classList.add('correct');
+        } else if (optionLetter === selectedOption) {
+          option.classList.add('wrong');
+        }
+        option.classList.add('checked');
+      });
+
+      const expl = document.getElementById(`expl-q${qNum}`) || card.querySelector('.quiz-explanation-drawer');
+      if (expl) expl.style.display = 'block';
+
+      saveProgress('quiz1', qNum, selectedOption, correctAnswer);
+
+      if (selectedOption === correctAnswer) {
+        triggerConfetti();
+      }
+    }
+
+    // --- SLIDE 15: SIMULADO INTERATIVO IFES ---
+    let quizDone2 = { 1: false, 2: false, 3: false };
+    const quizGabs2 = { 1: 'b', 2: 'b', 3: 'b' };
+
+    function setQuizQuestion2(qNum) {
+      const slide15 = document.getElementById('slide-15');
+      if (!slide15) return;
+      
+      slide15.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
+        tab.classList.toggle('active', idx + 1 === qNum);
+      });
+      
+      slide15.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
+        q.classList.toggle('active', idx + 1 === qNum);
+      });
+    }
+
+    function checkAnswer2(element, qNum, selectedOption) {
+      if (quizDone2[qNum]) return;
+      quizDone2[qNum] = true;
+
+      const correctAnswer = quizGabs2[qNum];
+      const card = element.closest('.quiz-question-container');
+
+      card.querySelectorAll('.quiz-option').forEach(option => {
+        const optionLetter = option.innerText.trim().charAt(0).toLowerCase();
+        
+        if (optionLetter === correctAnswer) {
+          option.classList.add('correct');
+        } else if (optionLetter === selectedOption) {
+          option.classList.add('wrong');
+        }
+        option.classList.add('checked');
+      });
+
+      const btnReveal = document.getElementById(`btn-reveal-q2-q${qNum}`);
+      if (btnReveal) {
+        btnReveal.style.display = 'inline-flex';
+      }
+
+      saveProgress('quiz2', qNum, selectedOption, correctAnswer);
+
+      if (selectedOption === correctAnswer) {
+        triggerConfetti();
+      }
+    }
+
+    // --- PERSISTÊNCIA DE PROGRESSO ---
+    function saveProgress(quizId, qNum, selectedOption, correctAnswer) {
+      const progress = JSON.parse(localStorage.getItem('aprovaifes_progress') || '{}');
+      if (!progress['aula2']) progress['aula2'] = {};
+      if (!progress['aula2'][quizId]) progress['aula2'][quizId] = {};
+      progress['aula2'][quizId][qNum] = {
+        selected: selectedOption,
+        correct: selectedOption === correctAnswer
+      };
+      localStorage.setItem('aprovaifes_progress', JSON.stringify(progress));
+    }
+
+    function loadQuizProgress() {
+      const progress = JSON.parse(localStorage.getItem('aprovaifes_progress') || '{}');
+      const lessonProgress = progress['aula2'];
+      if (!lessonProgress) return;
+
+      // Restaura quiz 1
+      if (lessonProgress['quiz1']) {
+        for (const qNum in lessonProgress['quiz1']) {
+          const item = lessonProgress['quiz1'][qNum];
+          quizDone[qNum] = true;
+          const container = document.getElementById(`quiz-q${qNum}`);
+          if (container) {
+            container.querySelectorAll('.quiz-option').forEach(option => {
+              const letter = option.innerText.trim().charAt(0).toLowerCase();
+              if (letter === quizGabs[qNum]) {
+                option.classList.add('correct');
+              } else if (letter === item.selected) {
+                option.classList.add('wrong');
+              }
+              option.classList.add('checked');
+            });
+            const expl = document.getElementById(`expl-q${qNum}`) || container.querySelector('.quiz-explanation-drawer');
+            if (expl) expl.style.display = 'block';
+          }
+        }
+      }
+
+      // Restaura quiz 2
+      if (lessonProgress['quiz2']) {
+        for (const qNum in lessonProgress['quiz2']) {
+          const item = lessonProgress['quiz2'][qNum];
+          quizDone2[qNum] = true;
+          const container = document.getElementById(`quiz2-q${qNum}`) || document.getElementById(`quiz-2-q${qNum}`);
+          if (container) {
+            container.querySelectorAll('.quiz-option').forEach(option => {
+              const letter = option.innerText.trim().charAt(0).toLowerCase();
+              if (letter === quizGabs2[qNum]) {
+                option.classList.add('correct');
+              } else if (letter === item.selected) {
+                option.classList.add('wrong');
+              }
+              option.classList.add('checked');
+            });
+            const expl = container.querySelector('.quiz-explanation-drawer');
+            if (expl) expl.style.display = 'block';
+            
+            const btnReveal = document.getElementById(`btn-reveal-q2-q${qNum}`);
+            if (btnReveal) {
+              btnReveal.style.display = 'inline-flex';
+            }
+          }
+        }
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadQuizProgress);
+
+    function toggleRevealCalc(btn) {
+      const content = btn.nextElementSibling;
+      const isHidden = content.style.display === 'none' || content.style.display === '';
+      if (isHidden) {
+        content.style.display = 'block';
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Ocultar Explicação';
+        btn.style.background = 'var(--primary-light)';
+      } else {
+        content.style.display = 'none';
+        btn.innerHTML = '<i class="fa-solid fa-eye"></i> Mostrar Resolução Comentada';
+        btn.style.background = 'var(--accent)';
+      }
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    // --- MOTOR DE CONFETES COM CANVAS ---
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let confettiList = [];
+    let animationFrameId = null;
+
+    function resizeCanvas() {
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function triggerConfetti() {
+      resizeCanvas();
+      confettiList = [];
+      for (let i = 0; i < 120; i++) {
+        confettiList.push({
+          x: canvas.width / 2 + (Math.random() - 0.5) * 60,
+          y: canvas.height - 30,
+          vx: (Math.random() - 0.5) * 14,
+          vy: -Math.random() * 14 - 6,
+          color: ['#4CAF50', '#2196F3', '#FFEB3B', '#FF9800', '#E91E63', '#9C27B0'][Math.floor(Math.random() * 6)],
+          size: Math.random() * 8 + 5,
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 10
+        });
+      }
+      
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      animateConfetti();
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+
+      confettiList.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.35; // gravidade
+        p.vx *= 0.98; // atrito
+        p.rotation += p.rotationSpeed;
+
+        if (p.y < canvas.height) {
+          alive = true;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        }
+      });
+
+      if (alive) {
+        animationFrameId = requestAnimationFrame(animateConfetti);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    // Inicialização
+    setMdcMmcTab(1);
+    updatePresentationState();
+  </script>
+</body>
+</html>
