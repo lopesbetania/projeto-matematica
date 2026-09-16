@@ -1532,76 +1532,8 @@
           </div>
         </div>
 
-        <!-- ==================== SLIDE 11: OTIMIZAÇÃO QUADRÁTICA (HAMBÚRGUER BRUTÃO) ==================== -->
+        <!-- ==================== SLIDE 11: EXERCÍCIOS DE FIXAÇÃO DA APOSTILA ==================== -->
         <div class="slide-pane" id="slide-11">
-          <div class="slide-layout-split" style="grid-template-columns: 1fr 1fr; align-items: start; gap: 20px;">
-            <div>
-              <div class="theory-card"
-                style="background:#fff; border-left:4px solid var(--primary); margin-bottom: 12px;">
-                <h3><i class="fa-solid fa-store"></i> O Enunciado (IFES 2022)</h3>
-                <p style="font-size:12.5px; line-height:1.6; color:var(--text);">
-                  Um vendedor comercializa seu hambúrguer a <strong>R$ 20,00</strong> e vende <strong>200
-                    unidades</strong> por noite. Ele percebe que para cada aumento de <strong>R$ 0,40</strong> no preço,
-                  ele perde <strong>2 clientes</strong> por noite. Qual preço de venda maximiza o seu faturamento?
-                </p>
-              </div>
-              <div class="info-box" style="margin-top:0;">
-                <i class="fa-solid fa-lightbulb"></i>
-                <div>
-                  <strong>A Estratégia de Otimização:</strong><br>
-                  O faturamento (Receita) é dado por:
-                  <div
-                    style="font-family:'Outfit'; font-weight:700; margin:5px 0; text-anchor:middle; text-align:center; color:var(--info);">
-                    Receita = Preço &times; Quantidade vendida
-                  </div>
-                  Como o preço aumenta e a quantidade diminui, essa multiplicação gerará uma <strong>função
-                    quadrática</strong> (com \(a < 0\)). O ponto máximo dessa função estará no seu <strong>
-                    Vértice</strong>!
-                </div>
-              </div>
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:10px;">
-              <div class="theory-card" style="background:#fff;">
-                <h3><i class="fa-solid fa-code-branch"></i> Estruturando a Lógica</h3>
-                <p style="font-size:12.5px; line-height:1.5; color:var(--text);">
-                  Definimos <strong>\( x \)</strong> como o número de aumentos de R$ 0,40:<br>
-                  - Novo Preço: \( P(x) = 20 + 0{,}40x \)<br>
-                  - Nova Quantidade: \( Q(x) = 200 - 2x \)
-                </p>
-              </div>
-
-              <button class="btn-reveal-calc"
-                style="width:100%; justify-content:center; margin-top:5px; margin-bottom:5px;"
-                onclick="toggleRevealCalc(this)">
-                <i class="fa-solid fa-eye"></i> Mostrar Resolução Passo a Passo
-              </button>
-
-              <div class="quiz-explanation-drawer" style="margin-top:5px; padding: 12px;">
-                <div class="quiz-explanation-title" style="font-size:12.5px; color:var(--primary);"><i
-                    class="fa-solid fa-calculator"></i> Desenvolvimento Algébrico</div>
-                <div style="font-size:11.5px; line-height:1.6; color:var(--text);">
-                  <strong>1) Multiplicação (Propriedade Distributiva):</strong><br>
-                  \( R(x) = P(x) \cdot Q(x) = (20 + 0{,}40x)(200 - 2x) \)<br>
-                  \( R(x) = 20 \cdot 200 + 20 \cdot (-2x) + 0{,}40x \cdot 200 + 0{,}40x \cdot (-2x) \)<br>
-                  \( R(x) = 4.000 - 40x + 80x - 0{,}8x^2 \)<br>
-                  \( R(x) = -0{,}8x^2 + 40x + 4.000 \)<br><br>
-
-                  <strong>2) Quantidade de Aumentos Ótima (\(x_v\)):</strong><br>
-                  Como \( a = -0{,}8 \) e \( b = 40 \):<br>
-                  \( x_v = \dfrac{-b}{2a} = \dfrac{-40}{2(-0{,}8)} = \dfrac{-40}{-1{,}6} = 25\text{ aumentos} \)<br><br>
-
-                  <strong>3) Calculando o Preço Final Ótimo:</strong><br>
-                  Substituindo o \( x_v \) na fórmula do preço:<br>
-                  \( P_{ótimo} = 20 + 0{,}40 \cdot 25 = 20 + 10 = \mathbf{R\$\ 30{,}00} \) ✓
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ==================== SLIDE 12: EXERCÍCIOS DE FIXAÇÃO DA APOSTILA ==================== -->
-        <div class="slide-pane" id="slide-12">
           <div class="slide-layout-full">
             <p class="slide-intro-txt">
               Após resolver os exercícios da apostila, pratique com estas <strong>Questões Contextualizadas do IFES / SARESP</strong> envolvendo Equações do 2º Grau na Geometria:
@@ -1762,8 +1694,8 @@
           </div>
         </div>
 
-        <!-- ==================== SLIDE 13: QUIZ DE FIXAÇÃO ==================== -->
-        <div class="slide-pane" id="slide-13">
+        <!-- ==================== SLIDE 12: QUIZ DE FIXAÇÃO ==================== -->
+        <div class="slide-pane" id="slide-12">
           <div>
             <div class="quiz-tabs">
               <div class="quiz-tab active" onclick="setQuizQuestion(1)">Questão 1</div>
@@ -1910,8 +1842,8 @@
           </div>
         </div>
 
-        <!-- ==================== SLIDE 14: SIMULADO ESPECIAL IFES ==================== -->
-        <div class="slide-pane" id="slide-14">
+        <!-- ==================== SLIDE 13: SIMULADO ESPECIAL IFES ==================== -->
+        <div class="slide-pane" id="slide-13">
           <div>
             <div class="quiz-tabs">
               <div class="quiz-tab active" onclick="setQuizQuestion2(1)">Questão IFES 1</div>
@@ -2030,8 +1962,8 @@
           </div>
         </div>
 
-        <!-- ==================== SLIDE 15: CONCLUSÃO ==================== -->
-        <div class="slide-pane" id="slide-15">
+        <!-- ==================== SLIDE 14: CONCLUSÃO ==================== -->
+        <div class="slide-pane" id="slide-14">
           <div class="slide-layout-full">
             <h2 class="slide-title" style="color:var(--primary); font-size:24px; text-align:center;">🏁 Checklist de
               Revisão - Aula 4</h2>
@@ -2073,7 +2005,7 @@
       <!-- FOOTER DO SLIDE -->
       <div class="slide-footer">
         <span>PRÉ-IFES 2026 — MATEMÁTICA</span>
-        <span class="slide-number" id="slide-num-label">Slide 1 de 15</span>
+        <span class="slide-number" id="slide-num-label">Slide 1 de 14</span>
       </div>
 
     </div>
@@ -2135,17 +2067,16 @@
       <li class="menu-item" onclick="goToSlide(8)"><span class="menu-item-num">8</span> Simulador de PA</li>
       <li class="menu-item" onclick="goToSlide(9)"><span class="menu-item-num">9</span> Padrões de Palitos</li>
       <li class="menu-item" onclick="goToSlide(10)"><span class="menu-item-num">10</span> Simulador Construtor</li>
-      <li class="menu-item" onclick="goToSlide(11)"><span class="menu-item-num">11</span> Problema do Hambúrguer</li>
-      <li class="menu-item" onclick="goToSlide(12)"><span class="menu-item-num">12</span> Exercícios de Fixação</li>
-      <li class="menu-item" onclick="goToSlide(13)"><span class="menu-item-num">13</span> Quiz de Fixação</li>
-      <li class="menu-item" onclick="goToSlide(14)"><span class="menu-item-num">14</span> Simulado IFES</li>
-      <li class="menu-item" onclick="goToSlide(15)"><span class="menu-item-num">15</span> Checklist de Revisão</li>
+      <li class="menu-item" onclick="goToSlide(11)"><span class="menu-item-num">11</span> Exercícios de Fixação</li>
+      <li class="menu-item" onclick="goToSlide(12)"><span class="menu-item-num">12</span> Quiz de Fixação</li>
+      <li class="menu-item" onclick="goToSlide(13)"><span class="menu-item-num">13</span> Simulado IFES</li>
+      <li class="menu-item" onclick="goToSlide(14)"><span class="menu-item-num">14</span> Checklist de Revisão</li>
     </ul>
   </div>
 
   <script>
     // --- GERENCIAMENTO DE SLIDES COM PERSISTÊNCIA AO RECARREGAR ---
-    const totalSlides = 15;
+    const totalSlides = 14;
 
     function getInitialSlide() {
       // 1. Tenta obter pelo Hash da URL (#slide-X ou #X)
@@ -2179,11 +2110,10 @@
       8: "Simulador de PA e Escada de Blocos",
       9: "Padrões de Palitos (Sequências Visuais)",
       10: "Simulador Construtor de Palitos",
-      11: "Otimização Quadrática: Hambúrguer Brutão",
-      12: "Exercícios de Fixação da Aula 4",
-      13: "Quiz de Fixação Interativo",
-      14: "Simulado Especial IFES",
-      15: "Checklist de Revisão - Aula 4"
+      11: "Exercícios de Fixação da Aula 4",
+      12: "Quiz de Fixação Interativo",
+      13: "Simulado Especial IFES",
+      14: "Checklist de Revisão - Aula 4"
     };
 
     function updatePresentationState() {
@@ -2519,17 +2449,17 @@
       }
     }
 
-    // --- SLIDE 13: QUIZ DE FIXAÇÃO ---
+    // --- SLIDE 12: QUIZ DE FIXAÇÃO ---
     let quizDone = { 1: false, 2: false, 3: false, 4: false };
     const quizGabs = { 1: 'b', 2: 'a', 3: 'a', 4: 'c' };
 
     function setQuizQuestion(qNum) {
-      const slide13 = document.getElementById('slide-13');
-      if (!slide13) return;
-      slide13.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
+      const slide12 = document.getElementById('slide-12');
+      if (!slide12) return;
+      slide12.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
         tab.classList.toggle('active', idx + 1 === qNum);
       });
-      slide13.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
+      slide12.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
         q.classList.toggle('active', idx + 1 === qNum);
       });
     }
@@ -2564,19 +2494,19 @@
       }
     }
 
-    // --- SLIDE 14: SIMULADO ESPECIAL IFES ---
+    // --- SLIDE 13: SIMULADO ESPECIAL IFES ---
     let quizDone2 = { 1: false, 2: false, 3: false };
     const quizGabs2 = { 1: 'a', 2: 'c', 3: 'b' };
 
     function setQuizQuestion2(qNum) {
-      const slide14 = document.getElementById('slide-14');
-      if (!slide14) return;
+      const slide13 = document.getElementById('slide-13');
+      if (!slide13) return;
 
-      slide14.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
+      slide13.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
         tab.classList.toggle('active', idx + 1 === qNum);
       });
 
-      slide14.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
+      slide13.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
         q.classList.toggle('active', idx + 1 === qNum);
       });
     }
