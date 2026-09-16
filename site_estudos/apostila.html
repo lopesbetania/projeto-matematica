@@ -1441,75 +1441,102 @@ tbody td{padding:5px 9px;border-bottom:1px solid var(--gb);}
 <!-- ════════ AULA 4 — Bhaskara + PA + Questões ════════ -->
 <div class="page">
   <div class="hdr-content">
-    <div class="sec-left"><div class="sec-num">1</div><div class="sec-title">EQUAÇÃO DO 2º GRAU — BHASKARA</div></div>
+    <div class="sec-left"><div class="sec-num">1</div><div class="sec-title">EQUAÇÃO DO 2º GRAU — TEORIA & BHASKARA</div></div>
     <div class="right-group"><div class="badge-sm"><div class="lbl">AULA</div><div class="num">4</div></div><svg width="32" height="44" viewBox="0 0 48 65"><use href="#L"/></svg></div>
   </div>
   <div class="body">
-    <!-- Fórmulas centrais -->
-    <div class="fcenter">
-      <span class="fbox r">\(\Delta = b^2 - 4ac\)</span>&nbsp;
-      <span class="fbox">\(x = \dfrac{-b \pm \sqrt{\Delta}}{2a}\)</span>
+
+    <!-- TEORIA DE CONCEITUAÇÃO DA EQUAÇÃO DO 2º GRAU -->
+    <div class="box-imp" style="margin-top:0; padding:8px 12px;">
+      <div class="icon">📐</div>
+      <div>
+        <div class="t">O QUE É UMA EQUAÇÃO DO 2º GRAU?</div>
+        <div class="c" style="font-size:11.5px; line-height:1.5;">
+          Uma <strong>Equação do 2º Grau (ou Quadrática)</strong> é toda sentença matemática reduzida à forma geral:
+          <span style="display:inline-block; font-weight:800; color:var(--vd); background:#fff; padding:2px 8px; border-radius:4px; border:1px solid var(--vm); margin:2px 4px;">\( ax^2 + bx + c = 0 \)</span>
+          com <strong>\(a, b, c \in \mathbb{R}\)</strong> e <strong>\(a \neq 0\)</strong>. O expoente 2 determina o grau máximo.
+        </div>
+      </div>
+    </div>
+
+    <!-- COEFICIENTES E TIPOS (COMPLETA E INCOMPLETA) -->
+    <div class="g2" style="margin:6px 0;">
+      <div class="card" style="padding:8px 10px;">
+        <div class="ct" style="font-size:11.5px;">📌 Os Coeficientes</div>
+        <ul style="font-size:10.5px; line-height:1.45; padding-left:12px;">
+          <li><strong>\(a\)</strong>: termo quadrático (\(x^2\)). Indica a concavidade (\(a \neq 0\)).</li>
+          <li><strong>\(b\)</strong>: termo linear (\(x\)).</li>
+          <li><strong>\(c\)</strong>: termo independente (corta o eixo Y).</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:8px 10px;">
+        <div class="ct r" style="font-size:11.5px;">⚡ Formas Incompletas (Métodos Rápidos)</div>
+        <p style="font-size:10.5px; line-height:1.45;">
+          • Se <strong>\(b=0\)</strong>: \(x^2 - 9 = 0 \implies x^2 = 9 \implies \mathbf{x = \pm 3}\)<br>
+          • Se <strong>\(c=0\)</strong>: \(x^2 + 6x = 0 \implies x(x+6) = 0 \implies \mathbf{x=0} \text{ ou } \mathbf{x=-6}\)
+        </p>
+      </div>
+    </div>
+
+    <!-- FÓRMULA DE BHASKARA -->
+    <div class="fcenter" style="margin:4px 0;">
+      <span class="fbox r" style="font-size:12px;">\(\Delta = b^2 - 4ac\)</span>&nbsp;
+      <span class="fbox" style="font-size:12px;">\(x = \dfrac{-b \pm \sqrt{\Delta}}{2a}\)</span>
     </div>
 
     <!-- PARÁBOLA + DISCRIMINANTE visual lado a lado -->
-    <div class="grow" style="margin:10px 0;align-items:flex-start;">
+    <div class="grow" style="margin:6px 0; align-items:flex-start;">
       <!-- Gráfico da parábola -->
       <div class="gfig">
-        <svg width="175" height="165" viewBox="0 0 175 165">
+        <svg width="165" height="145" viewBox="0 0 175 165">
           <!-- eixos -->
           <line x1="10" y1="145" x2="165" y2="145" stroke="#555" stroke-width="1.5"/>
           <line x1="87" y1="155" x2="87" y2="8" stroke="#555" stroke-width="1.5"/>
-          <!-- setas nos eixos -->
           <polygon points="165,143 169,145 165,147" fill="#555"/>
           <polygon points="85,8 87,4 89,8" fill="#555"/>
           <text x="170" y="148" font-size="11" fill="#555" font-family="Inter">x</text>
           <text x="90" y="8" font-size="11" fill="#555" font-family="Inter">y</text>
-          <!-- parábola Δ>0 -->
           <path d="M22,130 Q87,20 152,130" fill="none" stroke="#2E7D32" stroke-width="2.5"/>
-          <!-- raízes -->
           <circle cx="40" cy="145" r="5" fill="#C62828"/>
           <circle cx="134" cy="145" r="5" fill="#C62828"/>
           <text x="40" y="136" text-anchor="middle" font-size="11" fill="#C62828" font-weight="bold" font-family="Inter">x₁</text>
           <text x="134" y="136" text-anchor="middle" font-size="11" fill="#C62828" font-weight="bold" font-family="Inter">x₂</text>
-          <!-- vértice -->
           <circle cx="87" cy="22" r="4" fill="#F57F17"/>
           <text x="99" y="22" font-size="10.5" fill="#F57F17" font-weight="bold" font-family="Inter">vértice</text>
-          <!-- eixo simetria -->
           <line x1="87" y1="22" x2="87" y2="145" stroke="#F57F17" stroke-width="1.5" stroke-dasharray="5,4"/>
           <text x="87" y="158" text-anchor="middle" font-size="10" fill="#F57F17" font-family="Inter">eixo de simetria</text>
-          <text x="12" y="42" font-size="10.5" fill="#2E7D32" font-family="Inter">Δ &gt; 0 (2 raízes)</text>
+          <text x="12" y="42" font-size="10.5" fill="#2E7D32" font-family="Inter">Δ > 0 (2 raízes)</text>
         </svg>
         <div class="glabel">Parábola (a&lt;0, Δ&gt;0)</div>
       </div>
       <!-- Tabela de casos do Δ -->
       <div style="flex:1;">
-        <table>
+        <table style="font-size:11px;">
           <thead><tr><th>Discriminante</th><th>Raízes</th><th>Gráfico</th></tr></thead>
           <tbody>
             <tr>
               <td><strong style="color:#2E7D32;">Δ &gt; 0</strong></td>
               <td>2 raízes reais distintas</td>
-              <td style="font-size:16px;">∩_∪</td>
+              <td style="font-size:15px;">∩_∪</td>
             </tr>
             <tr>
               <td><strong style="color:#F57F17;">Δ = 0</strong></td>
               <td>1 raiz real (dupla)</td>
-              <td style="font-size:16px;">⌒</td>
+              <td style="font-size:15px;">⌒</td>
             </tr>
             <tr>
               <td><strong style="color:#C62828;">Δ &lt; 0</strong></td>
               <td>Sem raiz real</td>
-              <td style="font-size:16px;">∪</td>
+              <td style="font-size:15px;">∪</td>
             </tr>
           </tbody>
         </table>
         <!-- Resolução passo a passo -->
-        <div style="background:#F1F8E9;border-radius:7px;padding:8px;margin:6px 0;">
-          <div style="font-weight:800;font-size:11.5px;color:#1B5E20;margin-bottom:5px;">📌 Passo a passo: x² − 5x + 6 = 0</div>
-          <p style="font-size:11.5px;color:#333;">① Identificar: a=1, b=−5, c=6</p>
-          <p style="font-size:11.5px;color:#333;margin-top:2px;">② Δ = (−5)² − 4(1)(6) = 25−24 = <strong style="color:#2E7D32;">1</strong></p>
-          <p style="font-size:11.5px;color:#333;margin-top:2px;">③ \(x = \frac{5 \pm 1}{2}\)</p>
-          <p style="font-size:11.5px;font-weight:800;color:#C62828;margin-top:3px;">x₁ = 3 &nbsp;&nbsp; x₂ = 2 &nbsp;&nbsp; S = {2, 3}</p>
+        <div style="background:#F1F8E9; border-radius:7px; padding:6px 8px; margin:4px 0;">
+          <div style="font-weight:800; font-size:11px; color:#1B5E20; margin-bottom:3px;">📌 Passo a passo: x² − 5x + 6 = 0</div>
+          <p style="font-size:10.5px; color:#333;">① Identificar: a=1, b=−5, c=6</p>
+          <p style="font-size:10.5px; color:#333; margin-top:1px;">② Δ = (−5)² − 4(1)(6) = 25−24 = <strong style="color:#2E7D32;">1</strong></p>
+          <p style="font-size:10.5px; color:#333; margin-top:1px;">③ \(x = \frac{5 \pm 1}{2} \implies \mathbf{x_1 = 3, \ x_2 = 2}\) &nbsp; S = {2, 3}</p>
         </div>
       </div>
     </div>
