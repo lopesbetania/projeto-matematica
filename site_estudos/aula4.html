@@ -1600,63 +1600,11 @@
           </div>
         </div>
 
-        <!-- ==================== SLIDE 12: SIMULADOR OTIMIZADOR DO HAMBÚRGUER ==================== -->
+        <!-- ==================== SLIDE 12: EXERCÍCIOS DE FIXAÇÃO DA APOSTILA ==================== -->
         <div class="slide-pane" id="slide-12">
-          <div class="slide-layout-split">
-            <div>
-              <p class="slide-intro-txt">
-                Mude os parâmetros do hambúrguer e veja o comportamento do gráfico parabólico de faturamento. Descubra o
-                ponto ótimo onde o faturamento é máximo:
-              </p>
-
-              <div class="panel-controls">
-                <div class="control-group">
-                  <div class="control-label">Preço Base (R$): <span id="s12-pbase-val">20.00</span></div>
-                  <input type="range" class="input-slider" id="s12-slider-pbase" min="10" max="30" step="1" value="20"
-                    oninput="updateSlide12()">
-                </div>
-                <div class="control-group">
-                  <div class="control-label">Vendas Base (unids): <span id="s12-vbase-val">200</span></div>
-                  <input type="range" class="input-slider" id="s12-slider-vbase" min="50" max="300" step="10"
-                    value="200" oninput="updateSlide12()">
-                </div>
-                <div class="control-group">
-                  <div class="control-label">Aumento Preço (R$): <span id="s12-step-val">0.40</span></div>
-                  <input type="range" class="input-slider" id="s12-slider-step" min="0.10" max="1.00" step="0.10"
-                    value="0.40" oninput="updateSlide12()">
-                </div>
-                <div class="control-group">
-                  <div class="control-label">Queda Vendas (unids): <span id="s12-drop-val">2</span></div>
-                  <input type="range" class="input-slider" id="s12-slider-drop" min="1" max="10" step="1" value="2"
-                    oninput="updateSlide12()">
-                </div>
-              </div>
-            </div>
-
-            <div style="display:flex; flex-direction:column; gap:10px; height:100%;">
-              <div class="panel-visual" style="flex:1;">
-                <svg id="s12-svg" width="300" height="170" viewBox="0 0 300 170">
-                  <!-- Gerado dinamicamente via JS -->
-                </svg>
-              </div>
-              <div class="calculation-box" style="margin-top:0; font-size:11px; padding:8px 12px;">
-                <div class="calc-step" style="font-size:11px; margin-bottom:2px;" id="s12-eq-text">Equação: \( R(x) =
-                  -0{,}8x^2 + 40x + 4000 \)</div>
-                <div class="calc-step" style="font-size:11px; margin-bottom:2px;" id="s12-xv-text">Vértice: \( x_v = 25
-                  \) aumentos</div>
-                <div class="calc-step highlighted" style="font-size:12.5px; padding-top:2px; margin-top:2px;"
-                  id="s12-opt-text">Preço Ótimo = R$ 30,00 | Faturamento Máx = R$ 4.500,00</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- ==================== SLIDE 13: EXERCÍCIOS DE FIXAÇÃO DA APOSTILA ==================== -->
-        <div class="slide-pane" id="slide-13">
           <div class="slide-layout-full">
             <p class="slide-intro-txt">
-              Após resolver os exercícios da apostila, pratique com estas <strong>Questões Contextualizadas do IFES /
-                SARESP</strong> envolvendo Equações do 2º Grau na Geometria:
+              Após resolver os exercícios da apostila, pratique com estas <strong>Questões Contextualizadas do IFES / SARESP</strong> envolvendo Equações do 2º Grau na Geometria:
             </p>
             <div class="ex-list">
               <!-- EXERCÍCIO 1: PISCINA COM RECUO X (SARESP/IFES) -->
@@ -1814,8 +1762,8 @@
           </div>
         </div>
 
-        <!-- ==================== SLIDE 14: QUIZ DE FIXAÇÃO ==================== -->
-        <div class="slide-pane" id="slide-14">
+        <!-- ==================== SLIDE 13: QUIZ DE FIXAÇÃO ==================== -->
+        <div class="slide-pane" id="slide-13">
           <div>
             <div class="quiz-tabs">
               <div class="quiz-tab active" onclick="setQuizQuestion(1)">Questão 1</div>
@@ -1962,8 +1910,8 @@
           </div>
         </div>
 
-        <!-- ==================== SLIDE 15: SIMULADO ESPECIAL IFES ==================== -->
-        <div class="slide-pane" id="slide-15">
+        <!-- ==================== SLIDE 14: SIMULADO ESPECIAL IFES ==================== -->
+        <div class="slide-pane" id="slide-14">
           <div>
             <div class="quiz-tabs">
               <div class="quiz-tab active" onclick="setQuizQuestion2(1)">Questão IFES 1</div>
@@ -2082,8 +2030,8 @@
           </div>
         </div>
 
-        <!-- ==================== SLIDE 16: CONCLUSÃO ==================== -->
-        <div class="slide-pane" id="slide-16">
+        <!-- ==================== SLIDE 15: CONCLUSÃO ==================== -->
+        <div class="slide-pane" id="slide-15">
           <div class="slide-layout-full">
             <h2 class="slide-title" style="color:var(--primary); font-size:24px; text-align:center;">🏁 Checklist de
               Revisão - Aula 4</h2>
@@ -2125,7 +2073,7 @@
       <!-- FOOTER DO SLIDE -->
       <div class="slide-footer">
         <span>PRÉ-IFES 2026 — MATEMÁTICA</span>
-        <span class="slide-number" id="slide-num-label">Slide 1 de 16</span>
+        <span class="slide-number" id="slide-num-label">Slide 1 de 15</span>
       </div>
 
     </div>
@@ -2188,17 +2136,16 @@
       <li class="menu-item" onclick="goToSlide(9)"><span class="menu-item-num">9</span> Padrões de Palitos</li>
       <li class="menu-item" onclick="goToSlide(10)"><span class="menu-item-num">10</span> Simulador Construtor</li>
       <li class="menu-item" onclick="goToSlide(11)"><span class="menu-item-num">11</span> Problema do Hambúrguer</li>
-      <li class="menu-item" onclick="goToSlide(12)"><span class="menu-item-num">12</span> Simulador Otimizador</li>
-      <li class="menu-item" onclick="goToSlide(13)"><span class="menu-item-num">13</span> Exercícios de Fixação</li>
-      <li class="menu-item" onclick="goToSlide(14)"><span class="menu-item-num">14</span> Quiz de Fixação</li>
-      <li class="menu-item" onclick="goToSlide(15)"><span class="menu-item-num">15</span> Simulado IFES</li>
-      <li class="menu-item" onclick="goToSlide(16)"><span class="menu-item-num">16</span> Checklist de Revisão</li>
+      <li class="menu-item" onclick="goToSlide(12)"><span class="menu-item-num">12</span> Exercícios de Fixação</li>
+      <li class="menu-item" onclick="goToSlide(13)"><span class="menu-item-num">13</span> Quiz de Fixação</li>
+      <li class="menu-item" onclick="goToSlide(14)"><span class="menu-item-num">14</span> Simulado IFES</li>
+      <li class="menu-item" onclick="goToSlide(15)"><span class="menu-item-num">15</span> Checklist de Revisão</li>
     </ul>
   </div>
 
   <script>
     // --- GERENCIAMENTO DE SLIDES COM PERSISTÊNCIA AO RECARREGAR ---
-    const totalSlides = 16;
+    const totalSlides = 15;
 
     function getInitialSlide() {
       // 1. Tenta obter pelo Hash da URL (#slide-X ou #X)
@@ -2233,11 +2180,10 @@
       9: "Padrões de Palitos (Sequências Visuais)",
       10: "Simulador Construtor de Palitos",
       11: "Otimização Quadrática: Hambúrguer Brutão",
-      12: "Simulador Otimizador do Hambúrguer",
-      13: "Exercícios de Fixação da Aula 4",
-      14: "Quiz de Fixação Interativo",
-      15: "Simulado Especial IFES",
-      16: " Checklist de Revisão - Aula 4"
+      12: "Exercícios de Fixação da Aula 4",
+      13: "Quiz de Fixação Interativo",
+      14: "Simulado Especial IFES",
+      15: "Checklist de Revisão - Aula 4"
     };
 
     function updatePresentationState() {
@@ -2274,7 +2220,6 @@
       if (currentSlide === 4) updateSlide4();
       if (currentSlide === 8) updateSlide8();
       if (currentSlide === 10) updateSlide10();
-      if (currentSlide === 12) updateSlide12();
     }
 
     // Suporte ao botão voltar/avançar do navegador e mudança de URL
@@ -2574,101 +2519,17 @@
       }
     }
 
-    // --- SLIDE 12: SIMULADOR OTIMIZADOR DO HAMBÚRGUER ---
-    function updateSlide12() {
-      const pBase = parseFloat(document.getElementById('s12-slider-pbase').value);
-      const vBase = parseInt(document.getElementById('s12-slider-vbase').value);
-      const step = parseFloat(document.getElementById('s12-slider-step').value);
-      const drop = parseInt(document.getElementById('s12-slider-drop').value);
-
-      document.getElementById('s12-pbase-val').innerText = pBase.toFixed(2);
-      document.getElementById('s12-vbase-val').innerText = vBase;
-      document.getElementById('s12-step-val').innerText = step.toFixed(2);
-      document.getElementById('s12-drop-val').innerText = drop;
-
-      // Modelando R(x) = (pBase + step * x)(vBase - drop * x)
-      // R(x) = pBase * vBase - pBase * drop * x + vBase * step * x - step * drop * x^2
-      // R(x) = (-step * drop)x^2 + (vBase * step - pBase * drop)x + (pBase * vBase)
-      const a = -step * drop;
-      const b = vBase * step - pBase * drop;
-      const c = pBase * vBase;
-
-      const xv = -b / (2 * a);
-      const yv = a * xv * xv + b * xv + c;
-
-      const optPrice = pBase + step * xv;
-
-      const eqText = document.getElementById('s12-eq-text');
-      eqText.innerHTML = `Equação: \\( R(x) = ${a.toFixed(2)}x^2 + ${b.toFixed(1)}x + ${c} \\)`;
-
-      const xvText = document.getElementById('s12-xv-text');
-      xvText.innerHTML = `Vértice: \\( x_v = \\dfrac{-${b.toFixed(1)}}{2 \\cdot (${a.toFixed(2)})} = ${xv.toFixed(1)} \\) aumentos de preço`;
-
-      const optText = document.getElementById('s12-opt-text');
-      optText.innerHTML = `Preço Ideal = <strong>R$ ${optPrice.toFixed(2)}</strong> &nbsp;|&nbsp; Arrecadação Máxima = <strong>R$ ${yv.toFixed(2)}</strong>`;
-
-      if (window.MathJax && window.MathJax.typesetPromise) {
-        window.MathJax.typesetPromise([eqText, xvText, optText]);
-      }
-
-      // Desenhar gráfico dinâmico
-      const svg = document.getElementById('s12-svg');
-      svg.innerHTML = '';
-
-      // desenha eixos cartesianos
-      svg.innerHTML += `
-        <line x1="25" y1="135" x2="280" y2="135" stroke="#bbb" stroke-width="1.5" />
-        <line x1="30" y1="10" x2="30" y2="145" stroke="#bbb" stroke-width="1.5" />
-        <text x="282" y="138" font-size="9" fill="#777" font-weight="700">Aumento</text>
-        <text x="32" y="15" font-size="9" fill="#777" font-weight="700">Faturamento (R$)</text>
-      `;
-
-      // Plotar a parábola R(x)
-      let d = '';
-      let first = true;
-      for (let xVal = 0; xVal <= 50; xVal += 1) {
-        const yVal = a * xVal * xVal + b * xVal + c;
-        const svgX = 30 + xVal * 4.8;
-
-        // Mapear faturamento Y
-        const svgY = 135 - (yVal / 7000) * 110;
-
-        if (svgY >= 10 && svgY <= 145 && svgX <= 280) {
-          if (first) {
-            d += `M ${svgX} ${svgY}`;
-            first = false;
-          } else {
-            d += ` L ${svgX} ${svgY}`;
-          }
-        }
-      }
-
-      if (d) {
-        svg.innerHTML += `<path d="${d}" fill="none" stroke="var(--accent)" stroke-width="3" />`;
-      }
-
-      // Plota o Vértice
-      const svgXv = 30 + xv * 4.8;
-      const svgYv = 135 - (yv / 7000) * 110;
-      if (svgYv >= 10 && svgYv <= 145 && svgXv <= 280) {
-        svg.innerHTML += `
-          <circle cx="${svgXv}" cy="${svgYv}" r="6.5" fill="var(--warning)" />
-          <text x="${svgXv - 30}" y="${svgYv - 8}" font-size="9.5" fill="var(--warning)" font-weight="800">R$ ${yv.toFixed(0)} (x=${xv.toFixed(0)})</text>
-        `;
-      }
-    }
-
-    // --- SLIDE 14: QUIZ DE FIXAÇÃO ---
+    // --- SLIDE 13: QUIZ DE FIXAÇÃO ---
     let quizDone = { 1: false, 2: false, 3: false, 4: false };
     const quizGabs = { 1: 'b', 2: 'a', 3: 'a', 4: 'c' };
 
     function setQuizQuestion(qNum) {
-      const slide14 = document.getElementById('slide-14');
-      if (!slide14) return;
-      slide14.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
+      const slide13 = document.getElementById('slide-13');
+      if (!slide13) return;
+      slide13.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
         tab.classList.toggle('active', idx + 1 === qNum);
       });
-      slide14.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
+      slide13.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
         q.classList.toggle('active', idx + 1 === qNum);
       });
     }
@@ -2703,19 +2564,19 @@
       }
     }
 
-    // --- SLIDE 15: SIMULADO ESPECIAL IFES ---
+    // --- SLIDE 14: SIMULADO ESPECIAL IFES ---
     let quizDone2 = { 1: false, 2: false, 3: false };
     const quizGabs2 = { 1: 'a', 2: 'c', 3: 'b' };
 
     function setQuizQuestion2(qNum) {
-      const slide15 = document.getElementById('slide-15');
-      if (!slide15) return;
+      const slide14 = document.getElementById('slide-14');
+      if (!slide14) return;
 
-      slide15.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
+      slide14.querySelectorAll('.quiz-tabs .quiz-tab').forEach((tab, idx) => {
         tab.classList.toggle('active', idx + 1 === qNum);
       });
 
-      slide15.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
+      slide14.querySelectorAll('.quiz-question-container').forEach((q, idx) => {
         q.classList.toggle('active', idx + 1 === qNum);
       });
     }
