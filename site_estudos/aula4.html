@@ -1547,60 +1547,124 @@
         <div class="slide-pane" id="slide-13">
           <div class="slide-layout-full">
             <p class="slide-intro-txt">
-              Aqui estão os principais <strong>Exercícios de Fixação da Aula 4</strong> presentes no material físico. Ideal para praticar e conferir resoluções na lousa:
+              Após resolver os exercícios da apostila, pratique com estas <strong>Questões Contextualizadas do IFES / SARESP</strong> envolvendo Equações do 2º Grau na Geometria:
             </p>
             <div class="ex-list">
-              <div class="ex-item">
-                <div class="ex-num">Exercício 1</div>
-                Resolva a equação incompleta: <strong>\(x^2 - 9 = 0\)</strong>.
-                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 3px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
-                <div class="quiz-explanation-drawer" style="padding: 5px; font-size: 11px;">
-                  \(x^2 = 9 \implies x = \pm\sqrt{9} \implies x = \pm 3\). S = {-3, 3}.
+              <!-- EXERCÍCIO 1: PISCINA COM RECUO X (SARESP/IFES) -->
+              <div class="ex-item" style="grid-column: span 2; background:#fff; border:1.5px solid var(--primary-light);">
+                <div style="display:flex; gap:15px; align-items:center;">
+                  <div style="flex:1;">
+                    <div class="ex-num" style="font-size:14px; color:var(--primary);"><i class="fa-solid fa-water-ladder"></i> Exercício 1 (SARESP / IFES)</div>
+                    <p style="font-size:12.5px; line-height:1.5; color:var(--dark);">
+                      Num terreno de <strong>\(99\text{ m}^2\)</strong> de área será construída uma piscina de <strong>\(7\text{ m}\) de comprimento por \(5\text{ m}\) de largura</strong>, deixando-se um recuo <strong>\(x\)</strong> ao seu redor para construir um deck de madeira. Dessa forma, o recuo \(x\) deverá medir:
+                    </p>
+                    <div style="font-size:12px; font-weight:700; margin:6px 0; color:var(--primary);">
+                      a) 1m &nbsp;&nbsp;&nbsp;&nbsp; b) 2m &nbsp;&nbsp;&nbsp;&nbsp; c) 5m &nbsp;&nbsp;&nbsp;&nbsp; d) 8m
+                    </div>
+                  </div>
+                  <!-- SVG Mini Diagrama Piscina -->
+                  <div style="width:170px; height:110px; background:#e0d0b0; border:2px solid #8d6e63; border-radius:8px; position:relative; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <div style="width:90px; height:55px; background:#29b6f6; border:2px solid #fff; border-radius:4px; display:flex; align-items:center; justify-content:center; color:#fff; font-size:10px; font-weight:800; text-shadow:0 1px 2px #000;">
+                      7m x 5m
+                    </div>
+                    <span style="position:absolute; top:4px; font-size:9px; font-weight:800; color:#5d4037;">x</span>
+                    <span style="position:absolute; bottom:4px; font-size:9px; font-weight:800; color:#5d4037;">x</span>
+                    <span style="position:absolute; left:6px; font-size:9px; font-weight:800; color:#5d4037;">x</span>
+                    <span style="position:absolute; right:6px; font-size:9px; font-weight:800; color:#5d4037;">x</span>
+                  </div>
+                </div>
+                <button class="btn-reveal-calc" style="padding: 4px 10px; font-size: 11px; margin-top: 6px; display: inline-flex;" onclick="toggleRevealCalc(this)">
+                  <i class="fa-solid fa-eye"></i> Ver Resolução Passo a Passo
+                </button>
+                <div class="quiz-explanation-drawer" style="padding: 10px; font-size: 11.5px; line-height:1.6;">
+                  <strong>1) Dimensões totais do terreno com o recuo \(x\):</strong><br>
+                  Comprimento total = \(7 + 2x\) &nbsp;|&nbsp; Largura total = \(5 + 2x\)<br>
+                  <strong>2) Montando a equação da área total:</strong><br>
+                  \((7 + 2x)(5 + 2x) = 99 \implies 35 + 14x + 10x + 4x^2 = 99 \implies 4x^2 + 24x - 64 = 0\)<br>
+                  Dividindo tudo por 4: \(x^2 + 6x - 16 = 0\)<br>
+                  <strong>3) Resolvendo por Fatoração ou Bhaskara:</strong><br>
+                  \((x + 8)(x - 2) = 0 \implies x = -8 \text{ (descartado)} \text{ ou } \mathbf{x = 2\text{ m}}\).<br>
+                  Resposta Correta: <strong>Alternativa B (2m)</strong>.
                 </div>
               </div>
-              <div class="ex-item">
-                <div class="ex-num">Exercício 2</div>
-                Resolva a equação incompleta: <strong>\(x^2 + 6x = 0\)</strong>.
-                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 3px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
-                <div class="quiz-explanation-drawer" style="padding: 5px; font-size: 11px;">
-                  \(x(x + 6) = 0 \implies x = 0\) ou \(x + 6 = 0 \implies x = -6\). S = {-6, 0}.
+
+              <!-- EXERCÍCIO 2: RETÂNGULO COM ÁREA 15cm² (IMAGEM 2) -->
+              <div class="ex-item" style="grid-column: span 2; background:#fff; border:1.5px solid var(--primary-light);">
+                <div style="display:flex; gap:15px; align-items:center;">
+                  <div style="flex:1;">
+                    <div class="ex-num" style="font-size:14px; color:var(--primary);"><i class="fa-solid fa-vector-square"></i> Exercício 2 (Área de Região Retangular)</div>
+                    <p style="font-size:12.5px; line-height:1.5; color:var(--dark);">
+                      As medidas dos lados de uma região retangular de área <strong>\(15\text{ cm}^2\)</strong> são expressas por <strong>\((x + 3)\text{ cm}\)</strong> e <strong>\((x + 1)\text{ cm}\)</strong>.<br>
+                      <strong>a)</strong> Escreva uma equação do tipo \(ax^2 + bx + c = 0\) que represente a área dessa região.<br>
+                      <strong>b)</strong> Determine o valor de \(x\) e as dimensões reais do retângulo.
+                    </p>
+                  </div>
+                  <!-- SVG Mini Diagrama Retângulo -->
+                  <div style="width:140px; height:85px; border:2.5px solid var(--primary); border-radius:6px; background:var(--primary-pale); position:relative; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                    <span style="font-size:11px; font-weight:800; color:var(--primary);">Área = 15 cm²</span>
+                    <span style="position:absolute; bottom:-18px; font-size:10.5px; font-weight:700; color:var(--dark);">x + 3</span>
+                    <span style="position:absolute; right:-28px; font-size:10.5px; font-weight:700; color:var(--dark);">x + 1</span>
+                  </div>
+                </div>
+                <button class="btn-reveal-calc" style="padding: 4px 10px; font-size: 11px; margin-top: 6px; display: inline-flex;" onclick="toggleRevealCalc(this)">
+                  <i class="fa-solid fa-eye"></i> Ver Resolução Passo a Passo
+                </button>
+                <div class="quiz-explanation-drawer" style="padding: 10px; font-size: 11.5px; line-height:1.6;">
+                  <strong>a) Equação na forma \(ax^2 + bx + c = 0\):</strong><br>
+                  \(\text{Área} = (x + 3)(x + 1) = 15 \implies x^2 + x + 3x + 3 = 15 \implies \mathbf{x^2 + 4x - 12 = 0}\) (com \(a=1, b=4, c=-12\)).<br><br>
+                  <strong>b) Calculando o valor de \(x\) e as dimensões:</strong><br>
+                  \(\Delta = 4^2 - 4(1)(-12) = 16 + 48 = 64 \implies \sqrt{64} = 8\).<br>
+                  \(x = \dfrac{-4 \pm 8}{2} \implies x_1 = 2 \text{ e } x_2 = -6 \text{ (descartado por ser medida física)}\).<br>
+                  Assim, <strong>\(x = 2\text{ cm}\)</strong>. <br>
+                  Dimensões: Comprimento = \(2 + 3 = \mathbf{5\text{ cm}}\) | Largura = \(2 + 1 = \mathbf{3\text{ cm}}\).
                 </div>
               </div>
+
+              <!-- EXERCÍCIO 3: JARDIM RETANGULAR -->
               <div class="ex-item">
-                <div class="ex-num">Exercício 3</div>
-                Aplique Bhaskara em: <strong>\(x^2 - 7x + 12 = 0\)</strong>.
-                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 3px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
+                <div class="ex-num">Exercício 3 (Jardim & Perímetro)</div>
+                Um jardim retangular possui comprimento excedendo a largura em \(4\text{ m}\). Sabendo que sua área é de \(60\text{ m}^2\), calcule o <strong>perímetro</strong> do jardim.
+                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 4px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
                 <div class="quiz-explanation-drawer" style="padding: 5px; font-size: 11px;">
-                  \(\Delta = (-7)^2 - 4(1)(12) = 49 - 48 = 1\). <br>
-                  \(x = \dfrac{7 \pm \sqrt{1}}{2} \implies x_1 = 4, \ x_2 = 3\). S = {3, 4}.
+                  Largura = \(x\), Comprimento = \(x+4\). <br>
+                  \(x(x+4) = 60 \implies x^2 + 4x - 60 = 0 \implies (x+10)(x-6) = 0\). <br>
+                  Logo \(x = 6\text{ m}\). Dimensões: \(6\text{ m} \times 10\text{ m}\). <br>
+                  Perímetro = \(2(6 + 10) = \mathbf{32\text{ m}}\).
                 </div>
               </div>
+
+              <!-- EXERCÍCIO 4: LANÇAMENTO DE PROJÉTIL -->
               <div class="ex-item">
-                <div class="ex-num">Exercício 4</div>
-                Encontre o 20º termo da PA: <strong>{5, 9, 13, 17, ...}</strong>.
-                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 3px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
+                <div class="ex-num">Exercício 4 (Trajetória & Vértice)</div>
+                A altura de um projétil é dada por \(h(t) = -5t^2 + 30t\). Calcule o tempo para atingir a altura máxima e o valor dessa altura máxima.
+                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 4px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
                 <div class="quiz-explanation-drawer" style="padding: 5px; font-size: 11px;">
-                  \(a_1 = 5, r = 4, n = 20\). <br>
-                  \(a_{20} = 5 + (20-1)\cdot 4 = 5 + 19 \cdot 4 = 5 + 76 = 81\).
+                  Tempo de subida: \(t_v = \dfrac{-30}{2(-5)} = \mathbf{3\text{ segundos}}\). <br>
+                  \(\Delta = 30^2 - 4(-5)(0) = 900\). <br>
+                  Altura máxima: \(h_{max} = y_v = \dfrac{-900}{4(-5)} = \mathbf{45\text{ metros}}\).
                 </div>
               </div>
+
+              <!-- EXERCÍCIO 5: PALITOS PA -->
               <div class="ex-item">
-                <div class="ex-num">Exercício 5</div>
-                Sequência de palitos: 1º=3, 2º=5, 3º=7. Determine o 50º termo.
-                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 3px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
+                <div class="ex-num">Exercício 5 (PA & Padrões Visuais)</div>
+                Uma sequência de figuras usa 4 palitos na 1ª, 7 na 2ª e 10 na 3ª. Quantos palitos serão necessários para a 40ª figura?
+                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 4px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
                 <div class="quiz-explanation-drawer" style="padding: 5px; font-size: 11px;">
-                  PA de \(a_1 = 3\) e razão \(r = 2\). <br>
-                  \(a_{50} = 3 + 49 \cdot 2 = 3 + 98 = 101\text{ palitos}\).
+                  PA com \(a_1 = 4\) e razão \(r = 3\). <br>
+                  \(a_{40} = 4 + (40-1)\cdot 3 = 4 + 39 \cdot 3 = 4 + 117 = \mathbf{121\text{ palitos}}\).
                 </div>
               </div>
+
+              <!-- EXERCÍCIO 6: PRODUTO CONSECUTIVO -->
               <div class="ex-item">
-                <div class="ex-num">Exercício 6</div>
-                O produto de dois números consecutivos é 72. Quais são os números?
-                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 3px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
+                <div class="ex-num">Exercício 6 (Problema Numérico)</div>
+                O produto de dois números inteiros positivos consecutivos é igual a 156. Quais são esses números?
+                <button class="btn-reveal-calc" style="padding: 2px 6px; font-size: 10px; margin-top: 4px; display: block;" onclick="toggleRevealCalc(this)">Resolução</button>
                 <div class="quiz-explanation-drawer" style="padding: 5px; font-size: 11px;">
-                  Seja \(n\) e \(n+1\): \(n(n+1) = 72 \implies n^2 + n - 72 = 0\). <br>
-                  \(\Delta = 1^2 - 4(1)(-72) = 289 \implies \sqrt{289} = 17\). <br>
-                  \(n = \dfrac{-1 \pm 17}{2} \implies n = 8\). Os números são 8 e 9.
+                  \(n(n+1) = 156 \implies n^2 + n - 156 = 0\). <br>
+                  \((n + 13)(n - 12) = 0 \implies n = 12\). <br>
+                  Os números são \(\mathbf{12\text{ e }13}\).
                 </div>
               </div>
             </div>
@@ -1617,16 +1681,16 @@
               <div class="quiz-tab" onclick="setQuizQuestion(4)">Questão 4</div>
             </div>
 
-            <!-- QUESTAO 1 -->
+            <!-- QUESTAO 1: SARESP / IFES PISCINA -->
             <div class="quiz-question-container active" id="quiz-q1">
               <div class="quiz-text">
-                <strong>Q1)</strong> Quais são as raízes reais da equação quadrática \( x^2 - 5x + 6 = 0 \)?
+                <strong>Q1 (SARESP / IFES) —</strong> Num terreno retangular de \(99\text{ m}^2\) de área total será construída uma piscina de \(7\text{ m}\) de comprimento por \(5\text{ m}\) de largura, deixando-se um recuo \(x\) de largura constante ao seu redor para um deck. Dessa forma, qual deve ser a medida do recuo \(x\)?
               </div>
               <div class="quiz-options">
-                <div class="quiz-option" onclick="checkAnswer(this, 1, 'a')"><span class="quiz-option-letter">A</span> \( S = \{1, 5\} \)</div>
-                <div class="quiz-option" onclick="checkAnswer(this, 1, 'b')"><span class="quiz-option-letter">B</span> \( S = \{2, 3\} \)</div>
-                <div class="quiz-option" onclick="checkAnswer(this, 1, 'c')"><span class="quiz-option-letter">C</span> \( S = \{0, 6\} \)</div>
-                <div class="quiz-option" onclick="checkAnswer(this, 1, 'd')"><span class="quiz-option-letter">D</span> \( S = \{-2, -3\} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'a')"><span class="quiz-option-letter">A</span> \( 1\text{ m} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'b')"><span class="quiz-option-letter">B</span> \( 2\text{ m} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'c')"><span class="quiz-option-letter">C</span> \( 5\text{ m} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 1, 'd')"><span class="quiz-option-letter">D</span> \( 8\text{ m} \)</div>
               </div>
               
               <button class="btn-reveal-calc" id="btn-reveal-q1-q1" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
@@ -1635,25 +1699,24 @@
               <div class="quiz-explanation-drawer" id="expl-q1" style="margin-top:5px;">
                 <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
                 <div class="quiz-explanation-text">
-                  Usando a fórmula de Bhaskara: <br>
-                  \( \Delta = (-5)^2 - 4 \cdot 1 \cdot 6 = 25 - 24 = 1 \). <br>
-                  As raízes são: \( x = \dfrac{-(-5) \pm \sqrt{1}}{2 \cdot 1} = \dfrac{5 \pm 1}{2} \). <br>
-                  \( x_1 = \dfrac{5 + 1}{2} = 3 \) e \( x_2 = \dfrac{5 - 1}{2} = 2 \). <br>
-                  Logo, a alternativa correta é a <strong>B</strong>.
+                  Comprimento total = \(7 + 2x\), Largura total = \(5 + 2x\). <br>
+                  \(\text{Área total} = (7 + 2x)(5 + 2x) = 99 \implies 4x^2 + 24x + 35 = 99 \implies 4x^2 + 24x - 64 = 0\). <br>
+                  Dividindo por 4: \(x^2 + 6x - 16 = 0 \implies (x+8)(x-2) = 0 \implies x = 2\text{ m}\). <br>
+                  Alternativa correta: <strong>B (2m)</strong>.
                 </div>
               </div>
             </div>
 
-            <!-- QUESTAO 2 -->
+            <!-- QUESTAO 2: RETÂNGULO 15CM² -->
             <div class="quiz-question-container" id="quiz-q2">
               <div class="quiz-text">
-                <strong>Q2)</strong> Determine o 10º termo da Progressão Aritmética {2, 7, 12, 17, ...}.
+                <strong>Q2 —</strong> Uma região retangular de área \(15\text{ cm}^2\) possui lados medindo \((x + 3)\text{ cm}\) e \((x + 1)\text{ cm}\). Qual é a equação do 2º grau na forma \(ax^2 + bx + c = 0\) que modela essa área e qual é o valor de \(x\)?
               </div>
               <div class="quiz-options">
-                <div class="quiz-option" onclick="checkAnswer(this, 2, 'a')"><span class="quiz-option-letter">A</span> 47</div>
-                <div class="quiz-option" onclick="checkAnswer(this, 2, 'b')"><span class="quiz-option-letter">B</span> 52</div>
-                <div class="quiz-option" onclick="checkAnswer(this, 2, 'c')"><span class="quiz-option-letter">C</span> 45</div>
-                <div class="quiz-option" onclick="checkAnswer(this, 2, 'd')"><span class="quiz-option-letter">D</span> 50</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'a')"><span class="quiz-option-letter">A</span> \( x^2 + 4x - 12 = 0 \) e \( x = 2\text{ cm} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'b')"><span class="quiz-option-letter">B</span> \( x^2 + 3x - 15 = 0 \) e \( x = 3\text{ cm} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'c')"><span class="quiz-option-letter">C</span> \( x^2 + 4x + 3 = 0 \) e \( x = 1\text{ cm} \)</div>
+                <div class="quiz-option" onclick="checkAnswer(this, 2, 'd')"><span class="quiz-option-letter">D</span> \( x^2 - 4x - 12 = 0 \) e \( x = 6\text{ cm} \)</div>
               </div>
               
               <button class="btn-reveal-calc" id="btn-reveal-q1-q2" style="display:none; margin-top:10px;" onclick="toggleRevealCalc(this)">
@@ -1662,12 +1725,9 @@
               <div class="quiz-explanation-drawer" id="expl-q2" style="margin-top:5px;">
                 <div class="quiz-explanation-title"><i class="fa-solid fa-circle-info"></i> Resolução Comentada</div>
                 <div class="quiz-explanation-text">
-                  Primeiro identificamos os termos da PA: <br>
-                  Primeiro termo \( a_1 = 2 \). <br>
-                  A razão é \( r = 7 - 2 = 5 \). <br>
-                  Queremos o décimo termo (\( n = 10 \)): <br>
-                  \( a_{10} = a_1 + (n - 1) \cdot r \implies a_{10} = 2 + (10 - 1) \cdot 5 = 2 + 9 \cdot 5 = 2 + 45 = 47 \). <br>
-                  A alternativa correta é a <strong>A</strong>.
+                  Multiplicando as dimensões: \((x + 3)(x + 1) = 15 \implies x^2 + 4x + 3 = 15 \implies x^2 + 4x - 12 = 0\). <br>
+                  Fatorando: \((x + 6)(x - 2) = 0 \implies x = 2\text{ cm}\). <br>
+                  Alternativa correta: <strong>A</strong>.
                 </div>
               </div>
             </div>
