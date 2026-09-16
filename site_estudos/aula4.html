@@ -1989,9 +1989,29 @@
   </div>
 
   <script>
-    // --- GERENCIAMENTO DE SLIDES ---
-    let currentSlide = 1;
+    // --- GERENCIAMENTO DE SLIDES COM PERSISTÊNCIA AO RECARREGAR ---
     const totalSlides = 16;
+
+    function getInitialSlide() {
+      // 1. Tenta obter pelo Hash da URL (#slide-X ou #X)
+      const hash = window.location.hash;
+      if (hash) {
+        const match = hash.match(/\d+/);
+        if (match) {
+          const num = parseInt(match[0], 10);
+          if (num >= 1 && num <= totalSlides) return num;
+        }
+      }
+      // 2. Tenta obter pelo localStorage
+      const saved = localStorage.getItem('aprovaifes_aula4_current_slide');
+      if (saved) {
+        const num = parseInt(saved, 10);
+        if (num >= 1 && num <= totalSlides) return num;
+      }
+      return 1;
+    }
+
+    let currentSlide = getInitialSlide();
 
     const titles = {
       1: "Equações do 2º Grau e Sequências",
@@ -2013,10 +2033,19 @@
     };
 
     function updatePresentationState() {
-      document.querySelectorAll('.slide-pane').forEach(pane => pane.classList.remove('active'));
-      document.getElementById(`slide-${currentSlide}`).classList.add('active');
+      // Salva no localStorage e sincroniza a URL Hash sem recarregar a página
+      localStorage.setItem('aprovaifes_aula4_current_slide', currentSlide);
+      if (window.history.replaceState) {
+        window.history.replaceState(null, null, `#slide-${currentSlide}`);
+      } else {
+        window.location.hash = `#slide-${currentSlide}`;
+      }
 
-      document.getElementById('slide-header-title').innerText = titles[currentSlide];
+      document.querySelectorAll('.slide-pane').forEach(pane => pane.classList.remove('active'));
+      const activePane = document.getElementById(`slide-${currentSlide}`);
+      if (activePane) activePane.classList.add('active');
+
+      document.getElementById('slide-header-title').innerText = titles[currentSlide] || titles[1];
       document.getElementById('slide-badge-label').innerText = currentSlide === 1 ? "INÍCIO" : `SLIDE ${currentSlide}`;
       document.getElementById('slide-num-label').innerText = `Slide ${currentSlide} de ${totalSlides}`;
 
@@ -2039,6 +2068,15 @@
       if (currentSlide === 10) updateSlide10();
       if (currentSlide === 12) updateSlide12();
     }
+
+    // Suporte ao botão voltar/avançar do navegador e mudança de URL
+    window.addEventListener('hashchange', () => {
+      const num = getInitialSlide();
+      if (num !== currentSlide) {
+        currentSlide = num;
+        updatePresentationState();
+      }
+    });
 
     function nextSlide() {
       if (currentSlide < totalSlides) {
