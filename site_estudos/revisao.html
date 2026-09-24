@@ -1,0 +1,1937 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AprovaIFES 2026 — Aula de Revisão Geral de Matemática</title>
+  <!-- Google Fonts: Outfit e Inter -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <!-- FontAwesome para Ícones -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- MathJax para fórmulas matemáticas -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)'], ['$', '$']],
+        displayMath: [['\\[', '\\]'], ['$$', '$$']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+
+  <style>
+    /* --- CONFIGURAÇÃO GLOBAL --- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #1B5E20;
+      --primary-light: #2E7D32;
+      --primary-pale: #E8F5E9;
+      --accent: #C62828;
+      --accent-light: #FFCDD2;
+      --warning: #E65100;
+      --warning-light: #FFE0B2;
+      --info: #0D47A1;
+      --info-light: #E3F2FD;
+      --dark: #1A1A1A;
+      --gray-light: #F5F5F5;
+      --gray-medium: #E0E0E0;
+      --text: #333333;
+      --text-light: #666666;
+      --white: #ffffff;
+      --transition-speed: 0.4s;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #0f2010;
+      background: radial-gradient(circle at center, #1b381e 0%, #080f08 100%);
+      color: var(--white);
+      min-height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    h1,
+    h2,
+    h3,
+    .slide-title,
+    .capa-title {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    /* --- LAYOUT DO APRESENTADOR --- */
+    .presentation-container {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* --- BARRA DE PROGRESSO --- */
+    .progress-bar-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 100;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--primary-light), var(--warning));
+      transition: width 0.3s ease;
+    }
+
+    /* --- SLIDES CONTÊINER --- */
+    .slides-wrapper {
+      position: relative;
+      width: 100%;
+      max-width: 1100px;
+      height: 82vh;
+      min-height: 580px;
+      background: rgba(255, 255, 255, 0.98);
+      color: var(--dark);
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* --- HEADER DO SLIDE --- */
+    .slide-header {
+      background: var(--primary-pale);
+      border-bottom: 2px solid var(--gray-medium);
+      padding: 15px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .slide-header-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .slide-badge {
+      background: var(--primary);
+      color: var(--white);
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    .slide-title {
+      font-size: 20px;
+      color: var(--primary);
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .slide-header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--primary-light);
+    }
+
+    /* --- CONTEÚDO DO SLIDE --- */
+    .slide-body {
+      flex: 1;
+      padding: 28px 32px;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .slide-pane {
+      display: none;
+      height: 100%;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(15px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .slide-pane.active {
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* --- FOOTER DO SLIDE --- */
+    .slide-footer {
+      background: var(--primary);
+      color: var(--white);
+      padding: 12px 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .slide-number {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    /* --- CONTROLES DE NAVEGAÇÃO --- */
+    .navigation-controls {
+      position: absolute;
+      bottom: 25px;
+      right: 45px;
+      display: flex;
+      gap: 12px;
+      z-index: 50;
+    }
+
+    .btn-nav {
+      background: var(--white);
+      color: var(--primary);
+      border: 2px solid var(--primary);
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.2s ease;
+    }
+
+    .btn-nav:hover {
+      background: var(--primary);
+      color: var(--white);
+      transform: scale(1.08);
+    }
+
+    .btn-nav:active {
+      transform: scale(0.95);
+    }
+
+    .btn-nav:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      border-color: var(--gray-medium);
+      color: var(--text-light);
+    }
+
+    /* --- CONTROLES AUXILIARES --- */
+    .btn-auxiliary {
+      position: absolute;
+      bottom: 25px;
+      left: 45px;
+      display: flex;
+      gap: 12px;
+      z-index: 50;
+    }
+
+    .btn-aux {
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid var(--gray-medium);
+      color: var(--dark);
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      transition: all 0.2s;
+    }
+
+    .btn-aux:hover {
+      background: var(--white);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* --- MENU LATERAL --- */
+    .sidebar-menu {
+      position: fixed;
+      top: 0;
+      left: -340px;
+      width: 340px;
+      height: 100vh;
+      background: rgba(15, 32, 16, 0.96);
+      backdrop-filter: blur(10px);
+      border-right: 2px solid var(--primary-light);
+      z-index: 200;
+      padding: 25px 20px;
+      transition: left 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      color: var(--white);
+    }
+
+    .sidebar-menu.open {
+      left: 0;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding-bottom: 12px;
+    }
+
+    .sidebar-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary-light);
+    }
+
+    .btn-close-sidebar {
+      background: none;
+      border: none;
+      color: var(--white);
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .menu-item-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow-y: auto;
+      flex: 1;
+      padding-right: 5px;
+    }
+
+    .menu-item {
+      padding: 8px 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 500;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+
+    .menu-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .menu-item.active {
+      background: var(--primary-light);
+      color: var(--white);
+      font-weight: 700;
+    }
+
+    .menu-item-num {
+      width: 22px;
+      height: 22px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .menu-item.active .menu-item-num {
+      background: var(--white);
+      color: var(--primary-light);
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 150;
+      display: none;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    /* --- SLIDE 1: CAPA --- */
+    .slide-capa {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      height: 100%;
+      position: relative;
+    }
+
+    .capa-left {
+      flex: 1.2;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-right: 30px;
+    }
+
+    .capa-right {
+      flex: 0.8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .capa-badge-ano {
+      background: var(--primary-light);
+      color: var(--white);
+      font-weight: 800;
+      font-size: 12px;
+      padding: 6px 16px;
+      border-radius: 30px;
+      display: inline-block;
+      align-self: flex-start;
+      margin-bottom: 20px;
+      letter-spacing: 1px;
+    }
+
+    .capa-title-main {
+      font-size: 46px;
+      font-weight: 900;
+      line-height: 1.05;
+      color: var(--primary);
+      margin-bottom: 8px;
+    }
+
+    .capa-title-sub {
+      font-size: 58px;
+      font-weight: 900;
+      line-height: 0.95;
+      color: var(--accent);
+      font-style: italic;
+      margin-bottom: 20px;
+    }
+
+    .capa-description {
+      font-size: 18px;
+      color: var(--text);
+      font-weight: 600;
+      margin-bottom: 25px;
+      border-left: 4px solid var(--accent);
+      padding-left: 15px;
+    }
+
+    .capa-prof-info {
+      font-size: 14px;
+      color: var(--text-light);
+      font-weight: 500;
+      margin-top: 10px;
+    }
+
+    .capa-prof-info strong {
+      color: var(--primary);
+    }
+
+    .btn-start {
+      background: var(--primary);
+      color: var(--white);
+      border: none;
+      padding: 16px 36px;
+      border-radius: 30px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      cursor: pointer;
+      align-self: flex-start;
+      margin-top: 10px;
+      box-shadow: 0 8px 20px rgba(27, 94, 32, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.3s;
+    }
+
+    .btn-start:hover {
+      background: var(--primary-light);
+      transform: translateY(-3px);
+      box-shadow: 0 12px 25px rgba(27, 94, 32, 0.4);
+    }
+
+    .capa-shapes-svg {
+      width: 100%;
+      max-width: 320px;
+      animation: floatShapes 8s ease-in-out infinite;
+    }
+
+    @keyframes floatShapes {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(4deg); }
+    }
+
+    /* --- LAYOUTS COMUNS DE SLIDE --- */
+    .slide-layout-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 25px;
+      height: 100%;
+      align-items: center;
+    }
+
+    .slide-layout-full {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      height: 100%;
+    }
+
+    .slide-intro-txt {
+      font-size: 15px;
+      line-height: 1.6;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+
+    .slide-intro-txt strong {
+      color: var(--primary);
+    }
+
+    /* --- CAIXAS E CARDS --- */
+    .card-box {
+      background: var(--white);
+      border: 1px solid var(--gray-medium);
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card-box-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800;
+      font-size: 17px;
+      color: var(--primary);
+      border-bottom: 2px solid var(--primary-pale);
+      padding-bottom: 8px;
+    }
+
+    .card-box-header i {
+      font-size: 18px;
+      color: var(--primary-light);
+    }
+
+    .calculation-box {
+      background: var(--primary-pale);
+      border: 1px solid rgba(27, 94, 32, 0.15);
+      border-left: 5px solid var(--primary);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-top: 10px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }
+
+    .calc-step {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      margin-bottom: 10px;
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .calc-step strong {
+      color: var(--primary);
+    }
+
+    .calc-step.highlighted {
+      color: var(--accent);
+      font-size: 17px;
+      font-weight: 800;
+      border-top: 1px dashed var(--gray-medium);
+      padding-top: 10px;
+      margin-top: 10px;
+    }
+
+    .formula-display {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+      text-align: center;
+      padding: 8px 0;
+    }
+
+    .alert-box {
+      background: var(--accent-light);
+      border-left: 4px solid var(--accent);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #801010;
+      margin-top: 8px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .alert-box i {
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .dica-box {
+      background: var(--warning-light);
+      border-left: 4px solid var(--warning);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #7f5000;
+      margin-top: 8px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .dica-box i {
+      font-size: 18px;
+      color: var(--warning);
+      flex-shrink: 0;
+    }
+
+    .info-box {
+      background: var(--info-light);
+      border-left: 4px solid var(--info);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #0b3c85;
+      margin-top: 8px;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .info-box i {
+      font-size: 18px;
+      color: var(--info);
+      flex-shrink: 0;
+    }
+
+    /* --- FLUXOGRAMAS E PASSO A PASSO --- */
+    .flow-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin: 15px 0;
+    }
+
+    .flow-step {
+      background: var(--white);
+      border: 2px solid var(--primary-light);
+      border-radius: 12px;
+      padding: 12px 16px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    }
+
+    .flow-arrow {
+      color: var(--accent);
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* --- OPÇÕES DE QUIZ / QUESTÕES --- */
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .quiz-option {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--white);
+      border: 1.5px solid var(--gray-medium);
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      color: var(--dark);
+    }
+
+    .quiz-option:hover:not(.checked) {
+      background: var(--primary-pale);
+      border-color: var(--primary-light);
+    }
+
+    .quiz-option-letter {
+      width: 26px;
+      height: 26px;
+      background: var(--primary-pale);
+      color: var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+
+    .quiz-option.correct {
+      background: var(--primary-pale) !important;
+      border-color: var(--primary) !important;
+      color: var(--primary) !important;
+      font-weight: 700;
+    }
+
+    .quiz-option.correct .quiz-option-letter {
+      background: var(--primary);
+      color: var(--white);
+    }
+
+    .quiz-option.wrong {
+      background: var(--accent-light) !important;
+      border-color: var(--accent) !important;
+      color: var(--accent) !important;
+    }
+
+    .quiz-option.wrong .quiz-option-letter {
+      background: var(--accent);
+      color: var(--white);
+    }
+
+    /* ESTATÍSTICA E GRÁFICOS SVG */
+    .chart-container-svg {
+      width: 100%;
+      height: 220px;
+      background: var(--white);
+      border: 1px solid var(--gray-medium);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    @media (max-width: 900px) {
+      .slide-layout-split {
+        grid-template-columns: 1fr;
+      }
+      .slides-wrapper {
+        height: 90vh;
+      }
+      .capa-title-main { font-size: 36px; }
+      .capa-title-sub { font-size: 44px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="presentation-container">
+
+    <!-- BARRA DE PROGRESSO -->
+    <div class="progress-bar-container">
+      <div class="progress-bar" id="top-progress-bar"></div>
+    </div>
+
+    <!-- OVERLAY SIDEBAR -->
+    <div class="overlay" id="overlay" onclick="toggleSidebar(false)"></div>
+
+    <!-- MENU LATERAL (ÍNDICE DE 30 SLIDES) -->
+    <nav class="sidebar-menu" id="sidebar-menu">
+      <div class="sidebar-header">
+        <span class="sidebar-title"><i class="fa-solid fa-list-ol"></i> Índice dos Slides</span>
+        <button class="btn-close-sidebar" onclick="toggleSidebar(false)"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <ul class="menu-item-list" id="menu-item-list">
+        <!-- Gerado via JavaScript -->
+      </ul>
+    </nav>
+
+    <!-- SLIDES WRAPPER -->
+    <div class="slides-wrapper">
+
+      <!-- HEADER DO SLIDE -->
+      <header class="slide-header">
+        <div class="slide-header-left">
+          <span class="slide-badge" id="slide-badge-label">SLIDE 1</span>
+          <h2 class="slide-title" id="slide-header-title">REVISÃO GERAL DE MATEMÁTICA</h2>
+        </div>
+        <div class="slide-header-right">
+          <span>AprovaIFES 2026</span>
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+      </header>
+
+      <!-- CORPO DOS SLIDES -->
+      <main class="slide-body">
+        <canvas id="confetti-canvas" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:10;"></canvas>
+
+        <!-- ==================== SLIDE 1: CAPA ==================== -->
+        <div class="slide-pane active" id="slide-1">
+          <div class="slide-capa">
+            <div class="capa-left">
+              <span class="capa-badge-ano"><i class="fa-solid fa-star"></i> REVISÃO ESTRATÉGICA IFES 2026</span>
+              <h1 class="capa-title-main">REVISÃO GERAL DE MATEMÁTICA</h1>
+              <h2 class="capa-title-sub">Reta final para o IFES</h2>
+              <p class="capa-description">Os conteúdos que você precisa reconhecer na prova</p>
+              <div class="capa-prof-info">
+                Orientação: <strong>Prof. Betânia Almeida</strong> • Duração: <strong>~100 minutos (1h40min)</strong>
+              </div>
+              <button class="btn-start" onclick="nextSlide()">
+                Iniciar Revisão <i class="fa-solid fa-arrow-right"></i>
+              </button>
+            </div>
+            <div class="capa-right">
+              <svg class="capa-shapes-svg" viewBox="0 0 300 300" fill="none">
+                <circle cx="150" cy="150" r="120" stroke="var(--primary-light)" stroke-width="8" stroke-dasharray="12 12" />
+                <polygon points="150,40 240,220 60,220" fill="var(--primary-pale)" stroke="var(--primary)" stroke-width="6" />
+                <rect x="110" y="110" width="80" height="80" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="4" rx="10" transform="rotate(15 150 150)" />
+                <text x="150" y="160" text-anchor="middle" font-family="Outfit" font-size="36" font-weight="900" fill="var(--primary)">IFES</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 2: COMO ATACAR ==================== -->
+        <div class="slide-pane" id="slide-2">
+          <p class="slide-intro-txt">
+            Nas provas do IFES, a <strong>interpretação de texto</strong> é parte fundamental da avaliação de Matemática. Não tente calcular antes de entender o enunciado!
+          </p>
+          <div class="flow-container" style="flex-direction: column; gap: 10px; align-items: stretch; margin-top: 10px;">
+            <div class="flow-step"><span style="background: var(--primary); color:#fff; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">1</span> <strong>O que a questão quer?</strong> (Identifique a pergunta final do comando)</div>
+            <div class="flow-step"><span style="background: var(--primary); color:#fff; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">2</span> <strong>Quais são os dados?</strong> (Sublinhe números, taxas e condições)</div>
+            <div class="flow-step"><span style="background: var(--primary); color:#fff; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">3</span> <strong>As unidades estão iguais?</strong> (Atenção para conversões: m em cm, horas em min)</div>
+            <div class="flow-step"><span style="background: var(--primary); color:#fff; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">4</span> <strong>Qual conteúdo está escondido?</strong> (Identifique o conceito matemático por trás do contexto)</div>
+            <div class="flow-step"><span style="background: var(--primary); color:#fff; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">5</span> <strong>Calcule com atenção!</strong> (Cuidado com erros de sinal e operações básicas)</div>
+            <div class="flow-step"><span style="background: var(--primary); color:#fff; border-radius:50%; width:24px; height:24px; display:inline-flex; align-items:center; justify-content:center;">6</span> <strong>Confira se a resposta faz sentido!</strong> (Valide o resultado com a realidade)</div>
+          </div>
+          <div class="alert-box">
+            <i class="fa-solid fa-lightbulb"></i>
+            <div><strong>Destaque Fundamental:</strong> Interpretação também faz parte da Matemática nas questões contextualizadas do IFES.</div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 3: MAPA DA REVISÃO ==================== -->
+        <div class="slide-pane" id="slide-3">
+          <p class="slide-intro-txt">Nossos 100 minutos serão divididos em 5 grandes blocos estratégicos com os conteúdos mais cobrados:</p>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+            <div class="card-box" style="border-top: 4px solid var(--primary);">
+              <div class="card-box-header"><i class="fa-solid fa-percent"></i> Bloco 1</div>
+              <p style="font-weight:700; font-size:15px; color:var(--dark);">Razão, Proporção e Porcentagem</p>
+            </div>
+            <div class="card-box" style="border-top: 4px solid var(--accent);">
+              <div class="card-box-header"><i class="fa-solid fa-shapes"></i> Bloco 2</div>
+              <p style="font-weight:700; font-size:15px; color:var(--dark);">Geometria e Trigonometria</p>
+            </div>
+            <div class="card-box" style="border-top: 4px solid var(--warning);">
+              <div class="card-box-header"><i class="fa-solid fa-calculator"></i> Bloco 3</div>
+              <p style="font-weight:700; font-size:15px; color:var(--dark);">Álgebra e Equações</p>
+            </div>
+            <div class="card-box" style="border-top: 4px solid var(--info);">
+              <div class="card-box-header"><i class="fa-solid fa-chart-column"></i> Bloco 4</div>
+              <p style="font-weight:700; font-size:15px; color:var(--dark);">Estatística e Gráficos</p>
+            </div>
+            <div class="card-box" style="border-top: 4px solid #7B1FA2;">
+              <div class="card-box-header"><i class="fa-solid fa-dice"></i> Bloco 5</div>
+              <p style="font-weight:700; font-size:15px; color:var(--dark);">Probabilidade</p>
+            </div>
+          </div>
+          <div class="dica-box" style="margin-top: 25px;">
+            <i class="fa-solid fa-bullseye"></i>
+            <div><strong>Objetivo de Hoje:</strong> 100 minutos. Foco no que mais ajuda a reconhecer os padrões de resolução!</div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 4: RAZÃO E PROPORÇÃO ==================== -->
+        <div class="slide-pane" id="slide-4">
+          <div class="slide-layout-split">
+            <div>
+              <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Razão e Proporção</h3>
+              <p class="slide-intro-txt">A <strong>Razão</strong> expressa a comparação por divisão entre duas grandezas:</p>
+              <div class="calculation-box formula-display">
+                \[\text{Razão} = \frac{a}{b}\]
+              </div>
+              <p class="slide-intro-txt" style="margin-top:12px;">A <strong>Proporção</strong> é a igualdade entre duas razões:</p>
+              <div class="calculation-box formula-display">
+                \[\frac{a}{b} = \frac{c}{d} \iff a \cdot d = b \cdot c\]
+              </div>
+            </div>
+            <div>
+              <div class="alert-box">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <div><strong>Dica Estratégica:</strong> Nem toda questão de razão precisa de regra de três! Em problemas de divisão proporcional, descubra a "constante da parte".</div>
+              </div>
+              <div class="card-box" style="margin-top:15px; background:var(--primary-pale);">
+                <div class="card-box-header"><i class="fa-solid fa-lightbulb"></i> Exemplo Rápido</div>
+                <p style="font-size:14px; line-height:1.5;">Se dois sócios dividem R$ 500 na razão <strong>2 : 3</strong>, o total tem <strong>5 partes</strong> (2 + 3).<br>Cada parte vale: \(500 \div 5 = 100\).<br>Sócio 1: \(2 \times 100 = 200\). Sócio 2: \(3 \times 100 = 300\).</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 5: QUESTÃO IFES - RAZÃO ==================== -->
+        <div class="slide-pane" id="slide-5">
+          <div class="card-box" style="border-left: 4px solid var(--primary);">
+            <div class="card-box-header"><i class="fa-solid fa-pen-to-square"></i> Questão 1 (Padrão IFES — Proporção em Receita/Mistura)</div>
+            <p style="font-size:15px; line-height:1.6; color:var(--dark); margin-top:5px;">
+              Na produção industrial de uma liga metálica especial no Espírito Santo, a mistura é preparada respeitando rigorosamente a razão proporcional de componentes:
+            </p>
+            <div style="background:var(--primary-pale); padding:12px 18px; border-radius:8px; font-weight:800; color:var(--primary); text-align:center; margin:12px 0; font-size:17px;">
+              1 parte de A &nbsp;:&nbsp; 4 partes de B &nbsp;:&nbsp; 2 partes de C
+            </div>
+            <p style="font-size:15px; color:var(--dark);">
+              Se em um lote de produção foram fabricados exatamente <strong>168 kg</strong> dessa liga metálica, quantos quilogramas correspondem ao componente <strong>B</strong>?
+            </p>
+            <div class="quiz-options">
+              <div class="quiz-option" onclick="selectOptionSlide5(this, 'a')"><span class="quiz-option-letter">A</span> 24 kg</div>
+              <div class="quiz-option" onclick="selectOptionSlide5(this, 'b')"><span class="quiz-option-letter">B</span> 42 kg</div>
+              <div class="quiz-option" onclick="selectOptionSlide5(this, 'c')"><span class="quiz-option-letter">C</span> 48 kg</div>
+              <div class="quiz-option" onclick="selectOptionSlide5(this, 'd')"><span class="quiz-option-letter">D</span> 84 kg</div>
+              <div class="quiz-option" onclick="selectOptionSlide5(this, 'e')"><span class="quiz-option-letter">E</span> 96 kg</div>
+            </div>
+            <div style="text-align:right; margin-top:10px;">
+              <span style="font-size:12px; color:var(--text-light);"><i class="fa-solid fa-hand-pointer"></i> Clique na alternativa para responder ou passe para a resolução no próximo slide.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 6: RESOLUÇÃO QUESTÃO 1 ==================== -->
+        <div class="slide-pane" id="slide-6">
+          <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Resolução Comentada — Questão 1</h3>
+          <div class="calculation-box">
+            <div class="calc-step">
+              <strong>Etapa 1:</strong> Somar o total de partes proporcionais da receita:<br>
+              \[1 + 4 + 2 = 7\text{ partes totais}\]
+            </div>
+            <div class="calc-step">
+              <strong>Etapa 2:</strong> Calcular o valor em kg correspondente a <strong>1 parte</strong>:<br>
+              \[168\text{ kg} \div 7 = 24\text{ kg por parte}\]
+            </div>
+            <div class="calc-step">
+              <strong>Etapa 3:</strong> Determinar a quantidade do componente <strong>B</strong> (4 partes):<br>
+              \[4 \times 24\text{ kg} = 96\text{ kg}\]
+            </div>
+            <div class="calc-step highlighted">
+              Resposta Correta: Alternativa E (96 kg) ✓
+            </div>
+          </div>
+          <div class="dica-box" style="margin-top:15px;">
+            <i class="fa-solid fa-star"></i>
+            <div><strong>Regra de Ouro:</strong> Em questões de proporção composta ou receitas, <em>primeiro descubra quanto vale uma única parte!</em></div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 7: PORCENTAGEM ==================== -->
+        <div class="slide-pane" id="slide-7">
+          <div class="slide-layout-split">
+            <div>
+              <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Porcentagem Sem Complicação</h3>
+              <p class="slide-intro-txt">Porcentagem é uma razão cujo denominador é 100:</p>
+              <div class="calculation-box formula-display">
+                \[p\% = \frac{p}{100}\]
+              </div>
+              <p class="slide-intro-txt" style="margin-top:10px;"><strong>Fatores Multiplicativos Rápidos:</strong></p>
+              <div class="card-box" style="background:var(--primary-pale);">
+                <p>📈 <strong>Aumento de 20%:</strong> \(1 + 0{,}20 = \mathbf{1{,}20}\)</p>
+                <p>📉 <strong>Desconto de 20%:</strong> \(1 - 0{,}20 = \mathbf{0{,}80}\)</p>
+              </div>
+            </div>
+            <div>
+              <div class="card-box" style="text-align:center;">
+                <div class="card-box-header" style="justify-content:center;"><i class="fa-solid fa-diagram-project"></i> Fluxo do Valor Final</div>
+                <div style="display:flex; justify-content:space-around; align-items:center; margin-top:15px;">
+                  <div style="background:var(--gray-light); padding:10px; border-radius:8px; font-weight:700;">Valor Inicial<br>\(V_0\)</div>
+                  <i class="fa-solid fa-arrow-right" style="color:var(--accent); font-size:20px;"></i>
+                  <div style="background:var(--warning-light); padding:10px; border-radius:8px; font-weight:700;">Multiplicador<br>\((1 \pm i)\)</div>
+                  <i class="fa-solid fa-arrow-right" style="color:var(--accent); font-size:20px;"></i>
+                  <div style="background:var(--primary-pale); padding:10px; border-radius:8px; font-weight:700; color:var(--primary);">Valor Final<br>\(V_f\)</div>
+                </div>
+              </div>
+              <div class="info-box" style="margin-top:15px;">
+                <i class="fa-solid fa-bolt"></i>
+                <div>Multiplicar diretamente pelo fator elimina a necessidade de fazer regra de três em duas etapas.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 8: PORCENTAGENS SUCESSIVAS ==================== -->
+        <div class="slide-pane" id="slide-8">
+          <div style="text-align:center; margin-bottom:15px;">
+            <span style="background:var(--accent-light); color:var(--accent); font-weight:900; font-size:20px; padding:8px 20px; border-radius:30px; display:inline-block;">
+              ⚠️ PEGADINHA CLÁSSICA DO IFES
+            </span>
+          </div>
+          <h3 style="font-size:24px; color:var(--accent); font-family:Outfit; text-anchor:middle; text-align:center; margin-bottom:15px;">
+            20% de aumento seguido de 20% de desconto volta ao valor inicial?
+          </h3>
+          <div class="slide-layout-split">
+            <div class="card-box" style="border-color:var(--accent);">
+              <div class="card-box-header" style="color:var(--accent);"><i class="fa-solid fa-xmark"></i> O Erro Recorrente</div>
+              <p style="font-size:15px; color:var(--text);">Muitos alunos acham que \(+20\% - 20\% = 0\%\). <strong>ISSO ESTÁ ERRADO!</strong></p>
+              <p style="font-size:14px; color:var(--text-light);">O desconto incide sobre o valor já aumentado, e não sobre o valor inicial!</p>
+            </div>
+            <div class="card-box" style="border-color:var(--primary);">
+              <div class="card-box-header" style="color:var(--primary);"><i class="fa-solid fa-check"></i> O Cálculo Correto</div>
+              <div class="calculation-box formula-display" style="margin-top:0;">
+                \[1{,}20 \times 0{,}80 = 0{,}96\]
+              </div>
+              <p style="font-size:15px; font-weight:700; color:var(--primary); margin-top:8px;">
+                Conclusão: O valor final corresponde a 96% do valor original.
+              </p>
+              <p style="font-size:16px; font-weight:800; color:var(--accent);">
+                Houve uma REDUÇÃO REAL DE 4%! (\(100\% - 96\% = 4\%\))
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 9: FÓRMULAS GEOMETRIA ==================== -->
+        <div class="slide-pane" id="slide-9">
+          <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:15px;">Geometria: O que você precisa reconhecer de cabeça</h3>
+          <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:15px;">
+            <div class="card-box" style="background:var(--primary-pale);">
+              <div class="card-box-header"><i class="fa-solid fa-square"></i> Retângulo & Quadrado</div>
+              <div class="formula-display">
+                \[A = b \cdot h \quad \text{ou} \quad A = L^2\]
+              </div>
+            </div>
+            <div class="card-box" style="background:var(--info-light);">
+              <div class="card-box-header"><i class="fa-solid fa-play" style="transform:rotate(-90deg);"></i> Triângulo</div>
+              <div class="formula-display" style="color:var(--info);">
+                \[A = \frac{b \cdot h}{2}\]
+              </div>
+            </div>
+            <div class="card-box" style="background:var(--warning-light);">
+              <div class="card-box-header"><i class="fa-regular fa-circle"></i> Área do Círculo</div>
+              <div class="formula-display" style="color:var(--warning);">
+                \[A = \pi \cdot r^2\]
+              </div>
+            </div>
+            <div class="card-box" style="background:var(--accent-light);">
+              <div class="card-box-header"><i class="fa-solid fa-circle-notch"></i> Comprimento da Circunferência</div>
+              <div class="formula-display" style="color:var(--accent);">
+                \[C = 2 \cdot \pi \cdot r\]
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 10: ÁREA OU PERÍMETRO? ==================== -->
+        <div class="slide-pane" id="slide-10">
+          <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Área ou Perímetro? Não confunda na leitura!</h3>
+          <div class="slide-layout-split">
+            <div class="card-box" style="border-top:5px solid var(--primary);">
+              <div class="card-box-header"><i class="fa-solid fa-border-all"></i> ÁREA</div>
+              <p style="font-size:16px; font-weight:700; color:var(--primary);">“Quanto cabe dentro da superfície?”</p>
+              <p style="font-size:14px; color:var(--text-light);">Unidades quadradas: \(\text{cm}^2, \text{m}^2, \text{km}^2\)</p>
+              <div class="info-box">Exemplos: revestir chão com piso, gramar terreno, pintar parede.</div>
+            </div>
+            <div class="card-box" style="border-top:5px solid var(--accent);">
+              <div class="card-box-header"><i class="fa-solid fa-ruler"></i> PERÍMETRO</div>
+              <p style="font-size:16px; font-weight:700; color:var(--accent);">“Quanto mede a linha do contorno?”</p>
+              <p style="font-size:14px; color:var(--text-light);">Unidades lineares: \(\text{cm}, \text{m}, \text{km}\)</p>
+              <div class="alert-box">Exemplos: cercar um terreno com arame, rodapé da sala, dar voltas numa pista.</div>
+            </div>
+          </div>
+          <div class="dica-box" style="margin-top:15px; text-align:center;">
+            <i class="fa-solid fa-circle-question"></i>
+            <div><strong>Pergunta de Ouro ao ler a questão:</strong> O enunciado pede para cobrir a superfície (Área) ou dar a volta no contorno (Perímetro)?</div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 11: FIGURA COMPOSTA ==================== -->
+        <div class="slide-pane" id="slide-11">
+          <div class="slide-layout-split">
+            <div>
+              <h3 style="font-size:20px; color:var(--primary); font-family:Outfit; margin-bottom:10px;">Área de Figura Composta</h3>
+              <p class="slide-intro-txt">Questões do IFES costumam apresentar plantas baixas ou figuras combinadas.</p>
+              <div class="alert-box">
+                <i class="fa-solid fa-shapes"></i>
+                <div><strong>Estratégia:</strong> Figura composta não tem fórmula própria. <em>Divida a figura em retângulos, triângulos ou semicírculos conhecidos!</em></div>
+              </div>
+              <div class="calculation-box formula-display" style="margin-top:10px;">
+                \[\text{Área Total} = A_1 + A_2 + A_3\]
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <svg viewBox="0 0 260 220" style="width:100%; max-width:260px; background:#f9f9f9; border:1px solid #ccc; border-radius:12px; box-shadow:0 4px 10px rgba(0,0,0,0.04); padding:10px;">
+                <!-- Semicírculo topo (A2) -->
+                <path d="M 40 95 A 90 60 0 0 1 220 95 Z" fill="var(--warning-light)" stroke="var(--warning)" stroke-width="3" />
+                <text x="130" y="65" text-anchor="middle" font-size="13" font-weight="800" fill="var(--warning)">A2 (Semicírculo)</text>
+
+                <!-- Retângulo base (A1) -->
+                <rect x="40" y="95" width="180" height="95" fill="var(--primary-pale)" stroke="var(--primary)" stroke-width="3" />
+                <text x="130" y="150" text-anchor="middle" font-size="14" font-weight="800" fill="var(--primary)">A1 (Retângulo)</text>
+
+                <!-- Cotas / Dimensões de Exemplo -->
+                <text x="130" y="208" text-anchor="middle" font-size="11" font-weight="700" fill="#666">Comprimento da base = 8 m</text>
+                <text x="235" y="145" text-anchor="middle" font-size="11" font-weight="700" fill="#666" transform="rotate(90 235 145)">Altura = 4 m</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 12: CÍRCULO X CIRCUNFERÊNCIA ==================== -->
+        <div class="slide-pane" id="slide-12">
+          <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Cuidado: Círculo ≠ Circunferência</h3>
+          <div class="slide-layout-split">
+            <div class="card-box" style="text-align:center;">
+              <div class="card-box-header" style="justify-content:center;"><i class="fa-regular fa-circle-dot"></i> Área do Círculo (Região Interna)</div>
+              <svg viewBox="0 0 140 140" style="width:120px; height:120px; margin:10px auto;">
+                <circle cx="70" cy="70" r="50" fill="var(--primary-pale)" stroke="var(--primary)" stroke-width="4" />
+                <line x1="70" y1="70" x2="120" y2="70" stroke="var(--accent)" stroke-width="3" />
+                <text x="95" y="65" font-size="14" font-weight="800" fill="var(--accent)">r</text>
+              </svg>
+              <div class="formula-display">\[A = \pi r^2\]</div>
+            </div>
+            <div class="card-box" style="text-align:center;">
+              <div class="card-box-header" style="justify-content:center;"><i class="fa-solid fa-circle-notch"></i> Comprimento (Linha do Contorno)</div>
+              <svg viewBox="0 0 140 140" style="width:120px; height:120px; margin:10px auto;">
+                <circle cx="70" cy="70" r="50" fill="none" stroke="var(--accent)" stroke-width="5" stroke-dasharray="8 4" />
+                <line x1="70" y1="70" x2="120" y2="70" stroke="var(--primary)" stroke-width="3" />
+                <text x="95" y="65" font-size="14" font-weight="800" fill="var(--primary)">r</text>
+              </svg>
+              <div class="formula-display" style="color:var(--accent);">\[C = 2\pi r\]</div>
+            </div>
+          </div>
+          <div class="info-box" style="margin-top:12px;">
+            <i class="fa-solid fa-person-running"></i>
+            <div><strong>Desafio IFES 2025:</strong> Se um atleta dá 5 voltas completas em uma pista circular de raio \(r = 20\text{ m}\), ele percorreu a distância dada pelo <strong>Comprimento \(5 \times (2\pi r)\)</strong>!</div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 13: PITÁGORAS ==================== -->
+        <div class="slide-pane" id="slide-13">
+          <div class="slide-layout-split">
+            <div>
+              <h3 style="font-size:20px; color:var(--primary); font-family:Outfit; margin-bottom:10px;">Triângulo Retângulo: Apareceu 90°?</h3>
+              <p class="slide-intro-txt">Sempre que houver um ângulo reto (90°), o <strong>Teorema de Pitágoras</strong> é o candidato nº 1:</p>
+              <div class="calculation-box formula-display">
+                \[a^2 = b^2 + c^2\]
+              </div>
+              <div class="alert-box" style="margin-top:10px;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <div><strong>Hipotenusa (\(a\)):</strong> É SEMPRE o maior lado, localizado diretamente oposto ao ângulo de 90°!</div>
+              </div>
+            </div>
+            <div style="text-align:center;">
+              <svg viewBox="0 0 200 160" style="width:100%; max-width:220px; background:#fff; border:1px solid #ccc; border-radius:10px;">
+                <polygon points="30,130 170,130 30,30" fill="var(--primary-pale)" stroke="var(--primary)" stroke-width="3" />
+                <rect x="30" y="115" width="15" height="15" fill="none" stroke="var(--accent)" stroke-width="2" />
+                <circle cx="37.5" cy="122.5" r="2" fill="var(--accent)" />
+                <text x="100" y="70" font-size="14" font-weight="900" fill="var(--accent)">Hipotenusa (a)</text>
+                <text x="100" y="148" font-size="13" font-weight="700" fill="var(--dark)">Cateto (b) = 8</text>
+                <text x="15" y="85" font-size="13" font-weight="700" fill="var(--dark)">Cateto (c) = 6</text>
+              </svg>
+              <p style="font-size:13px; font-weight:800; color:var(--primary); margin-top:5px;">Trio Pitagórico Clássico: 6, 8, 10 (ou 3, 4, 5)</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 14: PITÁGORAS OU TRIGONOMETRIA? ==================== -->
+        <div class="slide-pane" id="slide-14">
+          <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Qual ferramenta escolher no Triângulo Retângulo?</h3>
+          <div class="slide-layout-split">
+            <div class="card-box" style="border-top:5px solid var(--primary); height:100%;">
+              <div class="card-box-header"><i class="fa-solid fa-ruler-combined"></i> Usar PITÁGORAS quando:</div>
+              <div style="font-size:15px; font-weight:700; color:var(--primary); margin-top:6px;">
+                Você conhece <strong>2 LADOS</strong> e quer descobrir o 3º LADO.
+              </div>
+              <p style="font-size:12.5px; color:var(--text-light);">Não envolve ângulos agudos (30°, 45°, 60°).</p>
+              
+              <!-- Diagrama SVG Pitágoras -->
+              <div style="text-align:center; margin:8px 0;">
+                <svg viewBox="0 0 180 120" style="width:100%; max-width:160px; background:#f9f9f9; border:1px solid #ddd; border-radius:8px; padding:4px;">
+                  <polygon points="25,95 155,95 25,25" fill="var(--primary-pale)" stroke="var(--primary)" stroke-width="2.5" />
+                  <rect x="25" y="83" width="12" height="12" fill="none" stroke="var(--accent)" stroke-width="1.5" />
+                  <circle cx="31" cy="89" r="1.5" fill="var(--accent)" />
+                  <text x="90" y="52" font-size="11" font-weight="800" fill="var(--accent)">a = ?</text>
+                  <text x="90" y="112" font-size="11" font-weight="700" fill="var(--dark)">b = 8</text>
+                  <text x="10" y="65" font-size="11" font-weight="700" fill="var(--dark)">c = 6</text>
+                </svg>
+              </div>
+
+              <div class="calculation-box formula-display" style="margin-top:auto;">\[a^2 = b^2 + c^2\]</div>
+            </div>
+
+            <div class="card-box" style="border-top:5px solid var(--accent); height:100%;">
+              <div class="card-box-header" style="color:var(--accent);"><i class="fa-solid fa-compass"></i> Usar TRIGONOMETRIA quando:</div>
+              <div style="font-size:15px; font-weight:700; color:var(--accent); margin-top:6px;">
+                A questão envolve <strong>1 ÂNGULO + 1 LADO</strong>.
+              </div>
+              <p style="font-size:12.5px; color:var(--text-light);">Você precisa encontrar outro lado utilizando Seno, Cosseno ou Tangente.</p>
+              
+              <!-- Diagrama SVG Trigonometria -->
+              <div style="text-align:center; margin:8px 0;">
+                <svg viewBox="0 0 180 120" style="width:100%; max-width:160px; background:#f9f9f9; border:1px solid #ddd; border-radius:8px; padding:4px;">
+                  <polygon points="25,95 155,95 25,25" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="2.5" />
+                  <rect x="25" y="83" width="12" height="12" fill="none" stroke="var(--primary)" stroke-width="1.5" />
+                  <circle cx="31" cy="89" r="1.5" fill="var(--primary)" />
+                  <path d="M 125 95 A 30 30 0 0 0 137 80" fill="none" stroke="var(--warning)" stroke-width="2" />
+                  <text x="110" y="88" font-size="10" font-weight="800" fill="var(--warning)">30°</text>
+                  <text x="90" y="112" font-size="11" font-weight="700" fill="var(--dark)">6 m (CA)</text>
+                  <text x="8" y="65" font-size="11" font-weight="800" fill="var(--accent)">h = ? (CO)</text>
+                </svg>
+              </div>
+
+              <div class="calculation-box formula-display" style="margin-top:auto; border-left-color:var(--accent); background:var(--accent-light); border-color:rgba(198,40,40,0.25);">\[\sin\alpha, \quad \cos\alpha, \quad \tan\alpha\]</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 15: SENO, COSSENO E TANGENTE ==================== -->
+        <div class="slide-pane" id="slide-15">
+          <div class="slide-layout-split">
+            <div>
+              <h3 style="font-size:20px; color:var(--primary); font-family:Outfit; margin-bottom:10px;">Razões Trigonométricas ESSENCIAIS</h3>
+              <div class="calculation-box" style="margin-bottom:8px;">
+                \[\sin\alpha = \frac{\text{Cateto Oposto (CO)}}{\text{Hipotenusa (H)}}\]
+              </div>
+              <div class="calculation-box" style="margin-bottom:8px;">
+                \[\cos\alpha = \frac{\text{Cateto Adjacente (CA)}}{\text{Hipotenusa (H)}}\]
+              </div>
+              <div class="calculation-box">
+                \[\tan\alpha = \frac{\text{Cateto Oposto (CO)}}{\text{Cateto Adjacente (CA)}}\]
+              </div>
+            </div>
+            <div class="card-box" style="background:var(--primary-pale);">
+              <div class="card-box-header"><i class="fa-solid fa-brain"></i> Mnemônico & Identificação do Triângulo</div>
+              <p style="font-size:13.5px; margin-top:2px;">👁️ <strong>Oposto + Hipotenusa</strong> \(\to\) <strong>SENO</strong></p>
+              <p style="font-size:13.5px;">🤝 <strong>Adjacente + Hipotenusa</strong> \(\to\) <strong>COSSENO</strong></p>
+              <p style="font-size:13.5px;">📐 <strong>Oposto + Adjacente</strong> \(\to\) <strong>TANGENTE</strong> (CO-CA)</p>
+              
+              <!-- Diagrama SVG do Triângulo com CO, CA e H -->
+              <div style="text-align:center; margin-top:6px;">
+                <svg viewBox="0 0 220 135" style="width:100%; max-width:200px; background:#fff; border:1px solid var(--gray-medium); border-radius:8px; padding:6px;">
+                  <polygon points="30,105 190,105 30,20" fill="var(--primary-pale)" stroke="var(--primary)" stroke-width="2.5" />
+                  <rect x="30" y="91" width="14" height="14" fill="none" stroke="var(--accent)" stroke-width="1.5" />
+                  <circle cx="37" cy="98" r="1.8" fill="var(--accent)" />
+                  <path d="M 155 105 A 35 35 0 0 0 170 87" fill="none" stroke="var(--warning)" stroke-width="2.5" />
+                  <text x="142" y="98" font-size="12" font-weight="800" fill="var(--warning)">α</text>
+                  <text x="110" y="54" font-size="11" font-weight="800" fill="var(--accent)">Hipotenusa (H)</text>
+                  <text x="110" y="122" font-size="11" font-weight="700" fill="var(--primary)">Cateto Adjacente (CA)</text>
+                  <text x="15" y="65" font-size="10" font-weight="700" fill="var(--primary)">CO</text>
+                </svg>
+              </div>
+
+              <div class="info-box" style="margin-top:6px;">
+                Não é necessário decorar círculo trigonométrico para o IFES. Domine estas três!
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 16: QUESTÃO TRIGONOMETRIA ==================== -->
+        <div class="slide-pane" id="slide-16">
+          <div class="card-box" style="border-left: 4px solid var(--accent);">
+            <div class="card-box-header" style="color:var(--accent);"><i class="fa-solid fa-pen-to-square"></i> Questão 2 (Padrão IFES — Seleção da Razão Trigonométrica)</div>
+            <p style="font-size:14.5px; line-height:1.5; color:var(--dark); margin-top:2px;">
+              Uma rampa de acesso para cadeirantes projetada para um dos campi do IFES forma um ângulo de <strong>30°</strong> com o solo horizontal. Sabendo que a projeção horizontal do terreno sob a rampa mede <strong>6 m</strong>, qual expressão permite determinar diretamente a altura vertical \(h\) atingida pela rampa?
+            </p>
+            
+            <!-- Diagrama SVG Rampa IFES -->
+            <div style="text-align:center; margin:6px 0;">
+              <svg viewBox="0 0 280 120" style="width:100%; max-width:260px; background:#f9f9f9; border:1px solid #ccc; border-radius:8px; padding:6px;">
+                <line x1="20" y1="95" x2="260" y2="95" stroke="#777" stroke-width="2" stroke-dasharray="4 2" />
+                <polygon points="30,95 230,95 230,30" fill="var(--accent-light)" stroke="var(--accent)" stroke-width="2.5" />
+                <path d="M 80 95 A 50 50 0 0 0 95 80" fill="none" stroke="var(--warning)" stroke-width="2.5" />
+                <text x="100" y="90" font-size="12" font-weight="900" fill="var(--warning)">30°</text>
+                <text x="120" y="55" font-size="12" font-weight="800" fill="var(--accent)">Rampa</text>
+                <text x="130" y="112" font-size="12" font-weight="800" fill="var(--dark)">6 m (Projeção)</text>
+                <text x="238" y="65" font-size="12" font-weight="800" fill="var(--accent)">h = ?</text>
+              </svg>
+            </div>
+
+            <div class="quiz-options">
+              <div class="quiz-option" onclick="selectOptionSlide16(this, 'a')"><span class="quiz-option-letter">A</span> \(\sin 30^\circ = \frac{h}{6}\)</div>
+              <div class="quiz-option" onclick="selectOptionSlide16(this, 'b')"><span class="quiz-option-letter">B</span> \(\cos 30^\circ = \frac{h}{6}\)</div>
+              <div class="quiz-option" onclick="selectOptionSlide16(this, 'c')"><span class="quiz-option-letter">C</span> \(\tan 30^\circ = \frac{h}{6}\)</div>
+              <div class="quiz-option" onclick="selectOptionSlide16(this, 'd')"><span class="quiz-option-letter">D</span> \(\tan 30^\circ = \frac{6}{h}\)</div>
+              <div class="quiz-option" onclick="selectOptionSlide16(this, 'e')"><span class="quiz-option-letter">E</span> \(\cos 30^\circ = \frac{6}{h}\)</div>
+            </div>
+            <div class="dica-box" style="margin-top:8px;">
+              <i class="fa-solid fa-lightbulb"></i>
+              <div><strong>Foco da Questão:</strong> Identificar os lados (Cateto Oposto \(h\) e Cateto Adjacente \(6\)) para escolher a razão correta!</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 17: EQUAÇÃO 1º GRAU ==================== -->
+        <div class="slide-pane" id="slide-17">
+          <div class="slide-layout-split">
+            <div>
+              <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Álgebra: Encontrar o Desconhecido</h3>
+              <p class="slide-intro-txt">O objetivo em uma equação do 1º grau é <strong>isolar a incógnita \(x\)</strong> acumulando números de um lado e letras do outro:</p>
+              <div class="calculation-box">
+                <div class="calc-step">\[3x + 5 = 20\]</div>
+                <div class="calc-step">\[3x = 20 - 5 \implies 3x = 15\]</div>
+                <div class="calc-step highlighted">\[x = \frac{15}{3} = 5\]</div>
+              </div>
+            </div>
+            <div>
+              <div class="alert-box">
+                <i class="fa-solid fa-scale-balanced"></i>
+                <div><strong>Princípio da Balança:</strong> O que você faz de um lado da igualdade, deve fazer exatamente do outro lado! Operação inversa troca de lado.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 18: SITUAÇÕES LINEARES ==================== -->
+        <div class="slide-pane" id="slide-18">
+          <h3 style="font-size:20px; color:var(--primary); font-family:Outfit; margin-bottom:10px;">Problemas de Valor Fixo + Valor Variável</h3>
+          <p class="slide-intro-txt">Muito comum no IFES: comparar dois planos de serviços ou custos de transporte.</p>
+          <div class="slide-layout-split" style="margin-top:10px;">
+            <div class="card-box" style="background:var(--primary-pale);">
+              <p style="font-weight:800; color:var(--primary);">Plano A: Taxa fixa de R$ 20 + R$ 5 por unidade (\(x\))</p>
+              <div class="formula-display">\[A = 20 + 5x\]</div>
+            </div>
+            <div class="card-box" style="background:var(--info-light);">
+              <p style="font-weight:800; color:var(--info);">Plano B: Taxa fixa de R$ 32 + R$ 3 por unidade (\(x\))</p>
+              <div class="formula-display" style="color:var(--info);">\[B = 32 + 3x\]</div>
+            </div>
+          </div>
+          <div class="calculation-box" style="margin-top:12px;">
+            <p style="font-weight:700; color:var(--dark);">Para qual valor de \(x\) os dois planos custam exatamente o mesmo?</p>
+            \[20 + 5x = 32 + 3x \implies 5x - 3x = 32 - 20 \implies 2x = 12 \implies \mathbf{x = 6}\]
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 19: EQUAÇÃO 2º GRAU ==================== -->
+        <div class="slide-pane" id="slide-19">
+          <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Equação do 2º Grau e Bhaskara</h3>
+          <p class="slide-intro-txt">Forma geral: \(ax^2 + bx + c = 0\) (com \(a \neq 0\)).</p>
+          <div class="slide-layout-split">
+            <div class="calculation-box">
+              <div class="calc-step"><strong>1. Discriminante (\(\Delta\)):</strong></div>
+              \[\Delta = b^2 - 4ac\]
+              <div class="calc-step" style="margin-top:10px;"><strong>2. Fórmula de Bhaskara:</strong></div>
+              \[x = \frac{-b \pm \sqrt{\Delta}}{2a}\]
+            </div>
+            <div class="card-box" style="background:var(--primary-pale);">
+              <div class="card-box-header"><i class="fa-solid fa-calculator"></i> Exemplo Rápido: \(x^2 - 5x + 6 = 0\)</div>
+              <p style="font-size:14px;">\(a = 1, \ b = -5, \ c = 6\)</p>
+              \[\Delta = (-5)^2 - 4(1)(6) = 25 - 24 = 1\]
+              \[x = \frac{5 \pm 1}{2} \implies x_1 = 3, \ x_2 = 2\]
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 20: O QUE O DELTA DIZ ==================== -->
+        <div class="slide-pane" id="slide-20">
+          <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:15px;">Análise Rápida do Discriminante (\(\Delta\))</h3>
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:15px;">
+            <div class="card-box" style="border-top:5px solid var(--primary); text-align:center;">
+              <div class="formula-display">\[\Delta > 0\]</div>
+              <p style="font-weight:800; color:var(--primary); margin-top:5px;">Duas raízes reais e distintas</p>
+              <p style="font-size:12.5px; color:var(--text-light); margin-top:5px;">A parábola corta o eixo \(x\) em 2 pontos diferentes.</p>
+            </div>
+            <div class="card-box" style="border-top:5px solid var(--warning); text-align:center;">
+              <div class="formula-display" style="color:var(--warning);">\[\Delta = 0\]</div>
+              <p style="font-weight:800; color:var(--warning); margin-top:5px;">Uma única raiz real (dupla)</p>
+              <p style="font-size:12.5px; color:var(--text-light); margin-top:5px;">A parábola tangencia (toca) o eixo \(x\) em 1 ponto (vértice).</p>
+            </div>
+            <div class="card-box" style="border-top:5px solid var(--accent); text-align:center;">
+              <div class="formula-display" style="color:var(--accent);">\[\Delta < 0\]</div>
+              <p style="font-weight:800; color:var(--accent); margin-top:5px;">Não existem raízes reais</p>
+              <p style="font-size:12.5px; color:var(--text-light); margin-top:5px;">A parábola não toca nem corta o eixo \(x\).</p>
+            </div>
+          </div>
+          <div class="info-box" style="margin-top:20px;">
+            <i class="fa-solid fa-lightbulb"></i>
+            <div>Em muitas questões teóricas do IFES, basta analisar o sinal de \(\Delta\) sem precisar resolver toda a equação!</div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 21: MÉDIA, MODA E MEDIANA ==================== -->
+        <div class="slide-pane" id="slide-21">
+          <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Estatística: Não confunda os 3 M's</h3>
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px;">
+            <div class="card-box" style="background:var(--primary-pale);">
+              <div class="card-box-header"><i class="fa-solid fa-calculator"></i> MÉDIA</div>
+              <p style="font-size:13.5px;">Somar todos os valores e dividir pela quantidade total de elementos.</p>
+            </div>
+            <div class="card-box" style="background:var(--warning-light);">
+              <div class="card-box-header" style="color:var(--warning);"><i class="fa-solid fa-fire"></i> MODA</div>
+              <p style="font-size:13.5px;">É o valor com maior frequência (o número que <strong>mais se repete</strong>).</p>
+            </div>
+            <div class="card-box" style="background:var(--info-light);">
+              <div class="card-box-header" style="color:var(--info);"><i class="fa-solid fa-arrows-left-right"></i> MEDIANA</div>
+              <p style="font-size:13.5px;">Valor central do conjunto <strong>após ordenar</strong> os dados em rol (crescente).</p>
+            </div>
+          </div>
+          <div class="calculation-box" style="margin-top:15px; text-align:center;">
+            <p style="font-weight:800; color:var(--dark); margin-bottom:5px;">Exemplo Prático com o conjunto: \(2, \ 4, \ 4, \ 6, \ 9\)</p>
+            <p style="font-size:14.5px;">
+              Média: \(\frac{2+4+4+6+9}{5} = \frac{25}{5} = \mathbf{5}\) &nbsp;|&nbsp;
+              Moda: \(\mathbf{4}\) &nbsp;|&nbsp;
+              Mediana: \(\mathbf{4}\) (terceiro elemento do meio)
+            </p>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 22: MÉDIA PONDERADA ==================== -->
+        <div class="slide-pane" id="slide-22">
+          <div class="slide-layout-split">
+            <div>
+              <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Média Aritmética Ponderada</h3>
+              <p class="slide-intro-txt">Utilizada quando os elementos possuem <strong>pesos ou frequências diferentes</strong>:</p>
+              <div class="calculation-box formula-display">
+                \[\bar{x} = \frac{x_1 \cdot p_1 + x_2 \cdot p_2 + \dots + x_n \cdot p_n}{p_1 + p_2 + \dots + p_n}\]
+              </div>
+            </div>
+            <div class="card-box" style="background:var(--primary-pale);">
+              <div class="card-box-header"><i class="fa-solid fa-graduation-cap"></i> Exemplo de Notas no IFES</div>
+              <p style="font-size:14px; margin-top:5px;">
+                Um aluno tirou <strong>7,0</strong> na Prova 1 (peso 2) e <strong>9,0</strong> na Prova 2 (peso 3).
+              </p>
+              <div class="calculation-box formula-display" style="margin-top:8px;">
+                \[\bar{x} = \frac{7{,}0 \cdot 2 + 9{,}0 \cdot 3}{2 + 3} = \frac{14 + 27}{5} = \frac{41}{5} = \mathbf{8{,}2}\]
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 23: LEITURA DE GRÁFICO ==================== -->
+        <div class="slide-pane" id="slide-23">
+          <h3 style="font-size:20px; color:var(--primary); font-family:Outfit; margin-bottom:10px;">Interpretação Crítica de Gráficos e Tabelas</h3>
+          <div class="slide-layout-split">
+            <div class="chart-container-svg">
+              <svg viewBox="0 0 280 160" style="width:100%; height:100%;">
+                <line x1="30" y1="130" x2="260" y2="130" stroke="#888" stroke-width="2" />
+                <line x1="30" y1="20" x2="30" y2="130" stroke="#888" stroke-width="2" />
+                <rect x="50" y="70" width="35" height="60" fill="var(--primary-light)" rx="4" />
+                <text x="67.5" y="62" text-anchor="middle" font-size="11" font-weight="800" fill="var(--primary)">120</text>
+                <text x="67.5" y="145" text-anchor="middle" font-size="10" font-weight="700">2023</text>
+
+                <rect x="115" y="40" width="35" height="90" fill="var(--accent)" rx="4" />
+                <text x="132.5" y="32" text-anchor="middle" font-size="11" font-weight="800" fill="var(--accent)">180</text>
+                <text x="132.5" y="145" text-anchor="middle" font-size="10" font-weight="700">2024</text>
+
+                <rect x="180" y="55" width="35" height="75" fill="var(--warning)" rx="4" />
+                <text x="197.5" y="47" text-anchor="middle" font-size="11" font-weight="800" fill="var(--warning)">150</text>
+                <text x="197.5" y="145" text-anchor="middle" font-size="10" font-weight="700">2025</text>
+              </svg>
+            </div>
+            <div>
+              <div class="card-box">
+                <div class="card-box-header"><i class="fa-solid fa-chart-line"></i> Perguntas Obrigatórias ao Ler</div>
+                <p style="font-size:13.5px;">1. <strong>Maior valor:</strong> 180 (Ano 2024)</p>
+                <p style="font-size:13.5px;">2. <strong>Diferença entre 2024 e 2023:</strong> \(180 - 120 = 60\)</p>
+                <p style="font-size:13.5px;">3. <strong>Aumento percentual de 2023 para 2024:</strong> \(\frac{60}{120} = 50\%\)</p>
+              </div>
+              <div class="alert-box" style="margin-top:10px;">
+                Gráficos no IFES costumam testar leitura combinada com porcentagens!
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 24: PROBABILIDADE BÁSICA ==================== -->
+        <div class="slide-pane" id="slide-24">
+          <div class="slide-layout-split">
+            <div>
+              <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Probabilidade Clássica</h3>
+              <p class="slide-intro-txt">A probabilidade mede a chance de um evento ocorrer:</p>
+              <div class="calculation-box formula-display">
+                \[P(A) = \frac{\text{Número de Casos Favoráveis}}{\text{Número de Casos Possíveis (Total)}}\]
+              </div>
+            </div>
+            <div class="card-box" style="background:var(--primary-pale);">
+              <div class="card-box-header"><i class="fa-solid fa-box"></i> Exemplo da Urna de Bolas</div>
+              <p style="font-size:14px; margin-top:5px;">Uma urna contém: <strong>3 bolas vermelhas</strong>, <strong>5 azuis</strong> e <strong>2 verdes</strong> (Total = 10 bolas).</p>
+              <p style="font-size:14px; margin-top:5px;">Qual a probabilidade de retirar uma bola <strong>vermelha</strong>?</p>
+              <div class="calculation-box formula-display" style="margin-top:8px;">
+                \[P(\text{Vermelha}) = \frac{3}{10} = 0{,}30 = \mathbf{30\%}\]
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 25: PROBABILIDADE COMPLEMENTAR ==================== -->
+        <div class="slide-pane" id="slide-25">
+          <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Probabilidade Complementar (O Evento "NÃO A")</h3>
+          <p class="slide-intro-txt">Muitas vezes é mais fácil calcular a chance de um evento <strong>NÃO acontecer</strong> e subtrair do total (100% ou 1):</p>
+          <div class="calculation-box formula-display">
+            \[P(\text{NÃO } A) = 1 - P(A) \quad \text{ou} \quad 100\% - P(A)\]
+          </div>
+          <div class="card-box" style="margin-top:15px; background:var(--info-light);">
+            <div class="card-box-header" style="color:var(--info);"><i class="fa-solid fa-arrows-rotate"></i> Mesma Urna do Slide Anterior (Total = 10)</div>
+            <p style="font-size:15px; font-weight:700; color:var(--dark);">Qual a probabilidade de NÃO retirar uma bola vermelha?</p>
+            <div style="display:flex; gap:15px; margin-top:10px;">
+              <div style="flex:1; background:#fff; padding:10px; border-radius:8px; text-align:center;">
+                <strong>Método 1 (Direto):</strong><br>Azuis + Verdes = \(5 + 2 = 7\)<br>\[P = \frac{7}{10} = \mathbf{70\%}\]
+              </div>
+              <div style="flex:1; background:#fff; padding:10px; border-radius:8px; text-align:center;">
+                <strong>Método 2 (Complementar):</strong><br>\[100\% - 30\% = \mathbf{70\%}\]
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 26: DESAFIO 1 ==================== -->
+        <div class="slide-pane" id="slide-26">
+          <div class="card-box" style="border-left: 4px solid var(--primary);">
+            <div class="card-box-header"><i class="fa-solid fa-puzzle-piece"></i> Questão Desafio 1 (Geometria + Porcentagem)</div>
+            <p style="font-size:15px; line-height:1.6; color:var(--dark); margin-top:5px;">
+              Um terreno retangular destinado à ampliação de uma horta comunitária escolar possui dimensões de <strong>20 m por 15 m</strong>. A direção da escola decidiu que uma área correspondente a <strong>30% do terreno total</strong> será pavimentada para a construção de um pequeno galpão de ferramentas.
+            </p>
+            <p style="font-size:15px; font-weight:700; color:var(--primary); margin-top:5px;">
+              Qual será a área total pavimentada destinada ao galpão?
+            </p>
+            <div class="quiz-options">
+              <div class="quiz-option" onclick="selectOptionSlide26(this, 'a')"><span class="quiz-option-letter">A</span> 60 m²</div>
+              <div class="quiz-option" onclick="selectOptionSlide26(this, 'b')"><span class="quiz-option-letter">B</span> 75 m²</div>
+              <div class="quiz-option" onclick="selectOptionSlide26(this, 'c')"><span class="quiz-option-letter">C</span> 90 m²</div>
+              <div class="quiz-option" onclick="selectOptionSlide26(this, 'd')"><span class="quiz-option-letter">D</span> 120 m²</div>
+              <div class="quiz-option" onclick="selectOptionSlide26(this, 'e')"><span class="quiz-option-letter">E</span> 150 m²</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 27: RESOLUÇÃO DESAFIO 1 ==================== -->
+        <div class="slide-pane" id="slide-27">
+          <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Resolução Comentada — Desafio 1</h3>
+          <div class="calculation-box">
+            <div class="calc-step">
+              <strong>Passo 1:</strong> Calcular a área total retangular do terreno (\(A = b \cdot h\)):<br>
+              \[A_{\text{total}} = 20\text{ m} \cdot 15\text{ m} = 300\text{ m}^2\]
+            </div>
+            <div class="calc-step">
+              <strong>Passo 2:</strong> Calcular 30% da área total destinada ao galpão:<br>
+              \[\text{Área Pavimentada} = 30\%\text{ de } 300 = 0{,}30 \cdot 300 = 90\text{ m}^2\]
+            </div>
+            <div class="calc-step highlighted">
+              Resposta Correta: Alternativa C (90 m²) ✓
+            </div>
+          </div>
+          <div class="alert-box" style="margin-top:15px;">
+            <i class="fa-solid fa-shapes"></i>
+            <div><strong>Lição Importante:</strong> Uma mesma questão da prova do IFES costuma cobrar <strong>dois ou mais conteúdos integrados</strong> (Geometria + Porcentagem).</div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 28: DESAFIO FINAL ==================== -->
+        <div class="slide-pane" id="slide-28">
+          <div class="card-box" style="border-left: 4px solid var(--accent);">
+            <div class="card-box-header" style="color:var(--accent);"><i class="fa-solid fa-trophy"></i> Questão Desafio Final (Estilo IFES Integrado)</div>
+            <p style="font-size:14.5px; line-height:1.5; color:var(--dark); margin-top:5px;">
+              Uma cooperativa agrícola no ES registrou a produção semanal de sacas de café em uma tabela: na Semana 1 foram produzidas <strong>200 sacas</strong>; na Semana 2 houve um <strong>aumento de 25%</strong> sobre a Semana 1. Para a Semana 3, a meta é produzir uma quantidade tal que a média semanal das 3 semanas seja de exatamente <strong>230 sacas</strong>. Quantas sacas devem ser produzidas na Semana 3?
+            </p>
+            <div class="quiz-options">
+              <div class="quiz-option" onclick="selectOptionSlide28(this, 'a')"><span class="quiz-option-letter">A</span> 220 sacas</div>
+              <div class="quiz-option" onclick="selectOptionSlide28(this, 'b')"><span class="quiz-option-letter">B</span> 230 sacas</div>
+              <div class="quiz-option" onclick="selectOptionSlide28(this, 'c')"><span class="quiz-option-letter">C</span> 240 sacas</div>
+              <div class="quiz-option" onclick="selectOptionSlide28(this, 'd')"><span class="quiz-option-letter">D</span> 250 sacas</div>
+              <div class="quiz-option" onclick="selectOptionSlide28(this, 'e')"><span class="quiz-option-letter">E</span> 290 sacas</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 29: RESOLUÇÃO DESAFIO FINAL ==================== -->
+        <div class="slide-pane" id="slide-29">
+          <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:10px;">Resolução do Desafio Final em 5 Etapas</h3>
+          <div class="calculation-box">
+            <div class="calc-step">
+              <strong>1. Interpretar & Semana 1:</strong> Produção \(S_1 = 200\text{ sacas}\).
+            </div>
+            <div class="calc-step">
+              <strong>2. Aumento de 25% na Semana 2:</strong><br>
+              \[S_2 = 200 \cdot 1{,}25 = 250\text{ sacas}\]
+            </div>
+            <div class="calc-step">
+              <strong>3. Média desejada de 230 para 3 semanas:</strong><br>
+              \[\frac{S_1 + S_2 + S_3}{3} = 230 \implies S_1 + S_2 + S_3 = 3 \cdot 230 = 690\text{ sacas no total}\]
+            </div>
+            <div class="calc-step">
+              <strong>4. Calcular \(S_3\):</strong><br>
+              \[200 + 250 + S_3 = 690 \implies 450 + S_3 = 690 \implies S_3 = 690 - 450 = 240\text{ sacas}\]
+            </div>
+            <div class="calc-step highlighted">
+              Resposta Correta: Alternativa C (240 sacas) ✓
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== SLIDE 30: CHECKLIST FINAL ==================== -->
+        <div class="slide-pane" id="slide-30">
+          <h3 style="font-size:22px; color:var(--primary); font-family:Outfit; margin-bottom:12px;">Na hora da prova do IFES, lembre-se:</h3>
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px;">
+            <div class="card-box" style="background:var(--primary-pale); text-align:center;">
+              <span style="font-size:20px;">📌</span>
+              <p style="font-weight:800; font-size:13px; color:var(--primary);">1. Leia o comando primeiro</p>
+            </div>
+            <div class="card-box" style="background:var(--primary-pale); text-align:center;">
+              <span style="font-size:20px;">🖍️</span>
+              <p style="font-weight:800; font-size:13px; color:var(--primary);">2. Marque os dados</p>
+            </div>
+            <div class="card-box" style="background:var(--primary-pale); text-align:center;">
+              <span style="font-size:20px;">📏</span>
+              <p style="font-weight:800; font-size:13px; color:var(--primary);">3. Observe as unidades</p>
+            </div>
+            <div class="card-box" style="background:var(--primary-pale); text-align:center;">
+              <span style="font-size:20px;">✏️</span>
+              <p style="font-weight:800; font-size:13px; color:var(--primary);">4. Desenhe se ajudar</p>
+            </div>
+            <div class="card-box" style="background:var(--primary-pale); text-align:center;">
+              <span style="font-size:20px;">🧠</span>
+              <p style="font-weight:800; font-size:13px; color:var(--primary);">5. Estime o resultado</p>
+            </div>
+            <div class="card-box" style="background:var(--primary-pale); text-align:center;">
+              <span style="font-size:20px;">❌</span>
+              <p style="font-weight:800; font-size:13px; color:var(--primary);">6. Elimine impossíveis</p>
+            </div>
+          </div>
+          <div class="card-box" style="margin-top:15px; background:linear-gradient(135deg, var(--primary), var(--primary-light)); color:#fff; text-align:center; padding:20px;">
+            <p style="font-family:Outfit; font-size:22px; font-weight:900; line-height:1.3; color:#fff;">
+              “Você não precisa reconhecer a questão.<br>Precisa reconhecer a Matemática que existe dentro dela.”
+            </p>
+            <p style="font-size:14px; margin-top:10px; color:var(--primary-pale);">Boa prova e excelente desempenho no IFES 2026!</p>
+          </div>
+        </div>
+
+      </main>
+
+      <!-- FOOTER DO SLIDE -->
+      <footer class="slide-footer">
+        <span>Prof. Betânia Almeida — Matemática</span>
+        <span class="slide-number" id="slide-num-label">Slide 1 de 30</span>
+      </footer>
+
+    </div>
+
+    <!-- CONTROLES DE NAVEGAÇÃO -->
+    <div class="navigation-controls">
+      <button class="btn-nav" id="btn-prev" onclick="prevSlide()" title="Slide Anterior"><i class="fa-solid fa-chevron-left"></i></button>
+      <button class="btn-nav" id="btn-next" onclick="nextSlide()" title="Próximo Slide"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+    <!-- BOTÕES AUXILIARES -->
+    <div class="btn-auxiliary">
+      <button class="btn-aux" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i> Índice</button>
+      <button class="btn-aux" onclick="toggleFullscreen()"><i class="fa-solid fa-expand"></i> Tela Cheia</button>
+    </div>
+
+  </div>
+
+  <!-- SCRIPTS DA APRESENTACAO -->
+  <script>
+    const totalSlides = 30;
+
+    const titles = {
+      1: "REVISÃO GERAL DE MATEMÁTICA",
+      2: "Antes de fazer a conta...",
+      3: "O que vamos revisar hoje?",
+      4: "Razão e proporção",
+      5: "Questão 1: Razão e Proporção",
+      6: "Resolução: Divisão Proporcional",
+      7: "Porcentagem sem complicação",
+      8: "Cuidado com porcentagens sucessivas",
+      9: "Geometria: Fórmulas Essenciais",
+      10: "Área ou Perímetro?",
+      11: "Decomposição de Figura Composta",
+      12: "Círculo x Circunferência",
+      13: "Teorema de Pitágoras (90°)",
+      14: "Pitágoras ou Trigonometria?",
+      15: "Seno, Cosseno e Tangente",
+      16: "Questão 2: Seleção Trigonométrica",
+      17: "Álgebra: Equação do 1º Grau",
+      18: "Valor Fixo + Valor Variável",
+      19: "Equação do 2º Grau & Bhaskara",
+      20: "Análise do Discriminante (Δ)",
+      21: "Média, Moda e Mediana",
+      22: "Média Ponderada",
+      23: "Leitura e Interpretação de Gráficos",
+      24: "Probabilidade Básica",
+      25: "Probabilidade Complementar",
+      26: "Questão Desafio 1: Área + Porcentagem",
+      27: "Resolução do Desafio 1",
+      28: "Questão Desafio Final (Estilo IFES)",
+      29: "Resolução do Desafio Final",
+      30: "Checklist Final para a Prova"
+    };
+
+    function getInitialSlide() {
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#slide-')) {
+        const num = parseInt(hash.replace('#slide-', ''));
+        if (num >= 1 && num <= totalSlides) return num;
+      }
+      const stored = localStorage.getItem('aprovaifes_revisao_current_slide');
+      if (stored) {
+        const num = parseInt(stored);
+        if (num >= 1 && num <= totalSlides) return num;
+      }
+      return 1;
+    }
+
+    let currentSlide = getInitialSlide();
+
+    function buildSidebarMenu() {
+      const menuList = document.getElementById('menu-item-list');
+      if (!menuList) return;
+      menuList.innerHTML = '';
+      for (let i = 1; i <= totalSlides; i++) {
+        const li = document.createElement('li');
+        li.className = `menu-item ${i === currentSlide ? 'active' : ''}`;
+        li.onclick = () => goToSlide(i);
+        li.innerHTML = `<span class="menu-item-num">${i}</span> <span>${titles[i] || 'Slide ' + i}</span>`;
+        menuList.appendChild(li);
+      }
+    }
+
+    function updatePresentationState() {
+      localStorage.setItem('aprovaifes_revisao_current_slide', currentSlide);
+      if (window.history.replaceState) {
+        window.history.replaceState(null, null, `#slide-${currentSlide}`);
+      }
+
+      document.querySelectorAll('.slide-pane').forEach(pane => pane.classList.remove('active'));
+      const activePane = document.getElementById(`slide-${currentSlide}`);
+      if (activePane) activePane.classList.add('active');
+
+      document.getElementById('slide-header-title').innerText = titles[currentSlide] || titles[1];
+      document.getElementById('slide-badge-label').innerText = currentSlide === 1 ? "INÍCIO" : `SLIDE ${currentSlide}`;
+      document.getElementById('slide-num-label').innerText = `Slide ${currentSlide} de ${totalSlides}`;
+
+      const percent = ((currentSlide - 1) / (totalSlides - 1)) * 100;
+      document.getElementById('top-progress-bar').style.width = `${percent}%`;
+
+      document.getElementById('btn-prev').disabled = currentSlide === 1;
+      document.getElementById('btn-next').disabled = currentSlide === totalSlides;
+
+      buildSidebarMenu();
+
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        window.MathJax.typesetPromise();
+      }
+    }
+
+    window.addEventListener('hashchange', () => {
+      const num = getInitialSlide();
+      if (num !== currentSlide) {
+        currentSlide = num;
+        updatePresentationState();
+      }
+    });
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) {
+        currentSlide++;
+        updatePresentationState();
+      }
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) {
+        currentSlide--;
+        updatePresentationState();
+      }
+    }
+
+    function goToSlide(num) {
+      currentSlide = num;
+      updatePresentationState();
+      toggleSidebar(false);
+    }
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === 'Space') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft') {
+        prevSlide();
+      }
+    });
+
+    function toggleSidebar(forceState) {
+      const menu = document.getElementById('sidebar-menu');
+      const overlay = document.getElementById('overlay');
+      const isOpen = forceState !== undefined ? forceState : !menu.classList.contains('open');
+
+      menu.classList.toggle('open', isOpen);
+      overlay.classList.toggle('active', isOpen);
+    }
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error(`Erro ao ativar Tela Cheia: ${err.message}`);
+        });
+      } else {
+        document.exitFullscreen();
+      }
+    }
+
+    /* Interatividade dos Quizzes de Opções */
+    function selectOptionSlide5(el, opt) {
+      const parent = el.parentElement;
+      parent.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('correct', 'wrong', 'checked'));
+      if (opt === 'e') {
+        el.classList.add('correct', 'checked');
+        triggerConfetti();
+      } else {
+        el.classList.add('wrong', 'checked');
+        const correctOpt = parent.children[4];
+        if (correctOpt) correctOpt.classList.add('correct');
+      }
+    }
+
+    function selectOptionSlide16(el, opt) {
+      const parent = el.parentElement;
+      parent.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('correct', 'wrong', 'checked'));
+      if (opt === 'c') {
+        el.classList.add('correct', 'checked');
+        triggerConfetti();
+      } else {
+        el.classList.add('wrong', 'checked');
+        const correctOpt = parent.children[2];
+        if (correctOpt) correctOpt.classList.add('correct');
+      }
+    }
+
+    function selectOptionSlide26(el, opt) {
+      const parent = el.parentElement;
+      parent.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('correct', 'wrong', 'checked'));
+      if (opt === 'c') {
+        el.classList.add('correct', 'checked');
+        triggerConfetti();
+      } else {
+        el.classList.add('wrong', 'checked');
+        const correctOpt = parent.children[2];
+        if (correctOpt) correctOpt.classList.add('correct');
+      }
+    }
+
+    function selectOptionSlide28(el, opt) {
+      const parent = el.parentElement;
+      parent.querySelectorAll('.quiz-option').forEach(o => o.classList.remove('correct', 'wrong', 'checked'));
+      if (opt === 'c') {
+        el.classList.add('correct', 'checked');
+        triggerConfetti();
+      } else {
+        el.classList.add('wrong', 'checked');
+        const correctOpt = parent.children[2];
+        if (correctOpt) correctOpt.classList.add('correct');
+      }
+    }
+
+    /* Efeito de Confetes */
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let confettiList = [];
+    let animationFrameId = null;
+
+    function resizeCanvas() {
+      if (!canvas || !canvas.parentElement) return;
+      canvas.width = canvas.parentElement.clientWidth;
+      canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    function triggerConfetti() {
+      resizeCanvas();
+      confettiList = [];
+      for (let i = 0; i < 100; i++) {
+        confettiList.push({
+          x: canvas.width / 2 + (Math.random() - 0.5) * 60,
+          y: canvas.height - 40,
+          vx: (Math.random() - 0.5) * 14,
+          vy: -Math.random() * 14 - 6,
+          color: ['#4CAF50', '#2196F3', '#FFEB3B', '#FF9800', '#E91E63', '#9C27B0'][Math.floor(Math.random() * 6)],
+          size: Math.random() * 8 + 5,
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 10
+        });
+      }
+      if (animationFrameId) cancelAnimationFrame(animationFrameId);
+      animateConfetti();
+    }
+
+    function animateConfetti() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      let alive = false;
+      confettiList.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.35;
+        p.vx *= 0.98;
+        p.rotation += p.rotationSpeed;
+        if (p.y < canvas.height) {
+          alive = true;
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+          ctx.restore();
+        }
+      });
+      if (alive) {
+        animationFrameId = requestAnimationFrame(animateConfetti);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', updatePresentationState);
+  </script>
+</body>
+
+</html>
